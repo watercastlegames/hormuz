@@ -6,9 +6,9 @@
 Full source of a browser-based 3D real-time strategy game.
 No framework, no build step required to run it — just serve the folder.
 
-- Play online: https://sminia81-rgb.github.io/hormuz/
+- Play online: https://watercastlegames.github.io/hormuz/
 - Production demo: https://sidak.kr/autodev/GameCreator/hormuz/
-- Source: https://github.com/sminia81-rgb/hormuz
+- Source: https://github.com/watercastlegames/hormuz
 
 ## 돌려보기 / Run it
 

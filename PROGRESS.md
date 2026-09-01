@@ -1825,3 +1825,13 @@ rts-combat.bundle.js · game.bundle.js), 나머지 18개는 sha256 이 같아 �
   실제 포인터 기반 본편·전투 홈 복귀 검증 PASS.
 - GitHub Pages를 `main` 루트에서 활성화했다:
   `https://sminia81-rgb.github.io/hormuz/`.
+
+## 2026-09-01 — Water Castle Games 계정으로 공개본 재업로드
+
+- 기존 공개본의 커밋 이력을 보존해 `https://github.com/watercastlegames/hormuz`로
+  재업로드했다. 가져온 `main` HEAD가 기존 공개본과 같은
+  `e03b65f030866f6e57b68e6787fadf76c89d12a9`임을 확인했다.
+- 새 저장소는 공개로 설정하고 기존 설명을 복원했다. GitHub Pages는 `main` 루트에서
+  활성화해 `https://watercastlegames.github.io/hormuz/`로 게시되도록 했다.
+- 공개 README의 온라인 플레이·소스 링크를 새 계정 주소로 교체했다.
+- 이전 `sminia81-rgb/hormuz` 저장소는 삭제 요청이 없어 보존했다.
