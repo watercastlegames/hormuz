@@ -1810,3 +1810,18 @@ rts-combat.bundle.js · game.bundle.js), 나머지 18개는 sha256 이 같아 �
 - https 나 localhost 가 아니면 버튼을 잠그고 이유를 먼저 알려 준다.
 
 `tools/deploy-sidak.py` 의 배포 목록과 공개 확인 표지에 넣었다.
+
+## 2026-09-01 — GitHub 전체 소스 공개 배포
+
+- 기존 비공개 `soccerstar` 모노레포를 공개로 바꾸지 않고, `hormuz` 공개 배포본만 독립
+  저장소 `https://github.com/sminia81-rgb/hormuz` 로 분리했다.
+- 공개 빌더가 실사용 코드·문서·검증 도구·런타임 자산 286파일(약 95MB)을 포함하고,
+  지도 API 키·서버 접속 정보·미사용 Meshy 원본·내부 생성 참고자료는 제외하도록 확인했다.
+- ElevenLabs 무료 플랜으로 만든 효과음은 MIT 상업 이용 허용과 충돌하므로 공개본에서
+  제외했다. 공개 `rts-audio.json` 은 빈 이벤트를 사용해 무음 폴백한다.
+- README, MIT LICENSE, DISCLAIMER, CONTRIBUTING, ASSET-LICENSES, `.gitignore`,
+  `.gitattributes`, `.nojekyll` 을 공개본에 포함했다. Meshy 모델은 CC BY 4.0으로 고지했다.
+- 비밀정보 정규식 검사 0건, 공개 설정의 API 키·Map ID 빈 값 확인, 로컬 공개본에서
+  실제 포인터 기반 본편·전투 홈 복귀 검증 PASS.
+- GitHub Pages를 `main` 루트에서 활성화했다:
+  `https://sminia81-rgb.github.io/hormuz/`.
