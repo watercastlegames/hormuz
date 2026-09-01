@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#020b10">
+  <meta name="description" content="호르무즈 해협 위기를 다루는 무료 브라우저 3D 전략 게임 HORMUZ">
+  <title>HORMUZ — 대통령 상황실</title>
+
+  <!--
+    링크를 붙여넣었을 때 뜨는 미리보기 카드.
+    이게 없으면 쓰레드·레딧·디스코드에 주소만 덩그러니 나온다.
+    og:image 는 반드시 전체 주소여야 한다. 상대경로면 아무것도 안 뜬다.
+  -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="HORMUZ">
+  <meta property="og:title" content="HORMUZ — 브라우저에서 바로 하는 3D 전략 게임">
+  <meta property="og:description" content="설치 없이 링크만 누르면 시작한다. 호르무즈 해협을 무대로 한 무료 3D 실시간 전략 게임.">
+  <meta property="og:url" content="https://sidak.kr/autodev/GameCreator/hormuz/">
+  <meta property="og:image" content="https://sidak.kr/autodev/GameCreator/hormuz/assets/images/og-cover.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="호르무즈 대규모 함대전 화면">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="HORMUZ — 브라우저에서 바로 하는 3D 전략 게임">
+  <meta name="twitter:description" content="설치 없이 링크만 누르면 시작한다. 무료 3D 실시간 전략 게임.">
+  <meta name="twitter:image" content="https://sidak.kr/autodev/GameCreator/hormuz/assets/images/og-cover.jpg">
+  <link rel="preload" as="image" href="assets/images/title/hormuz-main-title-cinematic-president-rear-v6.webp" type="image/webp">
+  <link rel="stylesheet" href="assets/css/game.css?v=57">
+</head>
+<body>
+  <main id="game" class="game-shell title-booting">
+    <div id="google-game-map-host" class="google-game-map-host" data-i18n-attr="aria-label:hud.googleTerrain" aria-label="Google 3D 실제 지형">
+      <div id="google-game-map-loading" class="google-game-map-loading">
+        <i aria-hidden="true"></i><span data-i18n="hud.googleTerrainLoading">Google 3D 실제 지형 연결 중</span>
+      </div>
+    </div>
+    <canvas id="world-canvas" data-i18n-attr="aria-label:hud.worldCanvas" aria-label="실제 좌표 기반 호르무즈 해협 3D 전장"></canvas>
+    <div id="map-labels" class="map-labels" aria-hidden="true"></div>
+    <div class="scanlines" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+
+    <header class="top-hud">
+      <div class="brand-block">
+        <button id="brand-home" class="brand" type="button" data-i18n-attr="aria-label:hud.brandHome" aria-label="시작 화면으로">HORMUZ</button>
+        <div id="day-label" class="day-label">DAY 1 · 7.28</div>
+        <div id="act-label" class="act-label" data-i18n="act.LULL">ACT I · 소강</div>
+        <div class="day-track"><i id="day-progress"></i></div>
+      </div>
+      <div id="dial-grid" class="dial-grid" data-i18n-attr="aria-label:hud.dialGrid" aria-label="국가 상황 지표"></div>
+    </header>
+
+    <aside class="map-legend">
+      <span><i class="line official"></i><b data-i18n="hud.legendOfficial">해협 중앙 통항로</b></span>
+      <span><i class="line approach"></i><b data-i18n="hud.legendApproach">게임용 안전 간격</b></span>
+      <small data-i18n="hud.legendNote">걸프 전체 작전권 · 해안선 Natural Earth 1:10m · 실제 항해용 아님</small>
+    </aside>
+
+    <button id="auto-camera" class="auto-camera active" type="button"><i></i><b data-i18n="hud.autoCamera">AUTO CAM</b></button>
+    <button id="campaign-office" class="campaign-office" type="button" data-i18n="hud.campaignOffice">작전·예산</button>
+
+    <section class="brief-panel">
+      <span class="eyebrow" data-i18n="hud.briefEyebrow">대통령 일일 브리핑</span>
+      <p id="brief-text" data-i18n="hud.briefDefault">호르무즈 해협의 통항을 회복하고 확전을 막으십시오.</p>
+    </section>
+
+    <section id="decision-panel" class="decision-panel" aria-live="assertive"></section>
+    <div id="modal-layer" class="modal-layer"></div>
+    <div id="report-layer" class="report-layer"></div>
+
+    <footer class="ticker" role="button" tabindex="0" data-i18n-attr="aria-label:hud.tickerAria" aria-label="속보 기록 전체 보기">
+      <strong data-i18n="hud.tickerLabel">속보</strong>
+      <div class="ticker-window"><span id="ticker-text" data-i18n="hud.tickerDefault">호르무즈 해협 긴장 최고조 · 유조선 호송대 운항 지속 · 국제 유가 변동성 확대</span></div>
+    </footer>
+
+    <section id="title-screen" class="title-screen" aria-labelledby="title-game-name">
+      <div class="title-shade"></div>
+      <div class="title-horizon" aria-hidden="true">
+        <span data-i18n="title.horizonLeft">해상 통로 감시 중</span>
+        <i></i>
+        <span data-i18n="title.horizonRight">작전 준비 완료</span>
+      </div>
+      <div class="title-content">
+        <span class="title-kicker"><i aria-hidden="true"></i><b data-i18n="title.kicker">호르무즈 해협 · 대통령 전략 상황실</b></span>
+        <h1 id="title-game-name" data-i18n="brand.title">HORMUZ</h1>
+        <p class="title-command" data-i18n="title.command">전쟁과 정치를 지휘하라</p>
+        <p class="title-lead" data-i18n="title.lead">과거의 주요 분기부터 첫 호송대 방어까지. 하루 세 번의 결정을 내리며 끝날 듯 끝나지 않는 54일의 전쟁을 지휘하십시오.</p>
+        <div class="title-rule"><span id="title-load-status" data-i18n="title.loadStatus">시작 화면 준비 완료 · 전장은 뒤에서 준비 중</span></div>
+        <p class="disclaimer" data-i18n="title.disclaimer">실제 지명을 바탕으로 한 가상 전략 시뮬레이션입니다. 사건·수치·인물의 결정은 교육·오락 목적의 허구이며 실제 군사 작전 지침이 아닙니다.</p>
+        <section id="save-summary" class="save-summary" data-i18n-attr="aria-label:title.saveSummaryAria" aria-label="마지막 저장 작전" hidden>
+          <div class="save-summary-heading">
+            <span data-i18n="title.saveSummaryLabel">마지막 저장 작전</span>
+            <strong id="save-summary-title" data-i18n="title.saveSummaryDefault">DAY 1 작전 브리핑</strong>
+            <small id="save-summary-time"></small>
+          </div>
+          <div id="save-summary-metrics" class="save-summary-metrics"></div>
+          <p id="save-summary-recent" class="save-summary-recent"></p>
+        </section>
+        <div class="title-actions">
+          <button id="start-game" class="primary-button title-start-button" type="button" disabled><span data-i18n="title.startNew">새 작전 시작</span><small data-i18n="title.startNewSub">과거 주요 분기부터</small></button>
+          <button id="continue-game" class="ghost-button title-continue-button" type="button" hidden disabled><span data-i18n="title.continue">저장 작전 계속</span><small data-i18n="title.continueSub">마지막 안전 지점부터</small></button>
+          <button id="history-game" class="ghost-button" type="button" disabled data-i18n="title.history">역사 선택 후 시작</button>
+        </div>
+        <div class="title-meta">
+          <span><i aria-hidden="true"></i><b data-i18n="title.meta1">3D 실시간 전투</b></span>
+          <span><i aria-hidden="true"></i><b data-i18n="title.meta2">실제 좌표 해안선</b></span>
+          <span><i aria-hidden="true"></i><b data-i18n="title.meta3">예산·의회 정치</b></span>
+        </div>
+      </div>
+      <div class="lang-switch" id="lang-switch" role="group" data-i18n-attr="aria-label:lang.switch" aria-label="언어 선택">
+        <button type="button" data-lang="ko" data-i18n="lang.ko">한국어</button>
+        <button type="button" data-lang="en" data-i18n="lang.en">English</button>
+      </div>
+    </section>
+
+    <section id="replay-screen" class="replay-screen" aria-live="polite"></section>
+    <div id="loading-screen" class="loading-screen hidden" role="status" aria-live="polite">
+      <div class="loading-mark"></div>
+      <b>HORMUZ</b>
+      <strong data-i18n="loading.heading">전장 데이터 연결 중</strong>
+      <span data-i18n="loading.detail">실제 지형과 3D 전력 자산을 정렬하고 있습니다</span>
+      <div class="loading-progress" data-i18n-attr="aria-label:loading.progressAria" aria-label="불러오는 중"><i></i></div>
+    </div>
+    <div id="fatal-error" class="fatal-error" hidden></div>
+  </main>
+
+  <a class="developer-fixed-link" href="developer.html" data-i18n-attr="aria-label:dev.buttonAria" aria-label="개발자 정보 페이지로 이동">
+    <strong class="developer-link-mark" aria-hidden="true">?</strong>
+    <span data-i18n="dev.button">개발자 정보</span>
+  </a>
+
+  <script src="net/google-maps-config.js?v=2"></script>
+  <script>
+    (() => {
+      const root = document.querySelector("#game");
+      const title = document.querySelector("#title-screen");
+      const loading = document.querySelector("#loading-screen");
+      const params = new URLSearchParams(location.search);
+      const autostart = params.get("autostart") === "1";
+
+      // 번들이 오기 전에도 부팅 오류 문구를 옳은 언어로 띄우기 위한 최소 판별.
+      // 정식 판별(IP 포함)은 assets/js/core/i18n.js 가 맡는다.
+      const quickLang = (() => {
+        const requested = (params.get("lang") || "").slice(0, 2).toLowerCase();
+        if (requested === "ko" || requested === "en") return requested;
+        try {
+          const saved = localStorage.getItem("hormuzLangV1");
+          if (saved === "ko" || saved === "en") return saved;
+        } catch { /* 저장소 접근 불가 시 넘어간다. */ }
+        try {
+          if (Intl.DateTimeFormat().resolvedOptions().timeZone === "Asia/Seoul") return "ko";
+        } catch { /* 넘어간다. */ }
+        return String(navigator.language || "").toLowerCase().startsWith("ko") ? "ko" : "en";
+      })();
+
+      if (autostart) {
+        root.classList.remove("title-booting");
+        root.classList.add("boot-loading");
+        title.classList.add("hidden");
+        loading.classList.remove("hidden");
+      }
+
+      const loadGame = () => {
+        const script = document.createElement("script");
+        script.src = "assets/js/game.bundle.js?v=86";
+        script.async = true;
+        script.onerror = () => {
+          const fatal = document.querySelector("#fatal-error");
+          root.classList.remove("boot-loading");
+          loading.classList.add("hidden");
+          fatal.hidden = false;
+          fatal.textContent = quickLang === "ko"
+            ? "게임 실행 파일을 불러오지 못했습니다. 새로고침해 주세요."
+            : "Could not load the game program file. Please refresh the page.";
+        };
+        document.body.appendChild(script);
+      };
+
+      requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(loadGame, 0)));
+    })();
+  </script>
+</body>
+</html>

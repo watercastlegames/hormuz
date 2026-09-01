@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>호르무즈 모델 팩 — 영상용 화면</title>
+<!--
+  영상으로 찍을 화면이다. record.html 이 화면을 담는 도구라면 이건 담을 내용이다.
+
+  tools/build-release.py 가 [{"family": "구축함", "variant": "원본", "note": "", "name": "arleigh-burke-destroyer-meshy6-web-v1", "url": "../assets/models/ships-v1/arleigh-burke-destroyer-meshy6-web-v1.glb", "triangles": 41000, "kb": 2087, "clips": []}, {"family": "구축함", "variant": "분대용", "note": "", "name": "arleigh-burke-destroyer-meshy6-web-squad-v1", "url": "../assets/models/ships-v1/arleigh-burke-destroyer-meshy6-web-squad-v1.glb", "triangles": 9333, "kb": 884, "clips": []}, {"family": "구축함", "variant": "경량", "note": "", "name": "arleigh-burke-destroyer-remesh-3k-web-v106", "url": "../assets/models/meshy-remesh-v6/arleigh-burke-destroyer-remesh-3k-web-v106.glb", "triangles": 3057, "kb": 252, "clips": []}, {"family": "항공모함", "variant": "원본", "note": "", "name": "nimitz-carrier-meshy-textured-detail-v4", "url": "../assets/models/battle-detail-v4/nimitz-carrier-meshy-textured-detail-v4.glb", "triangles": 14103, "kb": 762, "clips": []}, {"family": "항공모함", "variant": "대규모전용", "note": "", "name": "nimitz-carrier-meshy6-web-strategic-v1", "url": "../assets/models/ships-v1/nimitz-carrier-meshy6-web-strategic-v1.glb", "triangles": 14103, "kb": 1082, "clips": []}, {"family": "항공모함", "variant": "초경량", "note": "원거리 전용", "name": "nimitz-carrier-meshy-ultra-v2", "url": "../assets/models/battle-ultra-v2/nimitz-carrier-meshy-ultra-v2.glb", "triangles": 1196, "kb": 17, "clips": []}, {"family": "전투기", "variant": "편대장", "note": "", "name": "fa-18e-super-hornet-meshy6-web-squad-v1", "url": "../assets/models/combat-v1/fa-18e-super-hornet-meshy6-web-squad-v1.glb", "triangles": 6415, "kb": 598, "clips": []}, {"family": "전투기", "variant": "요기", "note": "", "name": "fa-18e-super-hornet-meshy6-web-wingman-v1", "url": "../assets/models/combat-v1/fa-18e-super-hornet-meshy6-web-wingman-v1.glb", "triangles": 3833, "kb": 501, "clips": []}, {"family": "전투기", "variant": "경량", "note": "", "name": "fa-18e-super-hornet-remesh-2k-web-v106", "url": "../assets/models/meshy-remesh-v6/fa-18e-super-hornet-remesh-2k-web-v106.glb", "triangles": 1877, "kb": 172, "clips": []}, {"family": "해상작전 헬기", "variant": "원본", "note": "", "name": "mh-60r-seahawk-meshy6-web-lod3-v1", "url": "../assets/models/combat-v1/mh-60r-seahawk-meshy6-web-lod3-v1.glb", "triangles": 13323, "kb": 1228, "clips": []}, {"family": "해상작전 헬기", "variant": "요기", "note": "", "name": "mh-60r-seahawk-meshy6-web-wingman-v1", "url": "../assets/models/combat-v1/mh-60r-seahawk-meshy6-web-wingman-v1.glb", "triangles": 4885, "kb": 542, "clips": []}, {"family": "해상작전 헬기", "variant": "초경량", "note": "원거리 전용", "name": "mh-60r-seahawk-meshy-ultra-v2", "url": "../assets/models/battle-ultra-v2/mh-60r-seahawk-meshy-ultra-v2.glb", "triangles": 653, "kb": 10, "clips": []}, {"family": "스텔스 폭격기", "variant": "원본", "note": "", "name": "b2-spirit-meshy-t2-web-v1", "url": "../assets/models/combined-arms-v1/b2-spirit-meshy-t2-web-v1.glb", "triangles": 5572, "kb": 72, "clips": []}, {"family": "스텔스 폭격기", "variant": "경량", "note": "", "name": "b2-spirit-remesh-2p5k-web-v106", "url": "../assets/models/meshy-remesh-v6/b2-spirit-remesh-2p5k-web-v106.glb", "triangles": 2448, "kb": 212, "clips": []}, {"family": "유조선", "variant": "원본", "note": "", "name": "vlcc-tanker-meshy6-web-strategic-v2", "url": "../assets/models/strategic-v1/vlcc-tanker-meshy6-web-strategic-v2.glb", "triangles": 12000, "kb": 1272, "clips": []}, {"family": "유조선", "variant": "경량", "note": "", "name": "vlcc-tanker-remesh-3p5k-web-v106", "url": "../assets/models/meshy-remesh-v6/vlcc-tanker-remesh-3p5k-web-v106.glb", "triangles": 3605, "kb": 354, "clips": []}, {"family": "고속정", "variant": "원본", "note": "", "name": "irgc-fast-attack-craft-meshy6-web-strategic-v1", "url": "../assets/models/combat-v1/irgc-fast-attack-craft-meshy6-web-strategic-v1.glb", "triangles": 10574, "kb": 950, "clips": []}, {"family": "고속정", "variant": "다른 판본", "note": "", "name": "irgc-fast-attack-craft-meshy6-web-strategic-v4", "url": "../assets/models/combat-v1/irgc-fast-attack-craft-meshy6-web-strategic-v4.glb", "triangles": 10172, "kb": 928, "clips": []}, {"family": "고속정", "variant": "초경량", "note": "원거리 전용", "name": "irgc-fast-attack-craft-meshy-ultra-v2", "url": "../assets/models/battle-ultra-v2/irgc-fast-attack-craft-meshy-ultra-v2.glb", "triangles": 474, "kb": 8, "clips": []}, {"family": "무인 소해정", "variant": "경량", "note": "", "name": "mcm-usv-remesh-3k-web-v106", "url": "../assets/models/meshy-remesh-v6/mcm-usv-remesh-3k-web-v106.glb", "triangles": 2973, "kb": 328, "clips": []}, {"family": "미사일 발사차량", "variant": "원본", "note": "", "name": "coastal-defense-tel-meshy6-web-strategic-v1", "url": "../assets/models/strategic-v1/coastal-defense-tel-meshy6-web-strategic-v1.glb", "triangles": 19545, "kb": 1568, "clips": []}, {"family": "미사일 발사차량", "variant": "다른 판본", "note": "", "name": "coastal-defense-tel-meshy6-web-strategic-v2", "url": "../assets/models/strategic-v1/coastal-defense-tel-meshy6-web-strategic-v2.glb", "triangles": 17563, "kb": 1485, "clips": []}, {"family": "미사일 발사차량", "variant": "초경량", "note": "원거리 전용", "name": "coastal-defense-tel-meshy-ultra-v2", "url": "../assets/models/battle-ultra-v2/coastal-defense-tel-meshy-ultra-v2.glb", "triangles": 707, "kb": 11, "clips": []}, {"family": "항만 크레인", "variant": "원본", "note": "", "name": "port-gantry-crane-meshy6-web-strategic-v1", "url": "../assets/models/strategic-v1/port-gantry-crane-meshy6-web-strategic-v1.glb", "triangles": 22777, "kb": 1847, "clips": []}, {"family": "보병 A", "variant": "기본자세", "note": "", "name": "us-marine-rifleman-meshy-rigged-web-v1", "url": "../assets/models/combined-arms-v1/us-marine-rifleman-meshy-rigged-web-v1.glb", "triangles": 2518, "kb": 182, "clips": [["걷기", "../assets/models/combined-arms-v1/us-marine-rifleman-meshy-walk-armature-web-v1.glb"], ["사격", "../assets/models/combined-arms-v1/us-marine-rifleman-meshy-combat-web-v1.glb"]]}, {"family": "보병 A", "variant": "전투자세", "note": "", "name": "us-marine-rifleman-meshy-combat-web-v1", "url": "../assets/models/combined-arms-v1/us-marine-rifleman-meshy-combat-web-v1.glb", "triangles": 2518, "kb": 197, "clips": [["사격", "../assets/models/combined-arms-v1/us-marine-rifleman-meshy-combat-web-v1.glb"]]}, {"family": "보병 A", "variant": "보행 동작", "note": "뼈대만", "name": "us-marine-rifleman-meshy-walk-armature-web-v1", "url": "../assets/models/combined-arms-v1/us-marine-rifleman-meshy-walk-armature-web-v1.glb", "triangles": 288, "kb": 64, "clips": []}, {"family": "보병 B", "variant": "기본자세", "note": "", "name": "irgc-ground-combatant-meshy-rigged-web-v1", "url": "../assets/models/combined-arms-v1/irgc-ground-combatant-meshy-rigged-web-v1.glb", "triangles": 2407, "kb": 150, "clips": [["걷기", "../assets/models/combined-arms-v1/irgc-ground-combatant-meshy-walk-armature-web-v1.glb"], ["사격", "../assets/models/combined-arms-v1/irgc-ground-combatant-meshy-combat-web-v1.glb"]]}, {"family": "보병 B", "variant": "전투자세", "note": "", "name": "irgc-ground-combatant-meshy-combat-web-v1", "url": "../assets/models/combined-arms-v1/irgc-ground-combatant-meshy-combat-web-v1.glb", "triangles": 2407, "kb": 165, "clips": [["사격", "../assets/models/combined-arms-v1/irgc-ground-combatant-meshy-combat-web-v1.glb"]]}, {"family": "보병 B", "variant": "보행 동작", "note": "뼈대만", "name": "irgc-ground-combatant-meshy-walk-armature-web-v1", "url": "../assets/models/combined-arms-v1/irgc-ground-combatant-meshy-walk-armature-web-v1.glb", "triangles": 288, "kb": 64, "clips": []}, {"family": "소총 2종", "variant": "소총 A", "note": "", "name": "m27-rifle-meshy-t2-web-v1", "url": "../assets/models/combined-arms-v1/m27-rifle-meshy-t2-web-v1.glb", "triangles": 820, "kb": 103, "clips": []}, {"family": "소총 2종", "variant": "소총 B", "note": "", "name": "ak-rifle-meshy-t2-web-v1", "url": "../assets/models/combined-arms-v1/ak-rifle-meshy-t2-web-v1.glb", "triangles": 826, "kb": 115, "clips": []}, {"family": "해상 기뢰", "variant": "원본", "note": "", "name": "naval-mine-meshy-web-v1", "url": "../assets/models/objectives-v1/naval-mine-meshy-web-v1.glb", "triangles": 1229, "kb": 72, "clips": []}, {"family": "지하 진입부", "variant": "원본", "note": "", "name": "bunker-entrance-meshy-web-v1", "url": "../assets/models/objectives-v1/bunker-entrance-meshy-web-v1.glb", "triangles": 1414, "kb": 60, "clips": []}] 와 ../assets/js/vendor 를 채워 docs/ 에 낸다.
+  직접 고치지 말고 이 틀을 고친 뒤 다시 만들어야 한다.
+
+  쓰는 법
+    1) 웹서버로 이 페이지를 연다
+    2) 세로(쓰레드·릴스) 또는 가로(레딧·유튜브)를 고른다
+    3) 재생을 누르고 record.html 로 화면을 담는다
+-->
+<style>
+  :root {
+    --bg: #05090e; --ink: #eaf7fa; --dim: #7f9aa2; --cyan: #64e4ee;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #02050a; overflow: hidden; }
+  body {
+    display: grid; place-items: center;
+    font-family: "Pretendard Variable", "Pretendard", "Malgun Gothic", system-ui, sans-serif;
+    color: var(--ink);
+  }
+
+  /* 담을 영역. 이 사각형만 화면에 녹화하면 된다. */
+  #stage {
+    position: relative; background: var(--bg); overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(100,228,238,.16);
+  }
+  canvas { display: block; width: 100%; height: 100%; }
+
+  .caption {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 0 6% 7%; pointer-events: none;
+    background: linear-gradient(transparent, rgba(2,5,10,.86) 46%);
+  }
+  .kicker {
+    font-size: 1.05em; letter-spacing: .22em; color: var(--cyan);
+    text-transform: uppercase; margin-bottom: .5em; opacity: .85;
+  }
+  /* 한글은 글자 단위로 끊으면 "바 / 꾼다" 처럼 어색하게 갈린다. 낱말 단위로 끊는다. */
+  .headline {
+    font-size: 3.1em; font-weight: 800; line-height: 1.12; margin: 0;
+    word-break: keep-all;
+  }
+  .sub { margin: .5em 0 0; font-size: 1.35em; color: var(--dim); }
+  .sub b { color: var(--ink); font-weight: 600; }
+
+  /* 화면 한가운데에 크게 띄우는 글자. 첫 장면과 끝 장면에 쓴다. */
+  .center {
+    position: absolute; inset: 0; display: grid; place-content: center;
+    text-align: center; padding: 0 8%; pointer-events: none;
+  }
+  .center .headline { font-size: 4.2em; }
+  .center .sub { font-size: 1.5em; margin-top: .8em; }
+  .center .list { margin: 1.6em 0 0; font-size: 1.3em; color: var(--dim); line-height: 2; }
+  .center .list b { color: var(--cyan); font-weight: 600; }
+
+  .badge {
+    position: absolute; top: 5%; left: 6%; font-size: 1.05em;
+    letter-spacing: .18em; color: var(--cyan); opacity: .7;
+  }
+  .counter {
+    position: absolute; top: 5%; right: 6%; font-size: 1.05em;
+    color: var(--dim); font-variant-numeric: tabular-nums;
+  }
+  .progress {
+    position: absolute; left: 0; bottom: 0; height: 3px; width: 0;
+    background: var(--cyan); opacity: .8;
+  }
+  .fade { animation: rise .55s ease both; }
+  /* 영상으로 뽑을 때는 페이드를 끈다. 실제 시간에 맞춰 도는 효과라
+     한 장씩 넘겨 찍으면 어디까지 진행됐는지가 들쭉날쭉해진다. */
+  body.filming .fade { animation: none; }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+  /* 조작판. 녹화할 때는 숨긴다. */
+  #panel {
+    position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%);
+    display: flex; gap: 8px; align-items: center; z-index: 5;
+    background: rgba(10,22,32,.94); border: 1px solid rgba(100,228,238,.22);
+    border-radius: 999px; padding: 8px 12px;
+  }
+  #panel.hidden { display: none; }
+  #panel button, #panel select {
+    background: #12202c; border: 1px solid rgba(100,228,238,.2); color: var(--ink);
+    border-radius: 999px; padding: 6px 14px; font-size: 13px; cursor: pointer;
+    font-family: inherit; white-space: nowrap; flex: none;
+  }
+  #panel button:hover { background: #17303f; }
+  #panel button[aria-pressed="true"] { background: #123246; border-color: var(--cyan); }
+  #panel .tip { font-size: 12px; color: var(--dim); padding: 0 6px; }
+  .notice {
+    position: absolute; inset: 0; display: none; place-items: center; text-align: center;
+    padding: 8%; background: rgba(2,5,10,.94); font-size: 1.2em; line-height: 1.8;
+  }
+  .notice.on { display: grid; }
+  .notice code {
+    background: #0a1219; border: 1px solid rgba(100,228,238,.2); border-radius: 5px;
+    padding: 2px 8px; color: var(--cyan); font-size: .9em;
+  }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="view"></canvas>
+  <div class="badge">HORMUZ</div>
+  <div class="counter" id="counter"></div>
+  <div id="overlay"></div>
+  <div class="progress" id="progress"></div>
+  <div class="notice" id="notice"></div>
+</div>
+
+<div id="panel">
+  <button id="play">재생</button>
+  <button id="prev">◀</button>
+  <button id="next">▶</button>
+  <select id="shape">
+    <option value="9:16">세로 9:16 (쓰레드·릴스)</option>
+    <option value="16:9" selected>가로 16:9 (레딧·유튜브)</option>
+    <option value="1:1">정사각 1:1</option>
+  </select>
+  <select id="depth">
+    <option value="core" selected>핵심만 (약 55초)</option>
+    <option value="scroll">전부 훑기 (약 34초)</option>
+    <option value="all">전부 하나씩 (약 100초)</option>
+  </select>
+  <button id="hide">조작판 숨기기</button>
+  <span class="tip">H 키로 다시 나옴 · Space 재생/멈춤</span>
+</div>
+
+<script type="module">
+import * as THREE from "../assets/js/vendor/three.module.js";
+import { GLTFLoader } from "../assets/js/vendor/GLTFLoader.js";
+import { MeshoptDecoder } from "../assets/js/vendor/meshopt_decoder.module.js";
+// 뼈대가 든 모델은 그냥 clone() 하면 동작이 안 붙는다.
+// 복제본이 원본의 뼈대를 계속 가리켜서 자세가 그대로 굳는다. 이 clone 은 뼈대까지 복제한다.
+import { clone as cloneRigged } from "../assets/js/vendor/../utils/SkeletonUtils.js";
+
+const MODELS = [{"family": "구축함", "variant": "원본", "note": "", "name": "arleigh-burke-destroyer-meshy6-web-v1", "url": "../assets/models/ships-v1/arleigh-burke-destroyer-meshy6-web-v1.glb", "triangles": 41000, "kb": 2087, "clips": []}, {"family": "구축함", "variant": "분대용", "note": "", "name": "arleigh-burke-destroyer-meshy6-web-squad-v1", "url": "../assets/models/ships-v1/arleigh-burke-destroyer-meshy6-web-squad-v1.glb", "triangles": 9333, "kb": 884, "clips": []}, {"family": "구축함", "variant": "경량", "note": "", "name": "arleigh-burke-destroyer-remesh-3k-web-v106", "url": "../assets/models/meshy-remesh-v6/arleigh-burke-destroyer-remesh-3k-web-v106.glb", "triangles": 3057, "kb": 252, "clips": []}, {"family": "항공모함", "variant": "원본", "note": "", "name": "nimitz-carrier-meshy-textured-detail-v4", "url": "../assets/models/battle-detail-v4/nimitz-carrier-meshy-textured-detail-v4.glb", "triangles": 14103, "kb": 762, "clips": []}, {"family": "항공모함", "variant": "대규모전용", "note": "", "name": "nimitz-carrier-meshy6-web-strategic-v1", "url": "../assets/models/ships-v1/nimitz-carrier-meshy6-web-strategic-v1.glb", "triangles": 14103, "kb": 1082, "clips": []}, {"family": "항공모함", "variant": "초경량", "note": "원거리 전용", "name": "nimitz-carrier-meshy-ultra-v2", "url": "../assets/models/battle-ultra-v2/nimitz-carrier-meshy-ultra-v2.glb", "triangles": 1196, "kb": 17, "clips": []}, {"family": "전투기", "variant": "편대장", "note": "", "name": "fa-18e-super-hornet-meshy6-web-squad-v1", "url": "../assets/models/combat-v1/fa-18e-super-hornet-meshy6-web-squad-v1.glb", "triangles": 6415, "kb": 598, "clips": []}, {"family": "전투기", "variant": "요기", "note": "", "name": "fa-18e-super-hornet-meshy6-web-wingman-v1", "url": "../assets/models/combat-v1/fa-18e-super-hornet-meshy6-web-wingman-v1.glb", "triangles": 3833, "kb": 501, "clips": []}, {"family": "전투기", "variant": "경량", "note": "", "name": "fa-18e-super-hornet-remesh-2k-web-v106", "url": "../assets/models/meshy-remesh-v6/fa-18e-super-hornet-remesh-2k-web-v106.glb", "triangles": 1877, "kb": 172, "clips": []}, {"family": "해상작전 헬기", "variant": "원본", "note": "", "name": "mh-60r-seahawk-meshy6-web-lod3-v1", "url": "../assets/models/combat-v1/mh-60r-seahawk-meshy6-web-lod3-v1.glb", "triangles": 13323, "kb": 1228, "clips": []}, {"family": "해상작전 헬기", "variant": "요기", "note": "", "name": "mh-60r-seahawk-meshy6-web-wingman-v1", "url": "../assets/models/combat-v1/mh-60r-seahawk-meshy6-web-wingman-v1.glb", "triangles": 4885, "kb": 542, "clips": []}, {"family": "해상작전 헬기", "variant": "초경량", "note": "원거리 전용", "name": "mh-60r-seahawk-meshy-ultra-v2", "url": "../assets/models/battle-ultra-v2/mh-60r-seahawk-meshy-ultra-v2.glb", "triangles": 653, "kb": 10, "clips": []}, {"family": "스텔스 폭격기", "variant": "원본", "note": "", "name": "b2-spirit-meshy-t2-web-v1", "url": "../assets/models/combined-arms-v1/b2-spirit-meshy-t2-web-v1.glb", "triangles": 5572, "kb": 72, "clips": []}, {"family": "스텔스 폭격기", "variant": "경량", "note": "", "name": "b2-spirit-remesh-2p5k-web-v106", "url": "../assets/models/meshy-remesh-v6/b2-spirit-remesh-2p5k-web-v106.glb", "triangles": 2448, "kb": 212, "clips": []}, {"family": "유조선", "variant": "원본", "note": "", "name": "vlcc-tanker-meshy6-web-strategic-v2", "url": "../assets/models/strategic-v1/vlcc-tanker-meshy6-web-strategic-v2.glb", "triangles": 12000, "kb": 1272, "clips": []}, {"family": "유조선", "variant": "경량", "note": "", "name": "vlcc-tanker-remesh-3p5k-web-v106", "url": "../assets/models/meshy-remesh-v6/vlcc-tanker-remesh-3p5k-web-v106.glb", "triangles": 3605, "kb": 354, "clips": []}, {"family": "고속정", "variant": "원본", "note": "", "name": "irgc-fast-attack-craft-meshy6-web-strategic-v1", "url": "../assets/models/combat-v1/irgc-fast-attack-craft-meshy6-web-strategic-v1.glb", "triangles": 10574, "kb": 950, "clips": []}, {"family": "고속정", "variant": "다른 판본", "note": "", "name": "irgc-fast-attack-craft-meshy6-web-strategic-v4", "url": "../assets/models/combat-v1/irgc-fast-attack-craft-meshy6-web-strategic-v4.glb", "triangles": 10172, "kb": 928, "clips": []}, {"family": "고속정", "variant": "초경량", "note": "원거리 전용", "name": "irgc-fast-attack-craft-meshy-ultra-v2", "url": "../assets/models/battle-ultra-v2/irgc-fast-attack-craft-meshy-ultra-v2.glb", "triangles": 474, "kb": 8, "clips": []}, {"family": "무인 소해정", "variant": "경량", "note": "", "name": "mcm-usv-remesh-3k-web-v106", "url": "../assets/models/meshy-remesh-v6/mcm-usv-remesh-3k-web-v106.glb", "triangles": 2973, "kb": 328, "clips": []}, {"family": "미사일 발사차량", "variant": "원본", "note": "", "name": "coastal-defense-tel-meshy6-web-strategic-v1", "url": "../assets/models/strategic-v1/coastal-defense-tel-meshy6-web-strategic-v1.glb", "triangles": 19545, "kb": 1568, "clips": []}, {"family": "미사일 발사차량", "variant": "다른 판본", "note": "", "name": "coastal-defense-tel-meshy6-web-strategic-v2", "url": "../assets/models/strategic-v1/coastal-defense-tel-meshy6-web-strategic-v2.glb", "triangles": 17563, "kb": 1485, "clips": []}, {"family": "미사일 발사차량", "variant": "초경량", "note": "원거리 전용", "name": "coastal-defense-tel-meshy-ultra-v2", "url": "../assets/models/battle-ultra-v2/coastal-defense-tel-meshy-ultra-v2.glb", "triangles": 707, "kb": 11, "clips": []}, {"family": "항만 크레인", "variant": "원본", "note": "", "name": "port-gantry-crane-meshy6-web-strategic-v1", "url": "../assets/models/strategic-v1/port-gantry-crane-meshy6-web-strategic-v1.glb", "triangles": 22777, "kb": 1847, "clips": []}, {"family": "보병 A", "variant": "기본자세", "note": "", "name": "us-marine-rifleman-meshy-rigged-web-v1", "url": "../assets/models/combined-arms-v1/us-marine-rifleman-meshy-rigged-web-v1.glb", "triangles": 2518, "kb": 182, "clips": [["걷기", "../assets/models/combined-arms-v1/us-marine-rifleman-meshy-walk-armature-web-v1.glb"], ["사격", "../assets/models/combined-arms-v1/us-marine-rifleman-meshy-combat-web-v1.glb"]]}, {"family": "보병 A", "variant": "전투자세", "note": "", "name": "us-marine-rifleman-meshy-combat-web-v1", "url": "../assets/models/combined-arms-v1/us-marine-rifleman-meshy-combat-web-v1.glb", "triangles": 2518, "kb": 197, "clips": [["사격", "../assets/models/combined-arms-v1/us-marine-rifleman-meshy-combat-web-v1.glb"]]}, {"family": "보병 A", "variant": "보행 동작", "note": "뼈대만", "name": "us-marine-rifleman-meshy-walk-armature-web-v1", "url": "../assets/models/combined-arms-v1/us-marine-rifleman-meshy-walk-armature-web-v1.glb", "triangles": 288, "kb": 64, "clips": []}, {"family": "보병 B", "variant": "기본자세", "note": "", "name": "irgc-ground-combatant-meshy-rigged-web-v1", "url": "../assets/models/combined-arms-v1/irgc-ground-combatant-meshy-rigged-web-v1.glb", "triangles": 2407, "kb": 150, "clips": [["걷기", "../assets/models/combined-arms-v1/irgc-ground-combatant-meshy-walk-armature-web-v1.glb"], ["사격", "../assets/models/combined-arms-v1/irgc-ground-combatant-meshy-combat-web-v1.glb"]]}, {"family": "보병 B", "variant": "전투자세", "note": "", "name": "irgc-ground-combatant-meshy-combat-web-v1", "url": "../assets/models/combined-arms-v1/irgc-ground-combatant-meshy-combat-web-v1.glb", "triangles": 2407, "kb": 165, "clips": [["사격", "../assets/models/combined-arms-v1/irgc-ground-combatant-meshy-combat-web-v1.glb"]]}, {"family": "보병 B", "variant": "보행 동작", "note": "뼈대만", "name": "irgc-ground-combatant-meshy-walk-armature-web-v1", "url": "../assets/models/combined-arms-v1/irgc-ground-combatant-meshy-walk-armature-web-v1.glb", "triangles": 288, "kb": 64, "clips": []}, {"family": "소총 2종", "variant": "소총 A", "note": "", "name": "m27-rifle-meshy-t2-web-v1", "url": "../assets/models/combined-arms-v1/m27-rifle-meshy-t2-web-v1.glb", "triangles": 820, "kb": 103, "clips": []}, {"family": "소총 2종", "variant": "소총 B", "note": "", "name": "ak-rifle-meshy-t2-web-v1", "url": "../assets/models/combined-arms-v1/ak-rifle-meshy-t2-web-v1.glb", "triangles": 826, "kb": 115, "clips": []}, {"family": "해상 기뢰", "variant": "원본", "note": "", "name": "naval-mine-meshy-web-v1", "url": "../assets/models/objectives-v1/naval-mine-meshy-web-v1.glb", "triangles": 1229, "kb": 72, "clips": []}, {"family": "지하 진입부", "variant": "원본", "note": "", "name": "bunker-entrance-meshy-web-v1", "url": "../assets/models/objectives-v1/bunker-entrance-meshy-web-v1.glb", "triangles": 1414, "kb": 60, "clips": []}];
+
+const stage = document.getElementById("stage");
+const canvas = document.getElementById("view");
+const overlay = document.getElementById("overlay");
+const notice = document.getElementById("notice");
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x05090e);
+scene.add(new THREE.HemisphereLight(0xbfe9f5, 0x14202a, 1.2));
+const key = new THREE.DirectionalLight(0xffffff, 2.2);
+key.position.set(4, 6, 5);
+const rim = new THREE.DirectionalLight(0x8fd8ff, 1.5);
+rim.position.set(-5, 2.5, -4);
+const fill = new THREE.DirectionalLight(0xffffff, 0.5);
+fill.position.set(0, -4, 2);
+scene.add(key, rim, fill);
+
+const camera = new THREE.PerspectiveCamera(32, 1, 0.01, 400);
+const loader = new GLTFLoader();
+loader.setMeshoptDecoder(MeshoptDecoder);
+
+/* 같은 모델을 여러 장면에서 다시 쓴다. 한 번 불러온 것은 들고 있는다.
+   장면이 바뀔 때마다 다시 내려받으면 그 순간 화면이 멈춘다. */
+const cache = new Map();
+async function fetchModel(url) {
+  if (!cache.has(url)) cache.set(url, loader.loadAsync(url));
+  return cache.get(url);
+}
+
+const byName = new Map(MODELS.map((entry) => [entry.name, entry]));
+const firstOf = (family) => MODELS.find((entry) => entry.family === family);
+const membersOf = (family) => MODELS.filter((entry) => entry.family === family);
+
+function buildScenes(depth) {
+  const list = [{ kind: "title", hold: 3.4 }];
+
+  // 훑기판: 하나씩 크게 보지 않고 전부를 스크롤로 지나간다.
+  if (depth === "scroll") {
+    list.push({ kind: "scroll", entries: MODELS, hold: 26 });
+    list.push({ kind: "outro", hold: 4.6 });
+    return list;
+  }
+
+  // 해상도 사다리를 앞쪽에 둔다. 이 팩이 남과 다른 점이 한눈에 보이는 장면이다.
+  const ladder = membersOf("구축함");
+  if (ladder.length >= 3) list.push({ kind: "ladder", entries: ladder, hold: 5.2 });
+
+  const families = [...new Set(MODELS.map((entry) => entry.family))];
+  for (const family of families) {
+    const pool = membersOf(family);
+    // 보여줄 때는 항상 가장 촘촘한 판본을 쓴다. 가벼운 판본은 비교 장면에서만 나온다.
+    const best = (list_) => list_.slice().sort((a, b) => b.triangles - a.triangles)[0];
+
+    const walkers = pool.filter((entry) => entry.clips.length);
+    if (walkers.length) {
+      const walker = best(walkers);
+      list.push({ kind: "model", entry: walker, clip: walker.clips[0], hold: 4.2 });
+      continue;
+    }
+    if (depth === "all") {
+      for (const entry of pool) list.push({ kind: "model", entry, hold: 2.6 });
+    } else if (family !== "구축함") {
+      list.push({ kind: "model", entry: best(pool), hold: 2.9 });
+    }
+  }
+
+  list.push({ kind: "outro", hold: 4.6 });
+  return list;
+}
+
+let scenes = buildScenes("core");
+let index = 0;
+let sceneStart = 0;
+let playing = false;
+let current = null;
+let mixer = null;
+// 화면 규격을 바꾸면 카메라를 다시 잡아야 한다. 안 그러면 세로로 바꿨을 때 머리가 잘린다.
+let refit = null;
+// 장면이 스스로 움직여야 할 때 쓴다(훑기판의 카메라 이동 같은 것).
+let sceneStep = null;
+
+function clearStage() {
+  if (!current) return;
+  /* 화면에서 내리기만 하고 자원은 반납하지 않는다.
+     여기 있는 것은 전부 받아 둔 원본의 복제본이라 형상과 재질을 원본과 함께 쓴다.
+     복제본을 지운다고 반납해 버리면 다음 장면에서 원본이 깨져 나온다. */
+  scene.remove(current);
+  current = null;
+  mixer = null;
+  refit = null;
+  sceneStep = null;
+}
+
+/* 크기가 제각각이라 그대로 두면 어떤 건 점, 어떤 건 화면 밖이다.
+   원점에 놓고 한 변이 2가 되게 맞춘 뒤, 상자 귀퉁이를 화면에 찍어보며 거리를 잡는다. */
+/* 실제로 그려지는 크기를 잰다.
+   뼈대가 있는 모델은 흔한 방법(Box3.setFromObject)으로 재면 안 된다.
+   그 방법은 뼈가 움직이기 전의 상자를 쓰는데, 이 모델들은 뼈 자체가 크기를 크게 바꾼다.
+   그래서 상자는 작다고 하는데 화면에는 거대하게 나온다(전부 훑기 화면이 이것 때문에 깨졌다).
+   뼈가 적용된 정점을 직접 찍어 재면 그런 어긋남이 없다. */
+function measureBox(root) {
+  const box = new THREE.Box3();
+  const point = new THREE.Vector3();
+  root.updateWorldMatrix(true, true);
+  root.traverse((node) => {
+    const geometry = node.geometry;
+    if (!(node.isMesh || node.isSkinnedMesh) || !geometry?.attributes?.position) return;
+    if (node.isSkinnedMesh && typeof node.getVertexPosition === "function") {
+      // 뼈 행렬은 그릴 때 갱신된다. 재기 전에 직접 한 번 갱신해야 제 값이 나온다.
+      node.skeleton?.update?.();
+      const count = geometry.attributes.position.count;
+      const stride = Math.max(1, Math.floor(count / 500));   // 전부 찍을 필요는 없다
+      for (let index = 0; index < count; index += stride) {
+        node.getVertexPosition(index, point);
+        box.expandByPoint(point.applyMatrix4(node.matrixWorld));
+      }
+      return;
+    }
+    if (!geometry.boundingBox) geometry.computeBoundingBox();
+    box.union(geometry.boundingBox.clone().applyMatrix4(node.matrixWorld));
+  });
+  return box.isEmpty() ? new THREE.Box3().setFromObject(root) : box;
+}
+
+function normalise(root, targetSpan = 2) {
+  const box = measureBox(root);
+  const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
+  const span = Math.max(size.x, size.y, size.z) || 1;
+  const ratio = targetSpan / span;
+  // 중심을 옮기는 양에도 같은 배율을 곱해야 한다. 안 곱하면 줄어든 모델이
+  // 원래 크기만큼 밀려나 화면 밖으로 사라진다.
+  root.position.sub(center).multiplyScalar(ratio);
+  root.scale.setScalar(ratio);
+  return { size, span };
+}
+
+/* 이미 재 둔 범위에 맞춰 넣는다. 동작이 걸린 모델처럼 가만히 있을 때의 크기를
+   믿을 수 없는 경우에 쓴다. */
+function fitBox(root, box, targetSpan = 2) {
+  const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
+  const span = Math.max(size.x, size.y, size.z) || 1;
+  const ratio = targetSpan / span;
+  root.position.sub(center).multiplyScalar(ratio);
+  root.scale.setScalar(ratio);
+  return ratio;
+}
+
+function frame(target, margin = 0.86) {
+  const bounds = measureBox(target);
+  const middle = bounds.getCenter(new THREE.Vector3());
+  const corners = [];
+  for (let bit = 0; bit < 8; bit += 1) {
+    corners.push(new THREE.Vector3(
+      bit & 1 ? bounds.max.x : bounds.min.x,
+      bit & 2 ? bounds.max.y : bounds.min.y,
+      bit & 4 ? bounds.max.z : bounds.min.z
+    ));
+  }
+  const direction = new THREE.Vector3(0.52, 0.34, 1).normalize();
+  let distance = bounds.getSize(new THREE.Vector3()).length();
+  for (let pass = 0; pass < 6; pass += 1) {
+    camera.position.copy(middle).addScaledVector(direction, distance);
+    camera.lookAt(middle);
+    camera.updateMatrixWorld(true);
+    camera.updateProjectionMatrix();
+    let widest = 0;
+    for (const corner of corners) {
+      const screen = corner.clone().project(camera);
+      widest = Math.max(widest, Math.abs(screen.x), Math.abs(screen.y));
+    }
+    if (!widest) break;
+    distance *= widest / margin;
+  }
+  return middle;
+}
+
+const totalTriangles = MODELS.reduce((sum, entry) => sum + entry.triangles, 0);
+const totalMb = MODELS.reduce((sum, entry) => sum + entry.kb, 0) / 1024;
+const familyCount = new Set(MODELS.map((entry) => entry.family)).size;
+
+function caption(html) {
+  overlay.innerHTML = html;
+}
+
+/* 장면 하나가 모델을 기다리는 동안 다음 장면으로 넘어갈 수 있다.
+   그때 늦게 도착한 모델이 화면에 얹히면 자막과 모델이 어긋난다.
+   번호표를 뽑아 두고, 다 기다린 뒤 아직 내 차례인지 확인한다. */
+let loadToken = 0;
+
+async function showScene(step) {
+  const item = scenes[step];
+  if (!item) return;
+  const token = ++loadToken;
+  const stale = () => token !== loadToken;
+
+  clearStage();
+  document.getElementById("counter").textContent =
+    item.kind === "title" || item.kind === "outro" ? "" : `${step} / ${scenes.length - 2}`;
+
+  if (item.kind === "title") {
+    caption(`<div class="center fade">
+      <h1 class="headline">호르무즈<br>3D 모델 팩</h1>
+      <p class="sub">실제로 돌아가는 웹 게임에서 그대로 꺼낸 ${MODELS.length}개</p>
+    </div>`);
+    return;
+  }
+
+  if (item.kind === "outro") {
+    caption(`<div class="center fade">
+      <h1 class="headline">가져다 쓰세요</h1>
+      <div class="list">
+        <b>${MODELS.length}개</b> 모델 · <b>${familyCount}종</b><br>
+        해상도별 <b>원본 / 경량 / 초경량</b><br>
+        보병은 <b>뼈대와 걷는 동작</b>까지<br>
+        전부 합쳐 <b>${totalMb.toFixed(1)}MB</b><br>
+        상업적 이용 가능 · CC BY 4.0
+      </div>
+    </div>`);
+    return;
+  }
+
+  if (item.kind === "scroll") {
+    /* 한 줄에 셋씩 놓고 위에서 아래로 훑는다.
+       하나씩 크게 보여주는 것보다 "내려도 내려도 계속 나온다"가 눈에 들어온다. */
+    /* 뼈대만 든 동작 파일은 눈에 보이는 몸이 없어 부서진 조각처럼 나온다.
+       팩에는 들어 있지만 훑는 화면에서는 뺀다. 개수는 자막에 그대로 적는다. */
+    const entries = item.entries.filter((entry) => entry.note !== "뼈대만");
+    const loaded = await Promise.all(entries.map((entry) => fetchModel(entry.url)));
+    if (stale()) return;
+
+    const columns = 3;
+    const rows = Math.ceil(entries.length / columns);
+    // 배와 비행기는 납작하다. 가로 간격만큼 세로를 띄우면 줄 사이가 텅 빈다.
+    const cell = 1.32;
+    const rowGap = 0.95;
+    /* 여기서는 복제하지 않고 받아 둔 원본을 그대로 쓴다.
+       뼈대가 든 모델을 복제하면 뼈 연결이 어긋나 화면을 뒤덮는 거대한 조각이 나온다.
+       한 장면에 하나씩만 쓰면 복제할 이유가 없다.
+       대신 원본의 위치·크기를 건드리지 않도록 감싸는 통 두 겹을 쓴다. */
+    const group = new THREE.Group();
+    loaded.forEach((gltf) => {
+      const fitter = new THREE.Group();
+      fitter.add(gltf.scene);
+      const holder = new THREE.Group();
+      holder.add(fitter);
+      group.add(holder);
+    });
+    group.userData.spinEach = true;
+    scene.add(group);
+    current = group;
+
+    /* 크기를 먼저 맞추고 그 다음에 자리로 옮긴다. 순서를 바꾸면 안 된다.
+       크기 맞추기는 월드 좌표로 재기 때문에, 이미 자리로 옮겨 놓은 상태에서 하면
+       격자 좌표까지 같이 빼 버려서 전부 한가운데로 겹친다. */
+    group.children.forEach((holder, slot) => {
+      normalise(holder.children[0], 1);
+      holder.position.x = (slot % columns - (columns - 1) / 2) * cell;
+      holder.position.y = -Math.floor(slot / columns) * rowGap;
+    });
+    group.updateMatrixWorld(true);
+
+    /* 카메라를 한 줄 폭에 맞춰 놓고 위아래로만 움직인다.
+       세 개가 가로로 꽉 차게 잡아야 각각이 알아볼 만한 크기가 된다. */
+    const half = (columns * cell) / 2;
+    const distance = half / (Math.tan((camera.fov * Math.PI) / 360) * camera.aspect * 0.92);
+    const direction = new THREE.Vector3(0.16, 0.3, 1).normalize();
+    const firstY = 0.5 * rowGap;
+    const lastY = -(rows - 1) * rowGap - 0.5 * rowGap;
+
+    const lookAtRow = (y) => {
+      camera.position.set(
+        direction.x * distance,
+        y + direction.y * distance,
+        direction.z * distance
+      );
+      camera.lookAt(0, y, 0);
+      camera.updateProjectionMatrix();
+    };
+    refit = () => lookAtRow(firstY);
+    refit();
+
+    // 자막이 뜨고 잠깐 멈췄다가 내려가기 시작한다. 바로 움직이면 읽을 틈이 없다.
+    const settle = 1.1;
+    let elapsed = 0;
+    sceneStep = (delta) => {
+      elapsed += delta;
+      const span = Math.max(0.001, item.hold - settle - 0.6);
+      const ratio = Math.min(1, Math.max(0, (elapsed - settle) / span));
+      // 처음과 끝을 부드럽게. 등속으로 훑으면 시작과 끝이 툭 끊긴다.
+      const eased = ratio * ratio * (3 - 2 * ratio);
+      lookAtRow(firstY + (lastY - firstY) * eased);
+    };
+
+    caption(`<div class="caption fade">
+      <div class="kicker">내려도 내려도 계속 나온다</div>
+      <h2 class="headline">이게 전부다</h2>
+      <p class="sub"><b>${MODELS.length}개</b> · <b>${familyCount}종</b> ·
+        동작 파일 ${MODELS.length - entries.length}개 포함 ·
+        전부 합쳐 <b>${totalMb.toFixed(1)}MB</b></p>
+    </div>`);
+    return;
+  }
+
+  if (item.kind === "ladder") {
+    // 같은 배를 해상도만 바꿔 나란히 세운다. 설명보다 이게 빠르다.
+    const group = new THREE.Group();
+    const loaded = await Promise.all(item.entries.map((entry) => fetchModel(entry.url)));
+    if (stale()) return;
+    /* 배는 옆으로 길다. 가로 화면이면 나란히 세우고, 세로 화면이면 위아래로 쌓는다.
+       세로 화면에 셋을 옆으로 늘어놓으면 넷 다 깨알만 해진다. */
+    const portrait = camera.aspect < 1;
+    const gap = portrait ? 0.82 : 2.2;
+    loaded.forEach((gltf, slot) => {
+      const model = cloneRigged(gltf.scene);
+      normalise(model, 2);
+      // 자리 이동은 감싸는 통을 옮겨서 한다. 모델 자체의 좌표를 건드리면
+      // 방금 맞춰 놓은 중심 보정이 지워진다.
+      const slotHolder = new THREE.Group();
+      const offset = (slot - (loaded.length - 1) / 2) * gap;
+      if (portrait) slotHolder.position.y = -offset;   // 촘촘한 것이 위로
+      else slotHolder.position.x = offset;
+      slotHolder.add(model);
+      group.add(slotHolder);
+    });
+    // 셋을 한 덩어리로 돌리면 바깥쪽 배가 카메라에 가까워져 더 커 보인다.
+    // 크기가 같아야 비교가 되므로 각자 제자리에서 돌게 한다.
+    group.userData.spinEach = true;
+    scene.add(group);
+    current = group;
+    refit = () => frame(group, 0.96);
+    refit();
+    caption(`<div class="caption fade">
+      <div class="kicker">같은 배, 해상도만 다름</div>
+      <h2 class="headline">멀어지면 가벼운 걸로 바꾼다</h2>
+      <p class="sub">${item.entries.map((entry) =>
+        `<b>${entry.triangles.toLocaleString()}</b>`).join(" → ")} 삼각형</p>
+    </div>`);
+    return;
+  }
+
+  const entry = item.entry;
+  const gltf = await fetchModel(entry.url);
+  if (stale()) return;
+
+  // 동작 파일을 먼저 받아 둔다. 동작이 걸리면 크기가 달라지기 때문에
+  // 크기를 재기 전에 걸어 놓아야 한다.
+  let clip = null;
+  let clipLabel = "";
+  if (item.clip) {
+    const [label, url] = item.clip;
+    const extra = await fetchModel(url);
+    if (stale()) return;
+    clip = extra.animations[0];
+    clipLabel = label;
+  }
+
+  const model = cloneRigged(gltf.scene);
+  const holder = new THREE.Group();
+  holder.add(model);
+  scene.add(holder);
+  current = holder;
+
+  if (clip) {
+    mixer = new THREE.AnimationMixer(model);
+    mixer.clipAction(clip).setLoop(THREE.LoopRepeat, Infinity).play();
+
+    /* 이 동작 파일은 뼈대 전체의 크기까지 바꾼다. 그래서 가만히 선 자세로 잰 크기는
+       실제로 보이는 크기와 딴판이다(이걸 모르고 재서 카메라가 모델 안으로 들어갔다).
+       한 바퀴를 돌려보며 실제로 닿는 범위를 모아 그것으로 맞춘다. */
+    const reach = new THREE.Box3();
+    const steps = 12;
+    for (let step = 0; step < steps; step += 1) {
+      mixer.setTime((clip.duration * step) / steps);
+      holder.updateMatrixWorld(true);
+      reach.union(measureBox(holder));
+    }
+    mixer.setTime(0);
+    fitBox(model, reach, 2);
+  } else {
+    normalise(model, 2);
+  }
+
+  // 자막이 아래를 덮으므로 조금 위로 올려 잡는다.
+  refit = () => {
+    const middle = frame(holder, 0.86);
+    camera.position.y += 0.16;
+    camera.lookAt(middle.x, middle.y + 0.1, middle.z);
+  };
+  refit();
+
+  if (clip) {
+    caption(`<div class="caption fade">
+      <div class="kicker">${clipLabel} · 동작 포함</div>
+      <h2 class="headline">${entry.family}</h2>
+      <p class="sub"><b>${entry.triangles.toLocaleString()}</b> 삼각형 ·
+        <b>${entry.kb}</b>KB · 뼈대 있음</p>
+    </div>`);
+    return;
+  }
+
+  caption(`<div class="caption fade">
+    <div class="kicker">${entry.variant}</div>
+    <h2 class="headline">${entry.family}</h2>
+    <p class="sub"><b>${entry.triangles.toLocaleString()}</b> 삼각형 ·
+      <b>${entry.kb}</b>KB${entry.note ? ` · ${entry.note}` : ""}</p>
+  </div>`);
+}
+
+async function goto(step) {
+  index = (step + scenes.length) % scenes.length;
+  try {
+    await showScene(index);
+  } catch (error) {
+    notice.innerHTML = `<div><b>모델을 불러오지 못했다.</b><br>
+      이 화면은 웹서버로 열어야 한다. 파일을 직접 열면(<code>file://</code>)
+      브라우저가 모델 읽기를 막는다.<br><br>
+      <code>python -m http.server 8080</code> 으로 띄운 뒤 다시 들어오면 된다.</div>`;
+    notice.classList.add("on");
+    playing = false;
+    return;
+  }
+  sceneStart = performance.now();
+}
+
+// 영상으로 뽑는 중에는 창 크기에 맞추는 계산을 끈다. 규격이 흔들리면 안 된다.
+let filming = false;
+
+/* 담을 사각형 크기를 정한다. 화면에 들어가는 한 최대로 키운다. */
+function layout() {
+  if (filming) return;
+  const [w, h] = document.getElementById("shape").value.split(":").map(Number);
+  const panelRoom = document.getElementById("panel").classList.contains("hidden") ? 24 : 120;
+  const room = { width: innerWidth - 40, height: innerHeight - panelRoom };
+  const scale = Math.min(room.width / w, room.height / h);
+  const width = Math.round(w * scale);
+  const height = Math.round(h * scale);
+  stage.style.width = `${width}px`;
+  stage.style.height = `${height}px`;
+  // 자막 크기를 화면 크기에 맞춰 같이 줄이고 키운다.
+  stage.style.fontSize = `${Math.max(9, Math.min(width, height) / 42)}px`;
+  renderer.setSize(width, height, false);
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
+  if (refit) refit();
+}
+
+const play = document.getElementById("play");
+function setPlaying(on) {
+  playing = on;
+  play.textContent = on ? "멈춤" : "재생";
+  play.setAttribute("aria-pressed", String(on));
+  if (on) sceneStart = performance.now();
+}
+
+play.addEventListener("click", () => setPlaying(!playing));
+document.getElementById("next").addEventListener("click", () => goto(index + 1));
+document.getElementById("prev").addEventListener("click", () => goto(index - 1));
+document.getElementById("shape").addEventListener("change", () => {
+  layout();
+  goto(index);   // 가로/세로에 따라 배치가 달라지는 장면이 있어 다시 만든다
+});
+document.getElementById("depth").addEventListener("change", (event) => {
+  scenes = buildScenes(event.target.value);
+  goto(0);
+});
+document.getElementById("hide").addEventListener("click", () => {
+  document.getElementById("panel").classList.add("hidden");
+  layout();
+});
+addEventListener("keydown", (event) => {
+  if (event.key === "h" || event.key === "H") {
+    document.getElementById("panel").classList.toggle("hidden");
+    layout();
+  }
+  if (event.code === "Space") { event.preventDefault(); setPlaying(!playing); }
+  if (event.key === "ArrowRight") goto(index + 1);
+  if (event.key === "ArrowLeft") goto(index - 1);
+});
+addEventListener("resize", layout);
+
+/* 한 칸 나아가고 한 장 그린다.
+   화면에서 볼 때는 실제 시간만큼, 영상으로 뽑을 때는 정해진 만큼 넘긴다.
+   같은 함수를 쓰므로 눈으로 본 것과 뽑힌 영상이 다르지 않다. */
+function tick(delta, progress) {
+  if (sceneStep) sceneStep(delta);
+  if (mixer) mixer.update(delta);
+  if (current) {
+    if (current.userData.spinEach) {
+      for (const child of current.children) child.rotation.y += delta * 0.42;
+    } else {
+      current.rotation.y += delta * 0.42;
+    }
+  }
+  if (progress !== undefined) {
+    document.getElementById("progress").style.width = `${Math.min(100, progress * 100)}%`;
+  }
+  renderer.render(scene, camera);
+}
+
+let last = 0;
+function liveLoop(now) {
+  const delta = last ? Math.min((now - last) / 1000, 0.05) : 0;
+  last = now;
+  const item = scenes[index];
+  let progress;
+  if (playing && item) {
+    const elapsed = (now - sceneStart) / 1000;
+    progress = elapsed / item.hold;
+    if (elapsed >= item.hold) goto(index + 1);
+  }
+  tick(delta, progress);
+}
+renderer.setAnimationLoop(liveLoop);
+
+// 검사 도구가 들여다볼 손잡이. 화면에는 아무 영향이 없다.
+window.__REEL__ = {
+  THREE, scene, camera,
+  get current() { return current; },
+  get index() { return index; },
+  goto,
+  scenes: () => scenes.map((item, at) => ({
+    at, kind: item.kind, hold: item.hold,
+    name: item.entry?.family || item.kind,
+    file: item.entry?.name || "",
+    triangles: item.entry?.triangles || 0
+  })),
+
+  /* 영상으로 뽑을 때 쓴다. 실시간 그리기를 끄고 한 장씩 손으로 넘긴다.
+     화면 녹화와 달리 프레임이 밀리거나 빠지지 않는다. */
+  film: {
+    begin() {
+      renderer.setAnimationLoop(null);
+      document.getElementById("panel").classList.add("hidden");
+      document.getElementById("progress").style.width = "0";
+      document.body.classList.add("filming");
+      layout();
+    },
+    end() {
+      filming = false;
+      document.body.classList.remove("filming");
+      renderer.setAnimationLoop(liveLoop);
+    },
+
+    /* 영상 규격을 화면 크기와 상관없이 딱 맞춘다.
+       창 크기에 따라 정해지면 뽑을 때마다 해상도가 달라진다. */
+    setSize(width, height) {
+      filming = true;
+      renderer.setPixelRatio(1);
+      stage.style.width = `${width}px`;
+      stage.style.height = `${height}px`;
+      stage.style.fontSize = `${Math.max(9, Math.min(width, height) / 42)}px`;
+      renderer.setSize(width, height, false);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      if (refit) refit();
+    },
+    step(delta) { tick(delta); },
+    size() {
+      const box = stage.getBoundingClientRect();
+      return { width: Math.round(box.width), height: Math.round(box.height) };
+    }
+  },
+  bounds: () => current
+    ? measureBox(current).getSize(new THREE.Vector3()).toArray()
+    : null
+};
+
+layout();
+goto(0);
+</script>
+</body>
+</html>

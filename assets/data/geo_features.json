@@ -1,0 +1,280 @@
+{
+  "bounds": {
+    "west": 48.0,
+    "south": 22.0,
+    "east": 63.0,
+    "north": 31.7
+  },
+  "projection": {
+    "centerLon": 55.5,
+    "centerLat": 26.85,
+    "worldWidth": 176,
+    "worldDepth": 126,
+    "type": "regional-equirectangular-cos27"
+  },
+  "places": [
+    {
+      "id": "bandar_abbas",
+      "name": "반다르아바스",
+      "country": "IRAN",
+      "lon": 56.28,
+      "lat": 27.19,
+      "kind": "port",
+      "nameEn": "Bandar Abbas"
+    },
+    {
+      "id": "qeshm",
+      "name": "케심섬",
+      "country": "IRAN",
+      "lon": 55.77,
+      "lat": 26.77,
+      "kind": "island",
+      "nameEn": "Qeshm Island"
+    },
+    {
+      "id": "hormuz_island",
+      "name": "호르무즈섬",
+      "country": "IRAN",
+      "lon": 56.46,
+      "lat": 27.07,
+      "kind": "island",
+      "nameEn": "Hormuz Island"
+    },
+    {
+      "id": "larak",
+      "name": "라라크섬",
+      "country": "IRAN",
+      "lon": 56.36,
+      "lat": 26.85,
+      "kind": "island",
+      "nameEn": "Larak Island"
+    },
+    {
+      "id": "hengam",
+      "name": "헹감섬",
+      "country": "IRAN",
+      "lon": 55.88,
+      "lat": 26.65,
+      "kind": "island",
+      "nameEn": "Hengam Island"
+    },
+    {
+      "id": "musandam",
+      "name": "무산담",
+      "country": "OMAN",
+      "lon": 56.41,
+      "lat": 26.38,
+      "kind": "peninsula",
+      "nameEn": "Musandam"
+    },
+    {
+      "id": "khasab",
+      "name": "카사브",
+      "country": "OMAN",
+      "lon": 56.25,
+      "lat": 26.18,
+      "kind": "port",
+      "nameEn": "Khasab"
+    },
+    {
+      "id": "quoin",
+      "name": "그레이트 쿠오인",
+      "country": "OMAN",
+      "lon": 56.51,
+      "lat": 26.5,
+      "kind": "island",
+      "nameEn": "Great Quoin"
+    },
+    {
+      "id": "abu_musa",
+      "name": "아부무사",
+      "country": "IRAN",
+      "lon": 55.03,
+      "lat": 25.87,
+      "kind": "island",
+      "nameEn": "Abu Musa"
+    },
+    {
+      "id": "greater_tunb",
+      "name": "대툰브",
+      "country": "IRAN",
+      "lon": 55.3,
+      "lat": 26.25,
+      "kind": "island",
+      "nameEn": "Greater Tunb"
+    },
+    {
+      "id": "lesser_tunb",
+      "name": "소툰브",
+      "country": "IRAN",
+      "lon": 55.15,
+      "lat": 26.23,
+      "kind": "island",
+      "nameEn": "Lesser Tunb"
+    },
+    {
+      "id": "fujairah",
+      "name": "푸자이라",
+      "country": "UAE",
+      "lon": 56.33,
+      "lat": 25.13,
+      "kind": "port",
+      "nameEn": "Fujairah"
+    },
+    {
+      "id": "kuwait_city",
+      "name": "쿠웨이트",
+      "country": "GCC",
+      "lon": 47.98,
+      "lat": 29.38,
+      "kind": "capital",
+      "nameEn": "Kuwait City"
+    },
+    {
+      "id": "manama",
+      "name": "바레인",
+      "country": "GCC",
+      "lon": 50.58,
+      "lat": 26.22,
+      "kind": "capital",
+      "nameEn": "Manama"
+    },
+    {
+      "id": "doha",
+      "name": "도하",
+      "country": "GCC",
+      "lon": 51.53,
+      "lat": 25.29,
+      "kind": "capital",
+      "nameEn": "Doha"
+    },
+    {
+      "id": "abu_dhabi",
+      "name": "아부다비",
+      "country": "UAE",
+      "lon": 54.38,
+      "lat": 24.45,
+      "kind": "capital",
+      "nameEn": "Abu Dhabi"
+    },
+    {
+      "id": "dubai",
+      "name": "두바이",
+      "country": "UAE",
+      "lon": 55.27,
+      "lat": 25.2,
+      "kind": "port",
+      "nameEn": "Dubai"
+    },
+    {
+      "id": "muscat",
+      "name": "무스카트",
+      "country": "OMAN",
+      "lon": 58.41,
+      "lat": 23.59,
+      "kind": "capital",
+      "nameEn": "Muscat"
+    },
+    {
+      "id": "bushehr",
+      "name": "부셰르",
+      "country": "IRAN",
+      "lon": 50.84,
+      "lat": 28.92,
+      "kind": "port",
+      "nameEn": "Bushehr"
+    },
+    {
+      "id": "chabahar",
+      "name": "차바하르",
+      "country": "IRAN",
+      "lon": 60.64,
+      "lat": 25.29,
+      "kind": "port",
+      "nameEn": "Chabahar"
+    }
+  ],
+  "tss": {
+    "source": "IMO Resolution A.161 (ES.IV), adopted 1968-11-27",
+    "separationCenter": [
+      [
+        56.38,
+        26.453333
+      ],
+      [
+        56.505,
+        26.453333
+      ],
+      [
+        56.565,
+        26.436667
+      ],
+      [
+        56.631667,
+        26.356667
+      ]
+    ],
+    "separationWidthNm": 1,
+    "southernLaneWidthNm": 1.5,
+    "approachVisualization": [
+      [
+        55.12,
+        26.2
+      ],
+      [
+        55.48,
+        26.28
+      ],
+      [
+        55.85,
+        26.35
+      ],
+      [
+        56.18,
+        26.4
+      ],
+      [
+        56.38,
+        26.453333
+      ]
+    ],
+    "safeTransitVisualization": [
+      [
+        55.05,
+        26.39
+      ],
+      [
+        55.38,
+        26.39
+      ],
+      [
+        55.72,
+        26.44
+      ],
+      [
+        56.0,
+        26.53
+      ],
+      [
+        56.22,
+        26.59
+      ],
+      [
+        56.42,
+        26.64
+      ],
+      [
+        56.58,
+        26.64
+      ],
+      [
+        56.72,
+        26.61
+      ],
+      [
+        56.9,
+        26.55
+      ]
+    ]
+  }
+}

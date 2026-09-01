@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>호르무즈 3D 모델팩 무료 공개 캠페인</title>
+<style>
+  :root {
+    --bg:#f6f8fa; --panel:#ffffff; --line:#dbe3ea;
+    --cyan:#0b7f92; --white:#16232c; --muted:#5c6f7c;
+    --green:#1a7f52; --amber:#9a6212; --red:#b03a30;
+    --shadow:0 1px 2px rgba(16,35,48,.06), 0 6px 18px rgba(16,35,48,.05);
+  }
+  /* 어두운 테마. 오른쪽 위 단추로 바꾼다. */
+  html[data-theme="dark"] {
+    --bg:#04090e; --panel:#0a1620; --line:rgba(100,228,238,.22);
+    --cyan:#64e4ee; --white:#eaf7fa; --muted:#7f9aa2;
+    --green:#55e6a5; --amber:#ffb45e; --red:#ff7a70;
+    --shadow:none;
+  }
+    * { box-sizing:border-box; }
+  body {
+    margin:0; padding:0 20px 90px; color:var(--white); background:var(--bg);
+    font:400 16px/1.7 "Pretendard Variable","Pretendard","Segoe UI","Malgun Gothic",sans-serif;
+    word-break:keep-all;
+  }
+  .wrap { max-width:920px; margin:0 auto; }
+  header { padding:44px 0 24px; border-bottom:1px solid var(--line); }
+  .eyebrow { color:var(--cyan); font-size:12px; letter-spacing:.22em; margin-bottom:14px; }
+  h1 { margin:0 0 10px; font-size:30px; line-height:1.25; }
+  h1 em { font-style:normal; color:var(--cyan); }
+  .lead { color:var(--muted); font-size:15px; margin:14px 0 0; }
+  h2 {
+    margin:44px 0 6px; font-size:19px; color:var(--cyan);
+    padding-top:22px; border-top:1px solid var(--line);
+  }
+  h2 small { display:block; color:var(--muted); font-size:13px; font-weight:400; margin-top:6px; }
+  h3 { margin:26px 0 8px; font-size:15px; }
+  p { margin:0 0 12px; }
+  .dim { color:var(--muted); font-size:14px; }
+
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(132px,1fr)); gap:10px; margin:24px 0 0; }
+  .stats div { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:13px 15px; box-shadow:var(--shadow); }
+  .stats b { display:block; font-size:20px; color:var(--cyan); }
+  .stats span { font-size:12px; color:var(--muted); }
+
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin-top:16px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:15px 17px; box-shadow:var(--shadow); }
+  .card b { display:block; margin-bottom:5px; font-size:14.5px; }
+  .card span { font-size:13.5px; color:var(--muted); }
+
+  .copyblock { background:var(--panel); border:1px solid var(--line); border-radius:12px; margin:14px 0; overflow:hidden; box-shadow:var(--shadow); }
+  .copyhead {
+    display:flex; align-items:center; gap:10px; padding:11px 15px;
+    border-bottom:1px solid var(--line); background:rgba(100,228,238,.05);
+  }
+  .copyhead b { font-size:14px; }
+  .copyhead .tag { font-size:11px; color:var(--muted); margin-right:auto; }
+  .copyhead button {
+    background:var(--bg); border:1px solid var(--line); color:var(--white);
+    border-radius:999px; padding:5px 15px; font:inherit; font-size:12.5px; cursor:pointer;
+  }
+  .copyhead button:hover { background:color-mix(in srgb, var(--cyan) 12%, var(--bg)); }
+  .copyhead button.done { background:color-mix(in srgb, var(--green) 14%, var(--bg)); border-color:var(--green); color:var(--green); }
+  pre {
+    margin:0; padding:15px; white-space:pre-wrap; font:inherit; font-size:14.5px;
+    line-height:1.75; color:var(--white);
+  }
+  .fill { color:var(--amber); font-weight:600; background:color-mix(in srgb, var(--amber) 14%, transparent); border-radius:4px; padding:0 4px; }
+
+  table { width:100%; border-collapse:collapse; margin-top:14px; font-size:14px; }
+  th, td { text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:500; font-size:12.5px; }
+  code {
+    background:color-mix(in srgb, var(--cyan) 8%, var(--bg)); border:1px solid var(--line); border-radius:5px;
+    padding:1px 7px; font-size:12.5px; color:var(--cyan);
+  }
+  ul, ol { margin:8px 0 0; padding-left:20px; }
+  li { margin-bottom:7px; }
+  .note {
+    background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--amber);
+    border-radius:10px; padding:14px 18px; margin-top:18px;
+  }
+  .note b { color:var(--amber); }
+  .note.good { border-left-color:var(--green); }
+  .note.good b { color:var(--green); }
+  .check { list-style:none; padding:0; }
+  .check li { padding-left:26px; position:relative; }
+  .check li::before {
+    content:"□"; position:absolute; left:4px; color:var(--cyan); font-size:15px;
+  }
+
+  /* 테마 단추 */
+  #theme {
+    position:fixed; top:14px; right:14px; z-index:10;
+    background:var(--panel); border:1px solid var(--line); color:var(--white);
+    border-radius:999px; padding:7px 15px; font:inherit; font-size:13px; cursor:pointer;
+    box-shadow:var(--shadow);
+  }
+
+  /* 영상 미리보기 */
+  .videos { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin-top:16px;
+            align-items:start; }
+  .vcard { background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); }
+  .vcard video { display:block; width:100%; background:#05090e; }
+  /* 세로 영상은 그대로 두면 카드가 너무 길어져 옆 칸이 텅 빈다. */
+  .vcard.tall video { max-height:400px; object-fit:contain; }
+  .vmeta { padding:11px 14px 13px; }
+  .vmeta b { display:block; font-size:14px; margin-bottom:3px; }
+  .vmeta span { font-size:12.5px; color:var(--muted); }
+  .vmeta code { margin-top:7px; display:inline-block; word-break:break-all; }
+
+  /* 링크 미리보기 카드 흉내 */
+  .preview { max-width:520px; border:1px solid var(--line); border-radius:12px; overflow:hidden;
+             background:var(--panel); box-shadow:var(--shadow); margin-top:14px; }
+  .preview img { display:block; width:100%; }
+  .preview .body { padding:12px 15px 14px; }
+  .preview .host { font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
+  .preview .ttl { font-size:15px; font-weight:700; margin:4px 0 3px; }
+  .preview .desc { font-size:13px; color:var(--muted); }
+</style>
+</head>
+<body>
+<button id="theme" type="button">어둡게</button>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">HORMUZ MODEL PACK · 2026.08.05</div>
+  <h1>웹 게임에 실제로 쓴<br><em>3D 모델 34개</em> 전부 무료 공개</h1>
+  <p class="lead">
+    직접 만든 브라우저 3D 전략 게임 「호르무즈」에서 그대로 꺼낸 모델을 공개한다.
+    쓰레드에는 훑는 영상 + Google Drive ZIP, 개발자 채널에는 GitHub 저장소로 나눠 낸다.
+    이미지 에셋 캠페인과 같은 방식이되, <b>받는 사람이 다르므로 문이 둘</b>이다.
+  </p>
+  <div class="stats">
+    <div><b>34개</b><span>모델 파일</span></div>
+    <div><b>15종</b><span>대상 종류</span></div>
+    <div><b>17.9MB</b><span>전부 합쳐</span></div>
+    <div><b>CC BY 4.0</b><span>상업적 이용 가능</span></div>
+    <div><b>5편</b><span>준비된 영상</span></div>
+  </div>
+</header>
+
+<h2>공개 전에 준비된 것
+  <small>여기 적힌 것은 전부 이미 만들어져 있다. 링크만 채우면 된다.</small></h2>
+
+<table>
+  <tr><th>준비물</th><th>파일</th><th>쓰는 곳</th></tr>
+  <tr>
+    <td><b>훑는 영상</b> 34초</td>
+    <td><code>hormuz-model-pack-16x9-scroll.mp4</code><br><span class="dim">1920×1080 · 10MB</span></td>
+    <td>레딧 · 인디게임갤 · 유튜브</td>
+  </tr>
+  <tr>
+    <td><b>세로 영상</b> 56초</td>
+    <td><code>hormuz-model-pack-9x16-core.mp4</code><br><span class="dim">1080×1920 · 12MB</span></td>
+    <td>쓰레드 · 릴스</td>
+  </tr>
+  <tr>
+    <td><b>가로 영상</b> 56초</td>
+    <td><code>hormuz-model-pack-16x9-core.mp4</code><br><span class="dim">1920×1080 · 11MB</span></td>
+    <td>레딧 · 유튜브 보조</td>
+  </tr>
+  <tr>
+    <td><b>플레이 영상</b> 17초</td>
+    <td><code>hormuz-gameplay-large_fleet_battle-16x9.mp4</code><br><span class="dim">1920×1080 · 9MB</span></td>
+    <td>레딧 · 인디게임갤</td>
+  </tr>
+  <tr>
+    <td><b>플레이 영상</b> 18초 세로</td>
+    <td><code>hormuz-gameplay-large_fleet_battle-9x16.mp4</code><br><span class="dim">1080×1920 · 7MB</span></td>
+    <td>쓰레드 · 릴스</td>
+  </tr>
+  <tr>
+    <td><b>모델 팩 ZIP</b></td>
+    <td><code>hormuz-model-pack.zip</code><br><span class="dim">15MB · 뷰어·README·라이선스 포함</span></td>
+    <td>Drive(쓰레드) + GitHub 릴리스</td>
+  </tr>
+  <tr>
+    <td><b>전체 소스</b></td>
+    <td><code>release/hormuz-source/</code><br><span class="dim">96MB · 가이드북 GUIDE.md 포함</span></td>
+    <td>GitHub 저장소</td>
+  </tr>
+</table>
+
+<div class="note">
+  <b>공개 전 반드시 할 것 — 구글 지도 열쇠</b><br>
+  라이브에 쓰는 지도 API 열쇠는 브라우저에 그대로 노출된다. 제한이 안 걸려 있으면
+  남이 갖다 쓰고 <b>요금이 사장님에게 청구된다.</b><br>
+  구글 클라우드 콘솔 → 사용자 인증 정보 → 해당 키 →
+  <b>애플리케이션 제한 = HTTP 리퍼러</b>, <code>sidak.kr/*</code> 만 허용.
+  <br><span class="dim">배포본 소스에서는 열쇠를 이미 뺐다. 라이브 쪽 설정 문제다.</span>
+</div>
+
+<h2>영상 미리보기
+  <small>여기서 바로 재생해 보고 고를 수 있다. 파일은 output/model-pack/video/ 에 있다.</small></h2>
+
+<h3>게임 플레이</h3>
+<div class="videos">
+  <div class="vcard">
+    <video src="../output/model-pack/video/hormuz-gameplay-large_fleet_battle-16x9.mp4" controls preload="metadata" playsinline muted loop></video>
+    <div class="vmeta"><b>대규모 함대전 · 가로</b><span>17초 · 1920×1080 · 9MB · 레딧·인디갤</span>
+      <code>hormuz-gameplay-large_fleet_battle-16x9.mp4</code></div>
+  </div>
+  <div class="vcard tall">
+    <video src="../output/model-pack/video/hormuz-gameplay-large_fleet_battle-9x16.mp4" controls preload="metadata" playsinline muted loop></video>
+    <div class="vmeta"><b>대규모 함대전 · 세로</b><span>18초 · 1080×1920 · 7MB · 쓰레드·릴스</span>
+      <code>hormuz-gameplay-large_fleet_battle-9x16.mp4</code></div>
+  </div>
+</div>
+
+<h3>모델 팩</h3>
+<div class="videos">
+  <div class="vcard">
+    <video src="../output/model-pack/video/hormuz-model-pack-16x9-scroll.mp4" controls preload="metadata" playsinline muted loop></video>
+    <div class="vmeta"><b>전부 훑기 · 가로</b><span>34초 · 한 줄에 3개씩 스크롤 · 10MB</span>
+      <code>hormuz-model-pack-16x9-scroll.mp4</code></div>
+  </div>
+  <div class="vcard">
+    <video src="../output/model-pack/video/hormuz-model-pack-16x9-core.mp4" controls preload="metadata" playsinline muted loop></video>
+    <div class="vmeta"><b>하나씩 보기 · 가로</b><span>56초 · 종류별 최고 해상도 · 11MB</span>
+      <code>hormuz-model-pack-16x9-core.mp4</code></div>
+  </div>
+  <div class="vcard tall">
+    <video src="../output/model-pack/video/hormuz-model-pack-9x16-core.mp4" controls preload="metadata" playsinline muted loop></video>
+    <div class="vmeta"><b>하나씩 보기 · 세로</b><span>56초 · 쓰레드용 · 12MB</span>
+      <code>hormuz-model-pack-9x16-core.mp4</code></div>
+  </div>
+</div>
+
+<div class="note good">
+  <b>어느 영상을 어디에</b><br>
+  쓰레드는 <b>플레이 영상(세로)</b> 먼저 — 게임이 실제로 돌아간다는 게 먼저 보여야 모델도 믿는다.
+  레딧·인디갤은 <b>훑기 영상</b> — 개발자는 "몇 개인지"를 먼저 본다.
+  긴 56초 영상은 유튜브·저장소 README 용이다.
+</div>
+
+<h2>링크 미리보기
+  <small>주소만 덩그러니 나오면 아무도 안 누른다.</small></h2>
+
+<p>게임 주소에 미리보기 카드가 뜨도록 태그를 넣었다. 붙여넣으면 이렇게 나온다.</p>
+
+<div class="preview">
+  <img src="../assets/images/og-cover.jpg" alt="호르무즈 링크 미리보기 그림">
+  <div class="body">
+    <div class="host">sidak.kr</div>
+    <div class="ttl">HORMUZ — 브라우저에서 바로 하는 3D 전략 게임</div>
+    <div class="desc">설치 없이 링크만 누르면 시작한다. 호르무즈 해협을 무대로 한 무료 3D 실시간 전략 게임.</div>
+  </div>
+</div>
+
+<div class="note">
+  <b>배포해야 적용된다</b><br>
+  미리보기 태그는 <code>index.html</code> 에 넣었고 그림은
+  <code>assets/images/og-cover.jpg</code> 다. <b>서버에 올려야</b> 카드가 뜬다.<br>
+  올린 뒤 확인: 디스코드나 카카오톡 대화창에 주소를 한 번 붙여넣어 본다. 카드가 나오면 된 것이다.
+  <br><span class="dim">쓰레드·페이스북은 미리보기를 한동안 저장해 둔다. 태그를 고치면
+  developers.facebook.com/tools/debug 에서 다시 읽게 해야 바뀐다.</span>
+</div>
+
+<h2>왜 문을 둘로 나누나
+  <small>파일 종류가 아니라 받는 사람이 기준이다.</small></h2>
+
+<div class="cards">
+  <div class="card"><b>쓰레드 → Drive ZIP</b>
+    <span>비개발자가 많다. 받아서 바로 쓴다. GitHub은 그 자체로 "어려운 데"로 보인다.
+    이미 먹힌 방식을 굳이 바꾸지 않는다.</span></div>
+  <div class="card"><b>레딧·인디갤 → GitHub</b>
+    <span>개발자는 뜯어보고 고치고 물어본다. 별·포크·이슈가 남는 곳이라야 한다.
+    Drive zip은 신뢰를 깎는다.</span></div>
+  <div class="card"><b>양쪽에 같은 파일</b>
+    <span>Drive는 터지면 할당량으로 막힌다. 그때 GitHub 링크로 갈아끼우면 된다.
+    그래서 둘 다 올려둔다.</span></div>
+  <div class="card"><b>영상이 증명이다</b>
+    <span>"34개 준다"는 말보다 34초 훑는 영상 하나가 빠르다.
+    내려도 내려도 계속 나오는 게 보여야 한다.</span></div>
+  <div class="card"><b>가이드북이 차별점</b>
+    <span>모델만 주는 곳은 많다. "어떻게 붙였는지"까지 주는 곳은 드물다.
+    이게 저장소를 계속 돌아보게 만든다.</span></div>
+</div>
+
+<h2>바로 게시할 문구
+  <small>노란 부분만 채우면 그대로 올릴 수 있다.</small></h2>
+
+<h3>쓰레드 — 메인 게시글</h3>
+<div class="copyblock">
+  <div class="copyhead"><b>메인 게시글</b><span class="tag">세로 영상 첨부</span>
+    <button type="button" data-copy>복사</button></div>
+  <pre>브라우저에서 돌아가는 3D 전쟁 게임 하나 직접 만들었는데
+거기 쓴 3D 모델 34개, 그냥 다 푼다.
+
+배·전투기·헬기·보병까지 전부 들어있고
+웹에서 바로 돌아가게 이미 가볍게 줄여놨음 (전부 합쳐 17.9MB)
+
+상업적 이용 가능. 게임 만들 스친들은 미리 받아둬.</pre>
+</div>
+
+<div class="copyblock">
+  <div class="copyhead"><b>게시 직후 첫 댓글</b><span class="tag">참여 방법</span>
+    <button type="button" data-copy>복사</button></div>
+  <pre>받고 싶은 스친은 팔로우하고 댓글에 "모델"만 남겨줘.
+확인하는 대로 Google Drive ZIP 링크 DM으로 보내줄게.
+
+파일 형식은 glb라서 유니티·언리얼·블렌더·three.js 어디든 바로 열려.</pre>
+</div>
+
+<div class="copyblock">
+  <div class="copyhead"><b>신청 댓글에 남길 답글</b>
+    <button type="button" data-copy>복사</button></div>
+  <pre>댓글 고마워 ㅋㅋ DM으로 보내뒀어!
+안 보이면 메시지 요청함도 한번 확인해줘</pre>
+</div>
+
+<div class="copyblock">
+  <div class="copyhead"><b>댓글 작성자에게 보낼 DM</b><span class="tag">링크 채우기</span>
+    <button type="button" data-copy>복사</button></div>
+  <pre>댓글 남겨줘서 왔어 ㅋㅋ
+3D 모델 34개 Google Drive ZIP 여기 있어👇
+<span class="fill">[여기에 Drive 다운로드 링크]</span>
+
+안에 viewer.html 같이 넣어놨으니까 받자마자 전부 돌려볼 수 있어.
+(웹서버로 열어야 함 — README에 방법 적어놨어)
+
+만든 게임도 여기서 바로 해볼 수 있음 ⚔️
+https://sidak.kr/autodev/GameCreator/hormuz/
+
+전체 소스코드랑 "어떻게 붙였는지" 가이드북도 같이 공개했어
+<span class="fill">[여기에 GitHub 링크]</span></pre>
+</div>
+
+<h3>레딧 — r/gamedev · r/threejs</h3>
+<div class="copyblock">
+  <div class="copyhead"><b>제목</b><span class="tag">영어</span>
+    <button type="button" data-copy>복사</button></div>
+  <pre>I open-sourced my browser-based 3D RTS — 34 production models, full source, and the integration guide</pre>
+</div>
+
+<div class="copyblock">
+  <div class="copyhead"><b>본문</b><span class="tag">가로 영상 첨부</span>
+    <button type="button" data-copy>복사</button></div>
+  <pre>I built a 3D real-time strategy game that runs in the browser — no framework, just vanilla JS and three.js — and I'm releasing everything.
+
+What's in it:
+- 34 production glTF models (ships, jets, helicopters, rigged soldiers with walk/combat clips) — 17.9MB total, already optimised for the web
+- Multiple LOD versions of the same asset, so you can see exactly what gets dropped at distance
+- Full game source (MIT), models under CC BY 4.0 — commercial use is fine
+- A written guide covering what actually bit me: the LOD ladder, splitting mesh and animation across files, and which glTF optimisations silently destroy your geometry
+
+That last one cost me a helicopter fuselage. `meshopt` on already-quantised geometry collapsed an axis to zero — and the triangle count was unchanged, so my triangle-count check passed it happily. Guard on bounding-box ratios, not triangle counts.
+
+Play it: https://sidak.kr/autodev/GameCreator/hormuz/
+Code + models + guide: <span class="fill">[GitHub 링크]</span>
+
+Happy to answer anything about the pipeline.</pre>
+</div>
+
+<h3>인디게임갤</h3>
+<div class="copyblock">
+  <div class="copyhead"><b>본문</b><span class="tag">플레이 링크 먼저</span>
+    <button type="button" data-copy>복사</button></div>
+  <pre>브라우저에서 바로 돌아가는 3D 전쟁 게임 만들었음
+설치 없고 그냥 링크 누르면 됨
+https://sidak.kr/autodev/GameCreator/hormuz/
+
+만들면서 쓴 3D 모델 34개랑 전체 소스코드도 같이 풀었음
+모델은 상업적 이용 가능하게 풀어놨고
+어떻게 붙였는지 가이드도 같이 넣어놨음
+<span class="fill">[GitHub 링크]</span>
+
+피드백 환영</pre>
+</div>
+
+<h2>공개 순서
+  <small>같은 날 다 뿌리지 않는다. 반응을 보고 다음을 조정한다.</small></h2>
+
+<table>
+  <tr><th>순서</th><th>채널</th><th>올리는 것</th><th>노리는 것</th></tr>
+  <tr><td>1일차</td><td>인디게임갤</td><td>플레이 링크 + GitHub</td><td>가장 만만한 곳에서 반응 먼저 확인</td></tr>
+  <tr><td>1일차 저녁</td><td>쓰레드</td><td>세로 영상 + 키워드 댓글</td><td>DM 전환. 팔로우 확보</td></tr>
+  <tr><td>2일차</td><td>레딧</td><td>가로 영상 + GitHub</td><td>별·포크. 오래 남는 유입</td></tr>
+</table>
+
+<div class="note good">
+  <b>인디갤을 먼저 하는 이유</b><br>
+  반응이 빠르고 손실이 적다. 여기서 안 먹히는 문구는 레딧에서도 안 먹힌다.
+  첫날 반응을 보고 쓰레드·레딧 문구를 고칠 시간을 번다.
+</div>
+
+<h2>올리기 전 확인</h2>
+<ul class="check">
+  <li>구글 지도 열쇠에 <b>HTTP 리퍼러 제한</b> 걸었는지 (제일 중요)</li>
+  <li>Drive에 ZIP 올리고 <b>링크 있는 모든 사용자</b>로 공유 설정</li>
+  <li>Drive 링크를 <b>다른 브라우저·로그아웃 상태</b>에서 눌러 확인</li>
+  <li>GitHub 저장소 만들고 <code>release/hormuz-source/</code> 통째로 올리기</li>
+  <li>ZIP을 GitHub 릴리스에 첨부 (다운로드 수가 보인다)</li>
+  <li>README 첫 화면에 <b>플레이 링크</b>와 <b>영상</b> 넣기</li>
+  <li>영상 3편 재생해서 끊김·오타 확인</li>
+  <li>문구 안의 <span class="fill">노란 칸</span> 전부 채웠는지</li>
+</ul>
+
+<h2>성과는 무엇으로 보나
+  <small>조회수는 참고만 한다.</small></h2>
+<div class="cards">
+  <div class="card"><b>쓰레드</b><span>키워드 댓글 수 → DM 발송 수 → 팔로우 증가.
+    조회수가 높아도 댓글이 없으면 문구가 잘못된 것이다.</span></div>
+  <div class="card"><b>레딧</b><span>GitHub 별 수와 릴리스 다운로드 수.
+    업보트보다 이게 진짜 지표다.</span></div>
+  <div class="card"><b>공통</b><span>게임 플레이 유입.
+    모델만 받고 게임은 안 해보면 다음 글에서 게임을 앞세워야 한다.</span></div>
+</div>
+
+<div class="note">
+  <b>하지 말 것</b><br>
+  "팔로워 몇 명 되면 다음 것 공개" 같은 조건은 걸지 않는다. 조건부 이벤트처럼 보인다.
+  다음 공개는 <b>날짜로</b> 예고하고, 팔로우는 그걸 놓치지 않기 위한 자연스러운 이유로 둔다.
+</div>
+
+</div>
+
+<script>
+  // 테마 전환. 고른 것은 다음에 열 때도 유지된다.
+  const themeButton = document.getElementById("theme");
+  const applyTheme = (mode) => {
+    document.documentElement.dataset.theme = mode;
+    themeButton.textContent = mode === "dark" ? "밝게" : "어둡게";
+    try { localStorage.setItem("hormuz-campaign-theme", mode); } catch (error) { /* 무시 */ }
+  };
+  let saved = "light";
+  try { saved = localStorage.getItem("hormuz-campaign-theme") || "light"; } catch (error) { /* 무시 */ }
+  applyTheme(saved);
+  themeButton.addEventListener("click", () => {
+    applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
+  });
+
+  // 복사 단추. 눌렀는지 눈에 보이게 잠깐 바꿔 준다.
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-copy]");
+    if (!button) return;
+    const text = button.closest(".copyblock").querySelector("pre").innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const before = button.textContent;
+      button.textContent = "복사됨";
+      button.classList.add("done");
+      setTimeout(() => {
+        button.textContent = before;
+        button.classList.remove("done");
+      }, 1600);
+    });
+  });
+</script>
+</body>
+</html>

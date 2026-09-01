@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HORMUZ — 작전 화면 개선 플레이 영상 (2026-08-02)</title>
+<style>
+  :root {
+    --bg:#04090e; --panel:#0a1620; --line:rgba(100,228,238,.22);
+    --cyan:#64e4ee; --white:#eaf7fa; --muted:#7f9aa2; --red:#ff6b60; --green:#55e6a5;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; padding:0 20px 80px; color:var(--white); background:var(--bg);
+    font:400 16px/1.7 "Pretendard Variable","Pretendard","Segoe UI","Malgun Gothic",sans-serif;
+  }
+  .wrap { max-width:1180px; margin:0 auto; }
+  header.top { padding:46px 0 24px; border-bottom:1px solid var(--line); }
+  h1 { margin:0 0 10px; font-size:30px; letter-spacing:-.01em; }
+  h1 small { display:block; margin-top:8px; color:var(--muted); font-size:15px; font-weight:400; }
+  h2 { margin:0; font-size:21px; color:var(--cyan); }
+  p { margin:0 0 14px; }
+  .lead { color:#cfe6ea; }
+  .dim { color:var(--muted); font-size:14px; }
+  .note {
+    margin:18px 0 0; padding:12px 15px; color:#ffe4c2; font-size:14.5px;
+    border-left:3px solid #ffb45e; background:rgba(255,180,94,.07);
+  }
+  .scroll { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; margin:14px 0 0; font-size:15px; }
+  th,td { padding:9px 12px; text-align:left; border-bottom:1px solid rgba(100,228,238,.13); }
+  th { color:var(--cyan); }
+  td.was { color:var(--red); }
+  td.now { color:var(--green); font-weight:700; }
+  .clip { margin:34px 0 0; padding:18px; border:1px solid var(--line); background:var(--panel); }
+  .clip > header {
+    display:flex; align-items:baseline; justify-content:space-between;
+    gap:12px; flex-wrap:wrap; margin-bottom:10px;
+  }
+  video {
+    display:block; width:100%; max-height:78vh; margin:6px 0 0;
+    background:#000; border:1px solid rgba(100,228,238,.16);
+  }
+  .watch { margin-top:14px; font-size:14.5px; }
+  .watch b { color:var(--cyan); }
+  .watch ul { margin:6px 0 0; padding-left:20px; color:#bcd4d9; }
+  .path { margin:12px 0 0; color:var(--muted); font-size:13px; word-break:break-all; }
+  .foot { margin-top:50px; padding-top:18px; color:var(--muted); font-size:14px; border-top:1px solid var(--line); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <h1>작전 화면 개선 — 플레이 영상
+    <small>HORMUZ · 2026-08-02 · game.css v51 / game.bundle.js v70 / 런타임 134</small>
+  </h1>
+  <p class="lead">"기본 작전 상태에서 너무 가린다"는 지적을 고친 결과를 실제 플레이로 찍었다.
+  자동으로 게임을 진행시키면서 녹화한 것이고, 손으로 편집하지 않았다.</p>
+
+  <div class="scroll">
+  <table>
+    <thead><tr><th>항목</th><th>수정 전</th><th>수정 후</th></tr></thead>
+    <tbody><tr><td>430×932 대기 가림</td><td class='was'>33.0%</td><td class='now'>21.8%</td></tr><tr><td>430×932 지도 온전한 띠</td><td class='was'>496px</td><td class='now'>608px</td></tr><tr><td>360×800 대기 가림</td><td class='was'>38.7%</td><td class='now'>26.8%</td></tr><tr><td>상단 HUD 높이</td><td class='was'>213px</td><td class='now'>147px</td></tr><tr><td>스크롤해야 보이던 선택지</td><td class='was'>최대 2 / 3</td><td class='now'>0</td></tr><tr><td>지명 라벨 겹침</td><td class='was'>최대 15쌍</td><td class='now'>0</td></tr><tr><td>데스크톱 HUD 겹침</td><td class='was'>3건</td><td class='now'>0</td></tr></tbody>
+  </table>
+  </div>
+
+  <p class="note">이 문서는 영상 파일을 안에 담지 않고 옆 폴더에서 불러온다.
+  문서만 따로 옮기면 영상이 재생되지 않는다. 옮기실 때는
+  <code>output/promo</code> 폴더와 함께 옮기시거나, 영상 파일을 직접 여시면 된다.</p>
+</header>
+
+
+    <section class="clip">
+      <header>
+        <h2>배포 전 / 후 나란히</h2>
+        <span class="dim">1120×1290 · 16.5초 · 0.4MB</span>
+      </header>
+      <p class="lead">왼쪽은 지금 공개 서버, 오른쪽은 수정본. 같은 대본으로 각각 찍은 뒤 작전 화면이 뜨는 순간에 맞춰 붙였다. 손으로 편집한 장면은 없다.</p>
+      <video controls preload="metadata" playsinline
+             src="../output/promo/hormuz-compare-campaign-ko-phone.mp4"></video>
+      <div class="watch">
+        <b>볼 곳</b>
+        <ul><li>위쪽 지표 줄의 두께 — 왼쪽은 아이콘까지 있어 두껍고 오른쪽은 절반 남짓이다</li><li>지표 줄과 결정 패널 사이 — 오른쪽에만 지도가 남아 있다</li><li>결정 패널의 선택지 — 왼쪽은 세 번째가 잘리고 오른쪽은 셋 다 보인다</li></ul>
+      </div>
+      <p class="path">../output/promo/hormuz-compare-campaign-ko-phone.mp4</p>
+    </section>
+    <section class="clip">
+      <header>
+        <h2>수정본 — 작전 화면 (아이폰 폭 430px)</h2>
+        <span class="dim">860×1864 · 33.2초 · 1.3MB</span>
+      </header>
+      <p class="lead">타이틀에서 시작해 작전 상황판으로 들어가고, 선택지 셋을 훑은 뒤 하나를 고르는 흐름이다. 이 게임의 대부분이 이 화면이다.</p>
+      <video controls preload="metadata" playsinline
+             src="../output/promo/hormuz-after-campaign-ko-phone.mp4"></video>
+      <div class="watch">
+        <b>볼 곳</b>
+        <ul><li>상단 HUD 147px — 지표 8개가 두 줄로 접혀 있다</li><li>선택지 3장을 차례로 짚는 구간 — 스크롤 없이 셋 다 닿는다</li><li>선택 뒤 결과가 지표에 반영되고 7.6초 만에 스스로 사라지는 것</li></ul>
+      </div>
+      <p class="path">../output/promo/hormuz-after-campaign-ko-phone.mp4</p>
+    </section>
+    <section class="clip">
+      <header>
+        <h2>배포 전 — 같은 대본, 공개 서버</h2>
+        <span class="dim">860×1864 · 42.2초 · 1.4MB</span>
+      </header>
+      <p class="lead">비교를 위해 지금 서비스 중인 화면을 같은 순서로 찍었다.</p>
+      <video controls preload="metadata" playsinline
+             src="../output/promo/hormuz-before-campaign-ko-phone.mp4"></video>
+      <div class="watch">
+        <b>볼 곳</b>
+        <ul><li>지표 타일 한 칸이 63px — 글자는 30px이고 나머지는 빈 여백이다</li><li>결정 패널이 열리면 지도가 거의 남지 않는 것</li></ul>
+      </div>
+      <p class="path">../output/promo/hormuz-before-campaign-ko-phone.mp4</p>
+    </section>
+
+<div class="foot">
+  D:\soccerstarWebSource\GameCreator\hormuz\docs\hormuz-play-video-2026-08-02.html<br>
+  영상 원본: D:\soccerstarWebSource\GameCreator\hormuz\output\promo\
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,536 @@
+[
+  {
+    "id": "aegis_escort",
+    "cat": "MIL",
+    "name": "이지스 호송망",
+    "desc": "구축함을 TSS 레인에 전진 배치합니다.",
+    "delta": {
+      "transit": 10,
+      "oil": -8,
+      "ammo": -8,
+      "approval": 2
+    },
+    "fx": "deploy",
+    "weight": {
+      "transitBelow": 60
+    },
+    "nameEn": "Aegis Escort Screen",
+    "descEn": "Push destroyers forward into the TSS lanes."
+  },
+  {
+    "id": "carrier_inside",
+    "cat": "MIL",
+    "name": "항모전단 전진",
+    "desc": "항모전단을 해협 병목 가까이 이동시킵니다.",
+    "delta": {
+      "transit": 8,
+      "approval": 5,
+      "intl": -4,
+      "esc": 1,
+      "ammo": -3
+    },
+    "fx": "deploy",
+    "nameEn": "Carrier Group Forward",
+    "descEn": "Move the carrier group close to the strait chokepoint."
+  },
+  {
+    "id": "carrier_standoff",
+    "cat": "MIL",
+    "name": "원거리 억제",
+    "desc": "항모를 아라비아해에 두고 항공초계로 억제합니다.",
+    "delta": {
+      "intl": 5,
+      "approval": -2,
+      "ammo": -2,
+      "stability": 3
+    },
+    "fx": "patrol",
+    "nameEn": "Standoff Deterrence",
+    "descEn": "Hold the carrier in the Arabian Sea and deter with air patrols."
+  },
+  {
+    "id": "minesweep",
+    "cat": "MIL",
+    "name": "소해 작전",
+    "desc": "무인소해정으로 통항로를 개방합니다.",
+    "delta": {
+      "transit": 15,
+      "oil": -6,
+      "ammo": -6
+    },
+    "fx": "minesweep",
+    "mission": "minesweep",
+    "weight": {
+      "transitBelow": 55
+    },
+    "nameEn": "Mine Clearance Operation",
+    "descEn": "Open the transit lane with unmanned minesweepers."
+  },
+  {
+    "id": "precision_strike",
+    "cat": "MIL",
+    "name": "연안 발사대 정밀 타격",
+    "desc": "확인된 연안 미사일 발사 차량만 제한 타격합니다.",
+    "delta": {
+      "stability": -8,
+      "approval": 5,
+      "intl": -8,
+      "ammo": -9,
+      "esc": 1
+    },
+    "fx": "strike",
+    "mission": "bombrun",
+    "nameEn": "Precision Strike on Coastal Launchers",
+    "descEn": "Hit only the confirmed coastal missile launch vehicles."
+  },
+  {
+    "id": "b2_strike",
+    "cat": "MIL",
+    "name": "곡괭이산 제한 타격",
+    "desc": "B-2와 GBU-57로 확인된 지하 진입부만 봉쇄합니다. 내부 용도와 피해는 미확인입니다.",
+    "delta": {
+      "stability": -16,
+      "approval": 8,
+      "intl": -20,
+      "ammo": -12,
+      "esc": 2
+    },
+    "fx": "bombrun",
+    "mission": "pickaxe",
+    "unlock": {
+      "dayMin": 8,
+      "act": [
+        "ATTRITION"
+      ]
+    },
+    "nameEn": "Pickaxe Mountain Limited Strike",
+    "descEn": "Seal only the confirmed underground entrances with B-2s and GBU-57s. What is inside, and the damage done, remain unverified."
+  },
+  {
+    "id": "sub_blockade",
+    "cat": "MIL",
+    "name": "잠수함 봉쇄",
+    "desc": "수중 감시선으로 기뢰 수송을 차단합니다.",
+    "delta": {
+      "transit": 7,
+      "oil": -4,
+      "ammo": -4,
+      "stability": -4
+    },
+    "fx": "submarine",
+    "nameEn": "Submarine Blockade",
+    "descEn": "Cut mine transport with an underwater picket line."
+  },
+  {
+    "id": "drone_hunt",
+    "cat": "MIL",
+    "name": "드론 사냥",
+    "desc": "함대 방공망을 파상공세 예상축에 집중합니다.",
+    "delta": {
+      "ammo": -7,
+      "approval": 3,
+      "transit": 4
+    },
+    "fx": "intercept",
+    "mission": "intercept",
+    "nameEn": "Drone Hunt",
+    "descEn": "Concentrate fleet air defense on the expected axis of the wave attack."
+  },
+  {
+    "id": "rules_restraint",
+    "cat": "MIL",
+    "name": "교전수칙 제한",
+    "desc": "민간 피해를 막기 위해 발포 승인을 상향합니다.",
+    "delta": {
+      "intl": 8,
+      "approval": -3,
+      "esc": -1
+    },
+    "fx": "calm",
+    "nameEn": "Tighten Rules of Engagement",
+    "descEn": "Raise the approval level for weapons release to prevent civilian harm."
+  },
+  {
+    "id": "marine_rescue",
+    "cat": "MIL",
+    "name": "선원 구출 준비",
+    "desc": "구조 헬기와 호위 전력을 투입해 나포 유조선을 직접 구출합니다.",
+    "delta": {
+      "ammo": -1,
+      "esc": 1
+    },
+    "fx": "deploy",
+    "mission": "rescue",
+    "nameEn": "Prepare Crew Rescue",
+    "descEn": "Commit rescue helicopters and escorts to retake the seized tanker directly."
+  },
+  {
+    "id": "missile_conserve",
+    "cat": "MIL",
+    "name": "요격탄 보존",
+    "desc": "저위협 표적은 전자전으로 넘겨 탄약을 아낍니다.",
+    "delta": {
+      "ammo": 8,
+      "transit": -3,
+      "approval": -2
+    },
+    "fx": "patrol",
+    "nameEn": "Conserve Interceptors",
+    "descEn": "Hand low-threat targets to electronic warfare and save ammunition."
+  },
+  {
+    "id": "show_force",
+    "cat": "MIL",
+    "name": "무력 시위",
+    "desc": "실탄 없는 대규모 연합훈련으로 결의를 보입니다.",
+    "delta": {
+      "approval": 4,
+      "intl": 3,
+      "stability": -2,
+      "oil": 3
+    },
+    "fx": "flyby",
+    "nameEn": "Show of Force",
+    "descEn": "Demonstrate resolve with a large live-fire-free combined exercise."
+  },
+  {
+    "id": "full_strait_battle",
+    "cat": "MIL",
+    "name": "대규모 해협 결전",
+    "desc": "연합 함대와 항공 전력을 총동원해 세 방향에서 몰려오는 고속정 30척을 저지합니다.",
+    "delta": {
+      "approval": 7,
+      "intl": -6,
+      "ammo": -8,
+      "esc": 1
+    },
+    "fx": "swarm",
+    "mission": "large",
+    "unlock": {
+      "dayMin": 11,
+      "act": [
+        "ATTRITION"
+      ]
+    },
+    "nameEn": "Decisive Battle for the Strait",
+    "descEn": "Commit the combined fleet and air power to stop 30 fast attack craft converging from three directions."
+  },
+  {
+    "id": "open_channel",
+    "cat": "DIP",
+    "name": "오만 중재 채널",
+    "desc": "무스카트 비공개 채널에서 협상을 엽니다. 최종 종전 합의는 DAY 12 이후에만 가능합니다.",
+    "delta": {
+      "intl": 6,
+      "approval": -2
+    },
+    "fx": "negotiation",
+    "negotiation": true,
+    "unlock": {
+      "dayMin": 12
+    },
+    "nameEn": "Oman Mediation Channel",
+    "descEn": "Open talks through the private Muscat channel. A final settlement is only possible from DAY 12 onward."
+  },
+  {
+    "id": "third_party_guarantee",
+    "cat": "DIP",
+    "name": "제3국 보증",
+    "desc": "오만·카타르·EU가 합의 이행을 보증합니다.",
+    "delta": {
+      "intl": 12,
+      "oil": -4,
+      "approval": -2
+    },
+    "fx": "diplomacy",
+    "flag": "guarantee",
+    "nameEn": "Third-Party Guarantee",
+    "descEn": "Oman, Qatar and the EU guarantee implementation of the accord."
+  },
+  {
+    "id": "un_resolution",
+    "cat": "DIP",
+    "name": "안보리 결의",
+    "desc": "통항 자유 결의를 추진해 국제전선을 묶습니다.",
+    "delta": {
+      "intl": 14,
+      "transit": 3,
+      "approval": -3
+    },
+    "fx": "diplomacy",
+    "nameEn": "Security Council Resolution",
+    "descEn": "Push a freedom-of-navigation resolution to bind the international front."
+  },
+  {
+    "id": "hotline",
+    "cat": "DIP",
+    "name": "군 통신선 복원",
+    "desc": "우발 충돌을 막는 해상 핫라인을 복구합니다.",
+    "delta": {
+      "esc": -1,
+      "intl": 7,
+      "stability": 4
+    },
+    "fx": "calm",
+    "nameEn": "Restore the Military Hotline",
+    "descEn": "Reopen the maritime hotline that prevents accidental clashes."
+  },
+  {
+    "id": "prisoner_swap",
+    "cat": "DIP",
+    "name": "억류자 교환",
+    "desc": "선원과 억류자를 단계적으로 맞교환합니다.",
+    "delta": {
+      "intl": 8,
+      "approval": -2,
+      "stability": 6
+    },
+    "fx": "diplomacy",
+    "nameEn": "Detainee Exchange",
+    "descEn": "Trade crews and detainees back in stages."
+  },
+  {
+    "id": "ultimatum",
+    "cat": "DIP",
+    "name": "48시간 최후통첩",
+    "desc": "공격 중단과 기뢰 철거 시한을 제시합니다.",
+    "delta": {
+      "approval": 7,
+      "intl": -6,
+      "stability": -8,
+      "esc": 1
+    },
+    "fx": "warning",
+    "nameEn": "48-Hour Ultimatum",
+    "descEn": "Set a deadline for halting attacks and clearing the mines."
+  },
+  {
+    "id": "regional_summit",
+    "cat": "DIP",
+    "name": "걸프 긴급 정상회의",
+    "desc": "연안국 공동 통항관리안을 만듭니다.",
+    "delta": {
+      "intl": 11,
+      "oil": -5,
+      "transit": 5
+    },
+    "fx": "diplomacy",
+    "nameEn": "Emergency Gulf Summit",
+    "descEn": "Build a joint transit management plan among the littoral states."
+  },
+  {
+    "id": "humanitarian_pause",
+    "cat": "DIP",
+    "name": "인도주의 중지",
+    "desc": "구호선 통과 시간대에 군사행동을 멈춥니다.",
+    "delta": {
+      "intl": 10,
+      "approval": -3,
+      "stability": 8,
+      "esc": -1
+    },
+    "fx": "calm",
+    "nameEn": "Humanitarian Pause",
+    "descEn": "Halt military action during relief shipping windows."
+  },
+  {
+    "id": "backchannel_warning",
+    "cat": "DIP",
+    "name": "비공개 경고",
+    "desc": "공개 체면을 살려주면서 공격 중단선을 전달합니다.",
+    "delta": {
+      "stability": 5,
+      "approval": 1,
+      "intl": 4
+    },
+    "fx": "warning",
+    "nameEn": "Private Warning",
+    "descEn": "Deliver the red line while letting them keep face in public."
+  },
+  {
+    "id": "strategic_release",
+    "cat": "ECO",
+    "name": "전략비축유 방출",
+    "desc": "동맹국과 비축유를 동시 방출합니다.",
+    "delta": {
+      "oil": -14,
+      "approval": 4,
+      "intl": 5
+    },
+    "fx": "economy",
+    "nameEn": "Strategic Reserve Release",
+    "descEn": "Release reserves simultaneously with allied states."
+  },
+  {
+    "id": "fujairah_bypass",
+    "cat": "ECO",
+    "name": "푸자이라 우회 증산",
+    "desc": "해협 밖 송유관과 항만 처리량을 높입니다.",
+    "delta": {
+      "oil": -10,
+      "transit": 3,
+      "intl": 4
+    },
+    "fx": "economy",
+    "nameEn": "Fujairah Bypass Surge",
+    "descEn": "Raise throughput on the pipelines and ports outside the strait."
+  },
+  {
+    "id": "insurance_backstop",
+    "cat": "ECO",
+    "name": "전쟁보험 보증",
+    "desc": "유조선 보험료를 정부가 한시 보증합니다.",
+    "delta": {
+      "transit": 9,
+      "oil": -7,
+      "approval": -3
+    },
+    "fx": "convoy",
+    "nameEn": "War Risk Insurance Backstop",
+    "descEn": "Have the government temporarily underwrite tanker premiums."
+  },
+  {
+    "id": "sanction_relief",
+    "cat": "ECO",
+    "name": "조건부 제재 완화",
+    "desc": "공격 중단과 원유 수출 일부를 맞바꿉니다.",
+    "delta": {
+      "oil": -12,
+      "intl": 7,
+      "approval": -7,
+      "stability": 10
+    },
+    "fx": "economy",
+    "nameEn": "Conditional Sanctions Relief",
+    "descEn": "Trade a halt in attacks for partial crude export."
+  },
+  {
+    "id": "reconstruction_fund",
+    "cat": "ECO",
+    "name": "재건 기금",
+    "desc": "민생 재건 패키지로 절박화를 낮춥니다.",
+    "delta": {
+      "intl": 8,
+      "approval": -5,
+      "stability": 14
+    },
+    "fx": "economy",
+    "flag": "reconstruction",
+    "nameEn": "Reconstruction Fund",
+    "descEn": "Lower desperation with a civilian reconstruction package."
+  },
+  {
+    "id": "shipping_subsidy",
+    "cat": "ECO",
+    "name": "해운 보조금",
+    "desc": "호송 참여 선사에 비용을 보전합니다.",
+    "delta": {
+      "transit": 8,
+      "oil": -5,
+      "approval": -2
+    },
+    "fx": "convoy",
+    "nameEn": "Shipping Subsidy",
+    "descEn": "Cover the costs of carriers that join the convoys."
+  },
+  {
+    "id": "asset_freeze",
+    "cat": "ECO",
+    "name": "IRGC 자산 동결",
+    "desc": "해외 조달망을 조여 미사일 보급을 늦춥니다.",
+    "delta": {
+      "stability": -6,
+      "intl": -3,
+      "approval": 4,
+      "oil": 4
+    },
+    "fx": "economy",
+    "nameEn": "Freeze IRGC Assets",
+    "descEn": "Squeeze the overseas procurement network to slow missile resupply."
+  },
+  {
+    "id": "intel_release",
+    "cat": "INFO",
+    "name": "위성정보 공개",
+    "desc": "기뢰·미사일 배치 증거를 동맹과 공개합니다.",
+    "delta": {
+      "intl": 10,
+      "approval": 3,
+      "stability": -3
+    },
+    "fx": "intel",
+    "flag": "revealed",
+    "nameEn": "Release Satellite Intelligence",
+    "descEn": "Publish evidence of mine and missile deployment together with allies."
+  },
+  {
+    "id": "counter_disinfo",
+    "cat": "INFO",
+    "name": "허위정보 대응",
+    "desc": "조작 영상과 유조선 피해 소문을 신속히 반박합니다.",
+    "delta": {
+      "approval": 7,
+      "intl": 4
+    },
+    "fx": "intel",
+    "nameEn": "Counter Disinformation",
+    "descEn": "Rapidly rebut manipulated footage and tanker damage rumors."
+  },
+  {
+    "id": "cyber_ports",
+    "cat": "INFO",
+    "name": "항만 사이버 차단",
+    "desc": "군수 항만만 선별해 물류망을 지연시킵니다.",
+    "delta": {
+      "stability": -7,
+      "intl": -4,
+      "ammo": -1,
+      "esc": 1
+    },
+    "fx": "cyber",
+    "nameEn": "Cyber Interdiction of Ports",
+    "descEn": "Target only military ports to delay the logistics network."
+  },
+  {
+    "id": "broadcast_restraint",
+    "cat": "INFO",
+    "name": "대국민 절제 연설",
+    "desc": "목표와 철수 조건을 공개해 신뢰를 회복합니다.",
+    "delta": {
+      "approval": 6,
+      "intl": 6,
+      "esc": -1
+    },
+    "fx": "broadcast",
+    "nameEn": "Address the Nation on Restraint",
+    "descEn": "Restore trust by stating the objective and the withdrawal conditions publicly."
+  },
+  {
+    "id": "expose_notice",
+    "cat": "INFO",
+    "name": "사전통보 공개",
+    "desc": "피해 최소화형 보복 신호를 공개해 시장을 진정시킵니다.",
+    "delta": {
+      "oil": -7,
+      "intl": 5,
+      "approval": -1
+    },
+    "fx": "intel",
+    "nameEn": "Publish the Advance Notice",
+    "descEn": "Calm the market by revealing the damage-limiting retaliation signal."
+  },
+  {
+    "id": "electronic_warfare",
+    "cat": "INFO",
+    "name": "전자전 우세",
+    "desc": "레이더·드론 링크를 교란해 요격탄 소모를 줄입니다.",
+    "delta": {
+      "ammo": 5,
+      "transit": 4,
+      "stability": -2
+    },
+    "fx": "cyber",
+    "nameEn": "Electronic Warfare Superiority",
+    "descEn": "Jam radar and drone links to cut interceptor expenditure."
+  }
+]

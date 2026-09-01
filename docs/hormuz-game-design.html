@@ -1,0 +1,1387 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>호르무즈 — 게임 기획서 v0.5</title>
+<!--ARTIFACT-BEGIN-->
+<style>
+:root{
+  --ground:#EDF1F3;
+  --surface:#FFFFFF;
+  --surface-2:#E3E9ED;
+  --line:#C6D2DA;
+  --text:#16283A;
+  --muted:#5B7286;
+  --buoy:#B96A12;
+  --shoal:#1F6A70;
+  --alarm:#B03A30;
+  --good:#2F6D4F;
+  --measure:78ch;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ground:#0A1926; --surface:#0F2233; --surface-2:#152C40; --line:#20405A;
+    --text:#DCE7EF; --muted:#8FA9BC; --buoy:#E8A24A; --shoal:#4FA8AF; --alarm:#E0665A; --good:#6BBF92;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0A1926; --surface:#0F2233; --surface-2:#152C40; --line:#20405A;
+  --text:#DCE7EF; --muted:#8FA9BC; --buoy:#E8A24A; --shoal:#4FA8AF; --alarm:#E0665A; --good:#6BBF92;
+}
+:root[data-theme="light"]{
+  --ground:#EDF1F3; --surface:#FFFFFF; --surface-2:#E3E9ED; --line:#C6D2DA;
+  --text:#16283A; --muted:#5B7286; --buoy:#B96A12; --shoal:#1F6A70; --alarm:#B03A30; --good:#2F6D4F;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--ground);color:var(--text);
+  font-family:"Pretendard","Malgun Gothic","맑은 고딕","Apple SD Gothic Neo",system-ui,sans-serif;
+  font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--measure);margin:0 auto;padding:0 20px 120px}
+h1,h2,h3,h4{font-family:Bahnschrift,"DIN Alternate","Franklin Gothic Medium","Pretendard","Malgun Gothic",system-ui,sans-serif;text-wrap:balance;font-weight:600;letter-spacing:.01em}
+.mono,code,td.num,.stat b,.chip,.tl-date{font-family:"Cascadia Mono",Consolas,"D2Coding",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+
+/* ── 표지 ── */
+.cover{padding:56px 0 36px;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:Bahnschrift,"DIN Alternate",system-ui,sans-serif;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--buoy);margin:0 0 14px}
+.cover h1{font-size:clamp(40px,9vw,68px);line-height:1;margin:0 0 6px;letter-spacing:.02em}
+.cover .sub{font-family:Bahnschrift,"DIN Alternate",system-ui,sans-serif;font-size:clamp(15px,3vw,19px);letter-spacing:.32em;color:var(--muted);margin:0 0 22px;text-transform:uppercase}
+.logline{font-size:19px;line-height:1.65;margin:0 0 26px;max-width:58ch}
+.logline b{color:var(--buoy);font-weight:600}
+.meta{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:8px}
+.tag{font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;font-size:12px;padding:4px 10px;border:1px solid var(--line);border-radius:2px;color:var(--muted);background:var(--surface)}
+
+/* ── 캔버스 ── */
+.chart{position:relative;margin:30px 0 8px;border:1px solid var(--line);background:var(--surface);border-radius:3px;overflow:hidden}
+.chart canvas{display:block;width:100%;height:auto}
+.chart figcaption{font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;font-size:11px;letter-spacing:.06em;color:var(--muted);padding:8px 12px;border-top:1px solid var(--line);background:var(--surface-2)}
+
+/* ── 목차 ── */
+.toc{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:18px 20px;margin:28px 0 0}
+.toc b{display:block;font-family:Bahnschrift,"DIN Alternate",system-ui,sans-serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.toc .part-lab{font-family:Bahnschrift,system-ui,sans-serif;font-size:11px;letter-spacing:.14em;color:var(--buoy);text-transform:uppercase;margin:10px 0 4px}
+.toc ol{margin:0;padding-left:0;list-style:none}
+.toc li{margin:0 0 4px;font-size:14px}
+.toc a{color:var(--text);text-decoration:none;border-bottom:1px solid transparent}
+.toc a:hover,.toc a:focus-visible{border-bottom-color:var(--buoy);color:var(--buoy)}
+.toc .n{color:var(--buoy);font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;font-size:12px;margin-right:7px}
+.toc-cols{display:grid;grid-template-columns:1fr 1fr;gap:0 26px}
+
+/* ── PART 구분 ── */
+.part{margin:64px 0 0;padding:26px 22px;background:var(--surface-2);border:1px solid var(--line);border-left:6px solid var(--buoy);border-radius:0 3px 3px 0}
+.part .p-no{font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;font-size:12px;letter-spacing:.2em;color:var(--buoy)}
+.part h2{margin:4px 0 4px;font-size:clamp(24px,5vw,30px)}
+.part p{margin:0;color:var(--muted);font-size:15px}
+
+section{position:relative;padding:52px 0 4px;border-top:1px solid var(--line);scroll-margin-top:20px}
+section.first{border-top:none;padding-top:36px}
+.sec-no{font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;font-size:12px;color:var(--buoy);letter-spacing:.14em;display:block;margin-bottom:6px}
+section>h2{font-size:clamp(23px,5vw,30px);line-height:1.2;margin:0 0 12px}
+.oneline{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:10px 15px;margin:0 0 22px;font-size:15px;color:var(--muted)}
+.oneline b{color:var(--buoy);font-weight:600}
+h3{font-size:19px;margin:32px 0 10px}
+h4{font-size:15px;margin:22px 0 8px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+p{margin:0 0 16px}
+ul,ol{margin:0 0 16px;padding-left:22px}
+li{margin:0 0 7px}
+strong{font-weight:600}
+a{color:var(--shoal);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--buoy);outline-offset:2px}
+
+.note{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--buoy);padding:16px 18px;margin:0 0 20px;border-radius:0 3px 3px 0}
+.note.warn{border-left-color:var(--alarm)}
+.note.calm{border-left-color:var(--shoal)}
+.note p:last-child{margin-bottom:0}
+.note .lab{display:block;font-family:Bahnschrift,"DIN Alternate",system-ui,sans-serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--buoy);margin-bottom:6px}
+.note.warn .lab{color:var(--alarm)}
+.note.calm .lab{color:var(--shoal)}
+
+.scroll{overflow-x:auto;margin:0 0 22px;border:1px solid var(--line);border-radius:3px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:580px;font-size:14px}
+caption{text-align:left;padding:11px 14px;background:var(--surface-2);border-bottom:1px solid var(--line);font-family:Bahnschrift,"DIN Alternate",system-ui,sans-serif;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+th,td{padding:9px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.55}
+th{font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--surface-2);white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+td.num,th.num{font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+.up{color:var(--good);font-weight:600}
+.dn{color:var(--alarm);font-weight:600}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:10px;margin:0 0 22px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:13px 14px}
+.stat span{display:block;font-size:12px;letter-spacing:.06em;color:var(--muted);margin-bottom:3px}
+.stat b{display:block;font-size:22px;font-weight:600;line-height:1.2;color:var(--buoy)}
+.stat i{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5}
+
+/* ── 연표 ── */
+.tl{position:relative;margin:0 0 22px;padding-left:24px;border-left:2px solid var(--line)}
+.tl-yr{position:relative;margin:26px 0 12px;font-family:Bahnschrift,system-ui,sans-serif;font-size:17px;font-weight:600;color:var(--buoy);letter-spacing:.08em}
+.tl-yr::before{content:"";position:absolute;left:-30px;top:8px;width:10px;height:10px;background:var(--buoy);border-radius:50%}
+.tl-ev{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:11px 14px;margin:0 0 9px}
+.tl-ev::before{content:"";position:absolute;left:-28px;top:18px;width:6px;height:6px;background:var(--muted);border-radius:50%}
+.tl-ev.big{border-left:3px solid var(--alarm)}
+.tl-ev.big::before{background:var(--alarm)}
+.tl-date{display:inline-block;font-size:12px;color:var(--buoy);margin-right:8px;letter-spacing:.04em}
+.tl-ev b{font-size:15px}
+.tl-ev p{margin:5px 0 0;font-size:13.5px;color:var(--muted);line-height:1.6}
+.pat{display:inline-block;font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;font-size:11px;padding:2px 8px;margin:7px 4px 0 0;border-radius:2px;border:1px solid var(--line);color:var(--shoal)}
+.pat.ir{color:var(--buoy);border-color:var(--buoy)}
+.pat.us{color:var(--shoal);border-color:var(--shoal)}
+.dec{display:inline-block;font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;font-size:11px;font-weight:700;padding:2px 9px;margin:7px 4px 0 0;border-radius:2px;background:var(--buoy);color:var(--ground)}
+
+/* ── 접기 ── */
+details.fold{border:1px solid var(--line);border-radius:3px;background:var(--surface);margin:0 0 12px;overflow:hidden}
+details.fold>summary{cursor:pointer;padding:13px 16px;font-weight:600;font-size:15px;background:var(--surface-2);list-style:none;display:flex;align-items:center;gap:10px}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary::before{content:"+";font-family:"Cascadia Mono",Consolas,monospace;color:var(--buoy);font-size:16px;width:16px}
+details.fold[open]>summary::before{content:"−"}
+details.fold>summary small{font-weight:400;color:var(--muted);font-size:13px}
+details.fold .inner{padding:14px 16px 6px}
+details.fold .scroll{border:none;border-top:1px solid var(--line);border-radius:0;margin:0}
+
+/* ── 흐름/스텝 ── */
+.flow{display:grid;gap:8px;margin:0 0 22px;counter-reset:step;padding:0}
+.flow li{list-style:none;display:grid;grid-template-columns:34px 1fr;gap:14px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:13px 15px;margin:0}
+.flow li::before{counter-increment:step;content:counter(step);font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;font-size:13px;color:var(--ground);background:var(--buoy);border-radius:2px;width:26px;height:26px;display:grid;place-items:center;font-weight:700}
+.flow b{display:block;font-size:15px;margin-bottom:2px}
+.flow em{font-style:normal;color:var(--muted);font-size:14px;line-height:1.6}
+
+/* ── 확전 사다리 ── */
+.ladder{display:grid;gap:6px;margin:0 0 22px}
+.rung{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:center;padding:11px 14px;border:1px solid var(--line);border-radius:3px;background:var(--surface)}
+.rung .lv{font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;font-size:12px;letter-spacing:.06em;font-weight:700}
+.rung small{display:block;color:var(--muted);font-size:13px;line-height:1.5}
+.r1,.r2{border-left:4px solid var(--shoal)} .r1 .lv,.r2 .lv{color:var(--shoal)}
+.r3,.r4{border-left:4px solid var(--buoy)}  .r3 .lv,.r4 .lv{color:var(--buoy)}
+.r5{border-left:4px solid var(--alarm)}     .r5 .lv{color:var(--alarm)}
+.rung.now{outline:2px solid var(--buoy);outline-offset:-2px}
+
+/* ── 4막 ── */
+.acts{display:grid;gap:12px;margin:0 0 24px}
+.act{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--shoal);border-radius:0 3px 3px 0;padding:15px 17px}
+.act.a2{border-left-color:var(--buoy)}
+.act.a3{border-left-color:var(--alarm)}
+.act.a4{border-left-color:var(--good)}
+.act .hd{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:baseline;margin-bottom:6px}
+.act .no{font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;font-size:12px;letter-spacing:.12em;color:var(--muted)}
+.act h3{margin:0;font-size:20px}
+.act p{margin:0 0 8px;font-size:14.5px}
+.act .exit{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:14px}
+.act .exit b{color:var(--buoy)}
+.chip{font-size:12px;padding:3px 8px;border:1px solid var(--line);border-radius:2px;color:var(--muted);background:var(--surface-2)}
+
+/* ── 시나리오 재생 ── */
+.play{background:var(--surface);border:1px solid var(--line);border-radius:3px;margin:0 0 14px;overflow:hidden}
+.play .hd{padding:10px 16px;background:var(--surface-2);border-bottom:1px solid var(--line);font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;font-size:12px;letter-spacing:.06em;color:var(--muted)}
+.play .bd{padding:16px}
+.play .bd p{margin:0 0 12px}
+.play .bd p:last-child{margin:0}
+.play ul{margin:0 0 12px}
+.say{color:var(--muted);font-size:14px;border-left:2px solid var(--line);padding-left:12px}
+
+/* ── UI 목업 ── */
+.mockwrap{display:grid;grid-template-columns:minmax(230px,290px) 1fr;gap:20px;align-items:start;margin:0 0 24px}
+.mock{border:2px solid var(--line);border-radius:18px;background:var(--surface);overflow:hidden;box-shadow:0 8px 30px rgba(10,25,38,.10)}
+.m-hud{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--surface-2);border-bottom:1px solid var(--line);font-family:"Cascadia Mono",Consolas,monospace;font-size:10px;color:var(--muted)}
+.m-hud b{color:var(--buoy);font-size:11px}
+.m-dials{display:flex;gap:4px;padding:6px 8px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.m-dial{flex:1;text-align:center;font-family:"Cascadia Mono",Consolas,monospace;font-size:8.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:2px;padding:3px 1px;line-height:1.5}
+.m-dial b{display:block;font-size:10.5px;color:var(--buoy)}
+.m-view{position:relative;height:190px;background:linear-gradient(180deg,var(--surface-2),var(--surface))}
+.m-view .vlab{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:11px;letter-spacing:.14em;font-family:Bahnschrift,system-ui,sans-serif;text-transform:uppercase}
+.m-pop{margin:8px;border:1px solid var(--buoy);border-radius:4px;background:var(--surface);padding:9px 10px}
+.m-pop .t{font-size:11px;font-weight:600;line-height:1.5}
+.m-timer{height:3px;background:var(--line);border-radius:2px;margin:7px 0;overflow:hidden}
+.m-timer i{display:block;height:100%;width:62%;background:var(--alarm)}
+.m-btns{display:grid;gap:4px}
+.m-btn{font-size:10.5px;text-align:center;border:1px solid var(--line);border-radius:3px;padding:5px;background:var(--surface-2)}
+.m-btn.hot{border-color:var(--alarm);color:var(--alarm)}
+.m-hand{display:flex;gap:4px;padding:8px;background:var(--surface-2);border-top:1px solid var(--line)}
+.m-card{flex:1;height:44px;border:1px solid var(--line);border-radius:3px;background:var(--surface);font-size:8px;color:var(--muted);display:grid;place-items:center;text-align:center;line-height:1.4;padding:2px}
+.mock-notes{font-size:14px}
+.mock-notes li{margin-bottom:9px}
+.mock-notes b{color:var(--buoy)}
+@media (max-width:620px){.mockwrap{grid-template-columns:1fr}}
+
+/* ── 협상 조항 ── */
+.terms{display:grid;gap:9px;margin:0 0 22px}
+.term{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:13px 15px}
+.term b{display:block;font-size:15px;margin-bottom:7px}
+.term .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:7px;font-size:13px}
+.term .opt{border:1px solid var(--line);border-radius:2px;padding:7px 10px;background:var(--surface-2)}
+.term .opt em{display:block;font-style:normal;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.term .o-hard em{color:var(--alarm)}
+.term .o-mid em{color:var(--buoy)}
+.term .o-soft em{color:var(--shoal)}
+
+.phases{display:grid;gap:10px;margin:0 0 22px}
+.phase{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--shoal);border-radius:0 0 3px 3px;padding:15px 16px}
+.phase b{display:block;font-family:Bahnschrift,"DIN Alternate",system-ui,sans-serif;font-size:16px;margin-bottom:4px}
+.phase .when{font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;font-size:12px;color:var(--buoy);letter-spacing:.06em}
+.phase ul{margin:8px 0 0;font-size:14px;color:var(--muted)}
+
+footer{padding:44px 0 0;border-top:1px solid var(--line);margin-top:56px;color:var(--muted);font-size:13px}
+footer p{margin:0 0 6px}
+
+@media (max-width:600px){
+  body{font-size:15px}
+  .wrap{padding:0 16px 90px}
+  .cover{padding:38px 0 28px}
+  .toc-cols{grid-template-columns:1fr}
+  table{min-width:520px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<!--ARTIFACT-BODY-->
+<div class="wrap">
+
+<header class="cover">
+  <p class="eyebrow">Game Design Document · v0.5 · 2026-07-27</p>
+  <h1>호르무즈</h1>
+  <p class="sub">HORMUZ</p>
+  <p class="logline">게임은 <b>2025년 6월, 12일 전쟁의 한복판</b>에서 시작된다. 트럼프가 실제로 마주했던 결정 5개를 당신이 다시 내리며 2026년 7월까지 달려오면 — 실화가 끝난 지점, <b>소강 이틀째의 내일 아침</b>부터 진짜 시험이 시작된다. 18일 안에 전쟁을 끝내라.</p>
+  <div class="meta">
+    <span class="tag">웹 브라우저 · 3D 캔버스</span>
+    <span class="tag">1회 플레이 8~10분</span>
+    <span class="tag">실화 기반 시뮬레이션</span>
+    <span class="tag">무료 · MIT 오픈소스</span>
+    <span class="tag">모바일 우선</span>
+  </div>
+
+  <figure class="chart">
+    <canvas id="straitChart" width="1480" height="420" role="img" aria-label="호르무즈 해협 상황도. 기뢰 부설 구역, 미 항모전단, 이란 고속정 세력이 표시된 개념도."></canvas>
+    <figcaption>2026년 7월 27일의 게임판 — 기뢰밭(빗금)·미 항모전단(청록)·IRGC 세력(호박)·유조선(백색). 개념도이며 실제 지리·배치 아님.</figcaption>
+  </figure>
+
+  <nav class="toc" aria-label="목차">
+    <b>목차 — 3부 구성</b>
+    <div class="toc-cols">
+      <div>
+        <p class="part-lab">Part 1 · 실화 — 세계관은 이미 존재한다</p>
+        <ol>
+          <li><span class="n">01</span><a href="#s01">8년의 여정 — 2018 → 2026 실제 연표</a></li>
+          <li><span class="n">02</span><a href="#s02">오늘의 전황 — 게임이 시작되는 지점</a></li>
+        </ol>
+        <p class="part-lab">Part 2 · 게임 — 디자인과 룰</p>
+        <ol>
+          <li><span class="n">03</span><a href="#s03">시간 구조 — 12일 전쟁에서 시작한다</a></li>
+          <li><span class="n">04</span><a href="#s04">비주얼 디자인 (최우선)</a></li>
+          <li><span class="n">05</span><a href="#s05">캔버스 직접 조작 — 지휘와 개입</a></li>
+          <li><span class="n">06</span><a href="#s06">하루의 흐름 — 선택 버튼과 타이머</a></li>
+        </ol>
+      </div>
+      <div>
+        <ol>
+          <li><span class="n">07</span><a href="#s07">4막 구조 — 소강·재개전·소모·출구</a></li>
+          <li><span class="n">08</span><a href="#s08">계기판 6+1 — 재고가 곧 전략</a></li>
+          <li><span class="n">09</span><a href="#s09">이란 AI — 역사가 만든 행동 규칙</a></li>
+          <li><span class="n">10</span><a href="#s10">전쟁 도구 — 실물 카드 34장</a></li>
+          <li><span class="n">11</span><a href="#s11">휴전 — 이슬라마바드 2.0</a></li>
+          <li><span class="n">12</span><a href="#s12">엔딩 10종과 성향 라벨</a></li>
+        </ol>
+        <p class="part-lab">Part 3 · 제작</p>
+        <ol>
+          <li><span class="n">13</span><a href="#s13">기술 구성</a></li>
+          <li><span class="n">14</span><a href="#s14">민감한 소재 규칙</a></li>
+          <li><span class="n">15</span><a href="#s15">만드는 순서</a></li>
+          <li><span class="n">16</span><a href="#s16">확정된 결정</a></li>
+        </ol>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- ═══════════ PART 1 ═══════════ -->
+<div class="part">
+  <span class="p-no">PART 1 / 3</span>
+  <h2>실화 — 세계관은 이미 존재한다</h2>
+  <p>이 게임은 배경을 지어내지 않는다. 2018년부터 2026년 7월 27일까지 실제로 일어난 일이 곧 세계관이고, 게임은 그 다음 날부터를 플레이어에게 맡긴다.</p>
+</div>
+
+<!-- ── 01 ── -->
+<section id="s01" class="first">
+  <span class="sec-no">SECTION 01</span>
+  <h2>8년의 여정 — 2018 → 2026 실제 연표</h2>
+  <p class="oneline">한 줄 요약 — 2018~2024 전사(前史)는 <b>15초 오프닝 요약</b>으로 압축한다. <b>2025 12일 전쟁부터는 관람이 아니라 플레이</b>다 — <span class="dec">결정 ①~⑤</span> 표시가 붙은 사건은 플레이어가 직접 다시 결정한다(3섹션).</p>
+
+  <details class="fold">
+    <summary>전사 2018 ~ 2024 — 접어둔 7년 <small>게임에서는 15초 뉴스릴로만 지나간다. 여기서 나온 "행동 패턴"이 이란 AI 규칙이 된다(9섹션)</small></summary>
+    <div class="scroll">
+      <table>
+        <thead><tr><th class="num">시기</th><th>사건</th><th>남긴 패턴</th></tr></thead>
+        <tbody>
+          <tr><td class="num">2018.05</td><td>트럼프, 핵합의(JCPOA) 일방 탈퇴 — "최대 압박" 제재</td><td>미국: 압박으로 재협상 강제</td></tr>
+          <tr><td class="num">2019.05~09</td><td>유조선 연쇄 피격(Front Altair 등) · 미 무인기 격추 → <strong>트럼프, 보복 공습 10분 전 취소</strong>("150명 사망은 비례적이지 않다") · Stena Impero 나포 · 사우디 석유시설 피격</td><td>이란: 부인 가능한 사보타주, 나포엔 나포 / 미국: 벼랑끝 후 막판 회피</td></tr>
+          <tr><td class="num">2020.01</td><td>솔레이마니 드론 표적 제거 → 이란, 알아사드 기지 <strong>사전 통보</strong> 탄도탄 보복(전사자 0)</td><td>미국: 참수 타격 / 이란: 체면치레형 사전통보 보복</td></tr>
+          <tr><td class="num">2023~24</td><td>후티 홍해 상선 공격(대리전) · 이란, 이스라엘 본토 첫 직접 공격 2회(드론·탄도탄 수백 발) → 이스라엘 반격으로 이란 방공망 대부분 무력화</td><td>이란: 대리세력 간접전, 물량 포화 공격</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <div class="tl">
+    <div class="tl-yr">2025 — 12일 전쟁 · 여기서 게임이 시작된다</div>
+    <div class="tl-ev big">
+      <span class="tl-date">06.13</span><b>이스라엘 Rising Lion 작전 — IRGC 총사령관 등 지휘부 20여 명 개전 첫날 사망</b>
+      <p>침투 드론+전투기 200여 대. 이란 지휘체계가 개전 수 시간 만에 마비.</p>
+      <span class="dec">결정 ① — 미국의 개입 수위를 당신이 정한다</span>
+    </div>
+    <div class="tl-ev big">
+      <span class="tl-date">06.22</span><b>미국 Midnight Hammer 작전 — B-2 7대, GBU-57 벙커버스터 14발</b>
+      <p>포르도·나탄즈 지하 농축시설 관통 폭격 + 잠수함발사 토마호크 약 30발로 이스파한 타격. 항공기 125대 이상 동원, 미 역사상 최대 B-2 실전.</p>
+      <span class="dec">결정 ② — 폭격 승인 여부와 폭격 런을 당신이 잡는다</span>
+      <span class="pat us">패턴 · 미국: 압도적 단기 화력, 점령전 회피</span>
+    </div>
+    <div class="tl-ev">
+      <span class="tl-date">06.22</span><b>이란 의회, 호르무즈 해협 봉쇄 결의 — 실행은 유보</b>
+      <p>세계 원유 물동량 약 20%가 지나는 지렛대를 흔들되, 최종 실행은 남겨두는 벼랑끝 화법.</p>
+      <span class="pat ir">패턴 · 이란: 봉쇄 위협은 카드, 실행은 최후 수단</span>
+    </div>
+    <div class="tl-ev">
+      <span class="tl-date">06.23~24</span><b>이란, 알우데이드 기지 사전통보 보복 → 다음 날 트럼프 휴전 선언</b>
+      <p>미사일 14발, 사상자 0. 양측이 휴전을 어기자 트럼프: "그들은 자기들이 뭘 하는지도 모른다(they don't know what the f*** they're doing)". 이후 휴전 유지 — 이른바 12일 전쟁.</p>
+      <span class="dec">결정 ③ — 내습 미사일 요격과 그 다음 수를 당신이 정한다</span>
+      <span class="pat us">패턴 · 미국: 정점에서 신속한 거래 강제</span>
+    </div>
+    <div class="tl-ev">
+      <span class="tl-date">06~09</span><b>이란 IAEA 사찰 중단 → 9월 유엔 스냅백 제재 전면 복원</b>
+      <p>60% 고농축 우라늄 400kg 이상의 행방이 검증 불가 상태로. 외교적 해법의 제도적 소멸.</p>
+    </div>
+
+    <div class="tl-yr">2026 — 전쟁</div>
+    <div class="tl-ev big">
+      <span class="tl-date">02.28</span><b>미·이스라엘 합동 공습, 최고지도자 하메네이 사망 — 전면전 발발</b>
+      <p>이란 40일 국가 애도 선포 후 전면 보복. 미 5함대 바레인 사령부 피격, 걸프 7개국으로 확전. 미국은 3개 항모전단(링컨·포드·부시), 함정 30척 이상 투입.</p>
+    </div>
+    <div class="tl-ev">
+      <span class="tl-date">03</span><b>이란, 호르무즈에 기뢰 1,000~3,000발 부설 — 해협 사실상 마비</b>
+      <p>미 소해함(어벤저급)은 5개월 전 전량 퇴역한 상태. 소해 전력 공백이 그대로 노출.</p>
+    </div>
+    <div class="tl-ev">
+      <span class="tl-date">04.08~13</span><b>파키스탄 중재 2주 휴전 → 이슬라마바드 협상 결렬 → 미 해상봉쇄 발동</b>
+      <p>21시간 3라운드 협상이 통항 관리권·핵 검증 두 쟁점에서 좌초.</p>
+      <span class="dec">결정 ④ — 결렬 직후의 다음 수를 당신이 정한다</span>
+    </div>
+    <div class="tl-ev">
+      <span class="tl-date">06.17</span><b>이슬라마바드 양해각서(14개항) 전자서명 — 60일 휴전, 해협 재개방 합의</b>
+      <p>300억 달러 재건·제재 해제·사찰 절차는 "60일 내 추후 협상"으로 미룸. 세부 통항로는 미확정.</p>
+      <span class="dec">결정 ⑤ — 이 조건에 서명할지 당신이 정한다</span>
+    </div>
+    <div class="tl-ev big">
+      <span class="tl-date">07.06~23</span><b>휴전 붕괴 — 상선 9척 피격, 유조선 나포, 미국 140개 표적 재공습, 후티 제2전선</b>
+      <p>트럼프 "휴전은 끝났다" 선언 후 3주 재교전. 브렌트유 91달러, 전쟁보험료 최대 40배. 트럼프는 "전례 없는 대규모 공격"을 경고.</p>
+    </div>
+    <div class="tl-ev">
+      <span class="tl-date">07.25~26</span><b>이틀 연속 공습 중단 — 오만 중재 실무협상 개시. "군은 여전히 대기태세"</b>
+      <p>여기까지가 실화다. <strong>그리고 게임이 시작된다.</strong></p>
+    </div>
+  </div>
+
+  <div class="note calm">
+    <span class="lab">이 연표가 게임에서 하는 일</span>
+    <p>① 2018~2024는 15초 뉴스릴, <strong>2025.6부터는 직접 플레이하는 재연 구간</strong>이 된다(3섹션). ② 행동 패턴 태그가 그대로 <strong>이란 AI의 행동 규칙</strong>이 된다(9섹션). ③ 플레이어가 쓰는 카드 대부분이 이 연표 속 <strong>실제 있었던 수</strong>다(10섹션) — 10분 전 취소, 사전통보 보복, 벙커버스터, 스냅백, 중재 채널 전부.</p>
+  </div>
+</section>
+
+<!-- ── 02 ── -->
+<section id="s02">
+  <span class="sec-no">SECTION 02</span>
+  <h2>오늘의 전황 — 게임이 시작되는 지점</h2>
+  <p class="oneline">한 줄 요약 — 본편(챕터 2)의 DAY 1은 <b>2026년 7월 28일(실제 내일)</b>. 소강 이틀째, 판은 이렇게 놓여 있다. 재연 구간의 선택이 아래 시작값을 ±5 보정한다.</p>
+
+  <div class="stats">
+    <div class="stat"><span>해협 통항률</span><b>30%</b><i>기뢰 1,000발+ 부설, 상선 9척 피격 여파</i></div>
+    <div class="stat"><span>브렌트유</span><b>$84</b><i>7/21 $91 정점 후 소강 기대로 되돌림</i></div>
+    <div class="stat"><span>전쟁 보험료</span><b>40배</b><i>선체가치 대비 0.25% → 3~10%</i></div>
+    <div class="stat"><span>확전 단계</span><b>3 / 5</b><i>제한 교전 — 이틀째 공습 중단 중</i></div>
+    <div class="stat"><span>요격탄 재고</span><b>바닥</b><i>THAAD 360발 중 290발 소모, 패트리엇 60%↓</i></div>
+    <div class="stat"><span>협상 채널</span><b>오만</b><i>테헤란에서 차관급 실무협상 진행 중</i></div>
+  </div>
+
+  <h3>플레이어가 물려받는 5가지 현실</h3>
+  <ul>
+    <li><strong>제공권은 이미 미국에 있다</strong> — 이란 방공망(S-300)은 2024~26년에 걸쳐 대부분 무력화. 공습 자체는 쉽다. 문제는 그 다음이다.</li>
+    <li><strong>탄약고가 비어간다</strong> — 토마호크 재고 1/3 소모(재생산 47개월), THAAD 잔여 70발, 패트리엇 최대 1,430발 소모. <strong>이란의 미사일 물량(12일 전쟁에서 550발+드론 1,000기)을 전부 요격하는 시대는 끝났다.</strong></li>
+    <li><strong>소해 전력 공백</strong> — 어벤저급 소해함 4척은 작년 9월 전량 퇴역. 지금 걸프엔 LCS 기뢰전함 3척뿐. 기뢰 1,000~3,000발 제거엔 시간이 걸린다.</li>
+    <li><strong>이란 정권은 승계 위기</strong> — 하메네이 사후 신임 지도부는 취약하다. 더 몰아붙이면 무너질 수도, 잃을 게 없어질 수도 있다.</li>
+    <li><strong>협상 문이 반쯤 열려 있다</strong> — 오만 실무협상 진행 중. 그러나 6월 양해각서는 3주 만에 깨졌다. 종이가 아니라 구조를 만들어야 한다.</li>
+  </ul>
+
+  <div class="note">
+    <span class="lab">픽션 전환 고지</span>
+    <p>DAY 1(7월 28일)부터의 모든 사건은 <strong>가상 시뮬레이션</strong>이다. 게임 내 이란 신임 지도부는 실명을 쓰지 않는 가상 인물로 처리한다. 이 경계는 게임 첫 화면과 README에 명시한다(14섹션).</p>
+  </div>
+</section>
+
+<!-- ═══════════ PART 2 ═══════════ -->
+<div class="part">
+  <span class="p-no">PART 2 / 3</span>
+  <h2>게임 — 디자인과 룰</h2>
+  <p>보는 맛(비주얼)이 1순위, 만지는 맛(직접 조작)이 2순위, 그 아래에 시뮬레이션 룰이 받친다.</p>
+</div>
+
+<!-- ── 03 ── -->
+<section id="s03" class="first">
+  <span class="sec-no">SECTION 03</span>
+  <h2>시간 구조 — 12일 전쟁에서 시작한다</h2>
+  <p class="oneline">한 줄 요약 — <b>"12일 전쟁(2025.6)의 실제 결정 5개를 재연으로 겪고, 실화가 끝난 지점부터 18일을 자유 지휘한다."</b> 분량 = 재연 12일 + 본편 18일, 총 8~10분.</p>
+
+  <h3>과거부터인가, 미래부터인가 — 검토와 결론</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>안</th><th>내용</th><th>판정</th></tr></thead>
+      <tbody>
+        <tr><td>A. 과거 완전 자유</td><td>12일 전쟁부터 역사를 마음대로 바꾸는 완전 분기</td><td><span class="dn">기각</span> — 분기 폭발로 스코프 감당 불가, "실화 기반"이라는 매력 자체가 소멸</td></tr>
+        <tr><td>B. 미래만</td><td>2026.7.28부터만 플레이</td><td><span class="dn">아쉬움</span> — 개발 최소지만 B-2 출격·사전통보 보복 같은 12일 전쟁의 드라마를 구경도 못 함</td></tr>
+        <tr><td><strong>C. 하이브리드</strong></td><td><strong>과거 = 레일 위의 결정 재연(결과는 역사로 수렴), 미래 = 자유 시뮬레이션</strong></td><td><span class="up">채택</span> — 실화 유지 + 드라마 체험 + 재연이 튜토리얼을 겸함</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>3챕터 진행</h3>
+  <div class="acts">
+    <div class="act a2">
+      <div class="hd"><span class="no">챕터 1 · 재연</span><h3>12일 전쟁</h3><span class="chip">2025.6.13 ~ 24 · 약 90초</span></div>
+      <p>15초 전사(前史) 뉴스릴 후 곧장 전쟁 한복판. 12일을 <strong>결정 포인트 3개(①~③)</strong>로 압축해 트럼프가 실제 마주한 선택을 당신이 다시 내린다. 결정 후엔 "실제 역사의 선택"이 공개된다 — 당신은 역사와 같았는가.</p>
+    </div>
+    <div class="act a3">
+      <div class="hd"><span class="no">브리지 · 재연</span><h3>2026 격동</h3><span class="chip">2026.2 ~ 7 · 약 40초</span></div>
+      <p>전면전 발발~휴전 붕괴는 뉴스릴 몽타주로 흐르고, <strong>결정 포인트 2개(④~⑤)</strong>에서만 멈춘다. 여기서의 선택이 본편 시작 지표를 보정한다.</p>
+    </div>
+    <div class="act a1">
+      <div class="hd"><span class="no">챕터 2 · 본편</span><h3>소강의 18일</h3><span class="chip">2026.7.28 ~ 8.14 · 약 7분</span></div>
+      <p>실화가 끝난 지점부터 <strong>완전 자유</strong>. 4막 구조(7섹션)와 모든 시스템이 여기서 돌아간다. 어떤 역사를 만들지는 당신 몫이다.</p>
+    </div>
+  </div>
+
+  <h3>재연 결정 5개 — 튜토리얼을 겸한다</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th class="num">#</th><th>시점</th><th>당신이 내리는 결정</th><th>실제 역사</th><th>가르치는 조작</th></tr></thead>
+      <tbody>
+        <tr><td class="num">①</td><td class="num">25.06.13</td><td>이스라엘 개전 — 미국의 개입 수위 (거리두기 / 방공 지원 / 참전 준비)</td><td>방공 지원 후 단계적 개입</td><td>지표·카드 UI 읽는 법</td></tr>
+        <tr><td class="num">②</td><td class="num">25.06.21</td><td>Midnight Hammer — B-2 폭격 승인 여부</td><td>승인 — B-2 7대, GBU-57 14발</td><td>폭격 런 (탭 타이밍)</td></tr>
+        <tr><td class="num">③</td><td class="num">25.06.23</td><td>알우데이드 보복 대응 — 요격 후 재보복인가 휴전인가</td><td>전량 요격, 다음 날 휴전 선언</td><td>이지스 요격 (탭)</td></tr>
+        <tr><td class="num">④</td><td class="num">26.04.13</td><td>협상 결렬 직후 — 해상봉쇄 / 공습 재개 / 협상 연장</td><td>해상봉쇄 발동</td><td>지휘 페이즈 (함대 배치)</td></tr>
+        <tr><td class="num">⑤</td><td class="num">26.06.17</td><td>이슬라마바드 양해각서 — 이 조건에 서명하는가</td><td>서명 — 3주 뒤 붕괴</td><td>협상 조항 슬라이더</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note calm">
+    <span class="lab">수렴 원칙 — 재연의 룰</span>
+    <p>재연 구간의 선택은 <strong>역사를 바꾸지 못한다. 대신 당신이 물려받을 판을 바꾼다</strong> — 시작 지표(지지율·국제지지·탄약·이란 안정도)가 ±5 안에서 보정되고, 종료 화면에 "실제 역사와의 일치율 N%"가 표시된다. 하메네이 사망(2/28) 같은 민감 사건은 결정 대상에서 제외하고 뉴스릴로만 다룬다. 두 번째 판부터는 재연 스킵 버튼이 기본 노출된다.</p>
+  </div>
+
+  <h3>플레이어가 하는 4가지 행위 (본편 기준)</h3>
+  <p><strong>3D 전장이 화면의 전부이며, 전쟁은 방송처럼 자동으로 흐른다.</strong> 플레이어는 떠오르는 선택 버튼으로만 개입한다 — 카드 손패·AP 관리는 화면에서 제거하고 내부 데이터로만 유지한다(상세: 화면 구성서 v1.0).</p>
+
+  <div class="scroll">
+    <table>
+      <caption>플레이어가 하는 4가지 행위</caption>
+      <thead><tr><th>층위</th><th>행위</th><th>빈도</th><th>재미의 성격</th></tr></thead>
+      <tbody>
+        <tr><td><strong>전략</strong></td><td>아침 방침 — 상황이 큐레이션한 <strong>3택 버튼</strong> (내부적으로 카드 34장 중 추천 3장)</td><td>매일 1회</td><td>고민 — "무엇을 할 것인가"</td></tr>
+        <tr><td><strong>전술</strong></td><td>함대 이동도 <strong>버튼으로</strong> ("항모를 병목 안으로 전진") — 직접 드래그 없음</td><td>버튼에 포함</td><td>체스 — "어디에 둘 것인가"</td></tr>
+        <tr><td><strong>대응</strong></td><td>이란 도발에 타이머 선택 버튼 (10초)</td><td>불시</td><td>순발력 — "10초 안에 결정하라"</td></tr>
+        <tr><td><strong>개입</strong></td><td>요격 탭·소해 드래그·B-2 릴리즈 미니게임 (자동 해결 토글)</td><td>위기 시</td><td>손맛 — "직접 막아낸다"</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>홍보물로서의 설계 근거</strong> — 8분 완결(링크 누르는 부담 0), 매판 다른 종료일·엔딩("내 전쟁은 8월 6일에 끝났다"가 공유 문구), 종료 화면=공유 카드 1장, 서버 불필요(정적 배포·소스 공개), 그리고 <strong>지금 뉴스에 나오는 실화</strong>라 설명이 필요 없다.</p>
+</section>
+
+<!-- ── 04 ── -->
+<section id="s04">
+  <span class="sec-no">SECTION 04</span>
+  <h2>비주얼 디자인 (최우선)</h2>
+  <p class="oneline">한 줄 요약 — 컨셉은 <b>"상황실 홀로그램 해도(海圖)"</b>. 사실적 전장이 아니라, 대통령 상황실 테이블 위에 떠 있는 빛나는 작전 지도를 내려다본다.</p>
+
+  <h3>왜 이 방향인가</h3>
+  <ul>
+    <li><strong>실루엣은 실물, 질감은 홀로그램</strong> — 항모·전투기·고속정을 알아볼 수 있는 <strong>실물 실루엣 로우폴리</strong>로 만들되, 표면은 텍스처 대신 발광 와이어+반투명 면으로 처리한다. "진짜 같아 보이는데 가볍다"가 목표.</li>
+    <li><strong>저사양 폰에서 60fps</strong> — 홍보용 게임은 아무 폰에서나 열려야 한다. 유닛당 300~800폴리곤, 텍스처 0장, 라이트 2개.</li>
+    <li><strong>수위 관리가 공짜</strong> — 유혈 없는 기호적 전장. 피격은 섬광과 연기 파티클로만.</li>
+  </ul>
+
+  <h3>유닛 비주얼 시안 — 이 게임의 얼굴</h3>
+  <figure class="chart">
+    <canvas id="unitGallery" width="1480" height="640" role="img" aria-label="유닛 아이콘 시안 10종: 항모, 이지스 구축함, 소해함, 잠수함, 전투기 편대, B-2 폭격기, 고속정 스웜, 자폭 드론, 기뢰밭, 미사일 요격전."></canvas>
+    <figcaption>탑다운 실루엣 시안 (실제 3D 모델의 조형 언어). 청록=미군 · 호박=이란 · 적색=위협 이벤트. 모든 유닛은 실존 무기의 실루엣을 따른다.</figcaption>
+  </figure>
+
+  <div class="scroll">
+    <table>
+      <caption>화면 구성 요소</caption>
+      <thead><tr><th>요소</th><th>표현</th></tr></thead>
+      <tbody>
+        <tr><td>날짜 카운터</td><td>좌상단 고정. <span class="mono">DAY 1 · 7.28</span> 형식. 막 전환 시 전체 화면 타이틀 연출</td></tr>
+        <tr><td>지형</td><td>이란 남해안(북) · 오만 무산담(남) · 병목 · 걸프. 등심선 3겹 와이어프레임 + 은은한 수면 셰이더</td></tr>
+        <tr><td>미군</td><td>청록 발광 실루엣 — 항모전단(호위함 링 포함), 구축함, LCS, 잠수함(반투명), 항공기(고도별 크기)</td></tr>
+        <tr><td>이란</td><td>호박 발광 실루엣 — 고속정 무리, 연안 미사일 포대(부채꼴 사거리 표시), 기뢰밭(빗금 구역), 드론</td></tr>
+        <tr><td>민간</td><td>백색 점 = 유조선. <strong>통항률 숫자가 아니라 배의 개수와 속도로 체감된다</strong></td></tr>
+        <tr><td>분위기</td><td>확전 단계가 화면 색온도를 바꾼다 — 소강(청록) → 교전(호박) → 전면전(적색) → 협상(채도 하강)</td></tr>
+        <tr><td>카메라</td><td>비스듬한 부감. 이벤트 좌표로 부드러운 이동+줌. 두 손가락으로 자유 회전/줌 허용</td></tr>
+        <tr><td>사운드</td><td>무전 잡음 베이스. 확전 단계마다 밀도 상승. 요격 성공/실패에 명확한 청각 피드백</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>연출 프리셋 8종 — 카드 34장 전부를 이걸로 커버</h3>
+  <p>카드마다 전용 애니메이션을 만들면 개발이 끝나지 않는다. 재사용 연출 8개를 만들고 카드는 조합만 호출한다. <strong>스코프 관리의 핵심.</strong></p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th class="num">#</th><th>프리셋</th><th>쓰이는 곳</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td><strong>전개</strong> — 실루엣이 경로 따라 진입</td><td>항모전단, 구축함, 잠수함, LCS</td></tr>
+        <tr><td class="num">2</td><td><strong>발사</strong> — 궤적선+임팩트 섬광</td><td>토마호크, 대함미사일, 탄도탄, B-2 투하</td></tr>
+        <tr><td class="num">3</td><td><strong>피격</strong> — 폭발 파티클+연기 기둥</td><td>유조선 피격, 기뢰 접촉, 기지 피격</td></tr>
+        <tr><td class="num">4</td><td><strong>스캔</strong> — 부채꼴 스윕+정보 태그</td><td>P-8A/MQ-9 정찰, 사이버, 기밀 공개</td></tr>
+        <tr><td class="num">5</td><td><strong>봉쇄</strong> — 빗금 구역 생성/소멸</td><td>기뢰밭, 항로 폐쇄, 배제 수역</td></tr>
+        <tr><td class="num">6</td><td><strong>군집</strong> — 점 20~40개 무리 기동</td><td>고속정 스웜, 샤헤드 드론 파상, 유조선 선단</td></tr>
+        <tr><td class="num">7</td><td><strong>신호</strong> — 도시 아이콘 팝업+연결선</td><td>오만 중재, 유엔, 제재, 심리전</td></tr>
+        <tr><td class="num">8</td><td><strong>충격</strong> — 색온도 전환+진동</td><td>확전 상승, 유가 폭등, 막 전환, 엔딩</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note calm">
+    <span class="lab">UI 철칙</span>
+    <p>글자는 전부 HTML 오버레이. 3D 안에는 한 글자도 넣지 않는다 — 한글 텍스처 폰트는 글리프 누락과 용량 폭증의 지옥이다. <strong>캔버스는 그림, DOM은 글.</strong></p>
+  </div>
+</section>
+
+<!-- ── 05 ── -->
+<section id="s05">
+  <span class="sec-no">SECTION 05</span>
+  <h2>캔버스 직접 조작 — 배치와 개입</h2>
+  <p class="oneline">한 줄 요약 — 전쟁은 자동으로 흐르지만, <b>함대의 위치는 버튼으로 정하고, 날아오는 미사일은 손으로 막는다.</b></p>
+
+  <h3>① 배치 결정 — 버튼으로 정하는 전술</h3>
+  <p>배치 제안이 뜨면(예: "항모전단을 병목 안으로 전진시킬까요?") 버튼으로 결정한다. 선택 즉시 3D에서 함대가 이동하는 연출이 재생된다. <strong>배치가 곧 전술이다</strong> — 어느 구역에 두느냐가 이후 모든 선택지를 바꾼다.</p>
+  <div class="scroll">
+    <table>
+      <caption>배치 구역과 트레이드오프</caption>
+      <thead><tr><th>구역</th><th>효과</th><th>위험</th></tr></thead>
+      <tbody>
+        <tr><td><strong>해협 병목 안</strong></td><td>통항률 회복 최대, 소해·호송 효율 ↑</td><td>연안 미사일·고속정·기뢰의 사정권 한복판</td></tr>
+        <tr><td><strong>오만만 (해협 밖)</strong></td><td>항공작전 유지하며 피격 위험 낮음</td><td>통항 보호 효과 절반</td></tr>
+        <tr><td><strong>북아라비아해 (원해)</strong></td><td>안전. 탄도탄 사거리 밖</td><td>전투기 왕복 급유 필요 — 작전 효율 ↓</td></tr>
+        <tr><td><strong>바레인 보급</strong></td><td>군사 태세(탄약) 회복</td><td>그 날 해당 유닛 작전 불가</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>배치 대상: <strong>항모전단(호위 링 통째로) · 구축함 2척 · LCS 소해함 · 잠수함(이란에게 안 보임) · 초계 항공기.</strong> 무입력 시 참모 추천 배치가 자동 적용된다 — 관전만 해도 게임은 굴러간다.</p>
+
+  <h3>② 개입 순간 — 위기를 직접 손으로 막는 미니게임 4종</h3>
+  <p>위기 이벤트 때 화면이 그 지점으로 줌인되며 10~15초짜리 조작이 열린다. <strong>전부 자동 해결 토글 가능</strong>(접근성+속도). 직접 하면 자동 해결보다 기대값이 약간 높다 — 손맛에 대한 보상.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>미니게임</th><th>실제 모델</th><th>조작</th><th>결과</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>이지스 요격</strong></td>
+          <td>SM-6 / ESSM / CIWS 3중 방공망</td>
+          <td>내습하는 샤헤드 드론·대함탄도탄 궤적을 탭. 가까울수록 CIWS(마지막 찬스) 판정</td>
+          <td>놓친 수만큼 피격. <strong>탭 1번 = 요격탄 재고 1 소모</strong> — 아껴 쏘는 게 실력</td>
+        </tr>
+        <tr>
+          <td><strong>소해 항로 개척</strong></td>
+          <td>LCS 무인소해정(USV) 운용</td>
+          <td>기뢰 탐지 마커 사이로 소해정을 드래그 — 지나간 자리가 안전 항로가 된다</td>
+          <td>개척 폭만큼 통항률 회복. EM-52 상승기뢰(반짝임)는 근접 시 즉폭 — 우회 필수</td>
+        </tr>
+        <tr>
+          <td><strong>초계 항로 드로잉</strong></td>
+          <td>F/A-18 편대 CAP + P-8A</td>
+          <td>손가락으로 초계 루트를 그린다 — 루트가 덮은 구역의 이란 활동이 다음 날 공개</td>
+          <td>정보 획득 + 해당 구역 이란 기습 무효화. 연안 사거리 부채꼴에 겹치면 피격 위험</td>
+        </tr>
+        <tr>
+          <td><strong>B-2 폭격 런</strong></td>
+          <td>GBU-57 관통폭탄 투하 (Midnight Hammer 모델)</td>
+          <td>표적 상공 진입, 수축하는 원이 조준점과 겹치는 순간 릴리즈 탭</td>
+          <td>정확도에 따라 파괴율 60~100%. 실패 시 재출격 불가(하루 소모)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <span class="lab">구현 수위 — "손맛은 살짝" (확정)</span>
+    <p>1차 구현은 <strong>이지스 요격 + 소해 항로</strong> 2종을 완성도 있게. <strong>B-2 폭격 런은 요격과 같은 탭-타이밍 입력을 재사용</strong>하므로 추가 비용이 거의 없어 함께 넣는다. 초계 항로 드로잉은 후속 업데이트로 미룬다. 모든 개입은 자동 해결 토글 유지 — 조작이 부담인 플레이어도 끝까지 간다.</p>
+  </div>
+  <div class="note">
+    <span class="lab">설계 의도</span>
+    <p>전략 게임의 약점은 "숫자만 오르내린다"는 감각이다. 개입 순간은 <strong>추상적 지표를 몸으로 느끼는 순간</strong>으로 바꾼다 — 요격탄 재고가 숫자가 아니라 "아까 내가 아껴 쏜 그 미사일"이 된다.</p>
+  </div>
+</section>
+
+<!-- ── 06 ── -->
+<section id="s06">
+  <span class="sec-no">SECTION 06</span>
+  <h2>하루의 흐름 — 선택 버튼과 타이머</h2>
+  <p class="oneline">한 줄 요약 — 하루 = <b>브리핑 → 카드 → 지휘 → 이란의 수(타이머 선택) → 정산</b>. 1일 30~60초.</p>
+
+  <div class="mockwrap">
+    <div class="mock" role="img" aria-label="게임 화면 목업: 상단 날짜와 계기판, 중앙 3D 해도, 이란 도발에 대한 타이머 선택 팝업, 하단 카드 6장.">
+      <div class="m-hud"><b>DAY 4 · 7.31</b><span>ACT I 소강</span></div>
+      <div class="m-dials">
+        <div class="m-dial">통항<b>38%</b></div>
+        <div class="m-dial">유가<b>$87</b></div>
+        <div class="m-dial">지지<b>46</b></div>
+        <div class="m-dial">국제<b>58</b></div>
+        <div class="m-dial">탄약<b>41</b></div>
+        <div class="m-dial">확전<b>3</b></div>
+      </div>
+      <div class="m-view"><span class="vlab">3D 해도 (조작 가능)</span></div>
+      <div class="m-pop">
+        <div class="t">IRGC 고속정 6척, 호송대 500m 접근 중</div>
+        <div class="m-timer"><i></i></div>
+        <div class="m-btns">
+          <div class="m-btn">경고사격 — 확전 유지, 60% 물러남</div>
+          <div class="m-btn">회피 기동 — 안전, 통항 −4</div>
+          <div class="m-btn hot">격침 허가 — 확전 +1, 위협 제거</div>
+        </div>
+      </div>
+      <div class="m-hand">
+        <div class="m-card"><b>속보</b> 브렌트유 $96 돌파 ··· 오만 "중재 채널 열려 있다" ··· 제5함대 호송 재개 ···</div>
+      </div>
+    </div>
+    <ul class="mock-notes">
+      <li><b>타이머 선택 팝업이 이 게임의 심장</b> — 이란의 수가 나오면 10초 타이머와 함께 대응 버튼 2~3개가 뜬다. 시간 안에 못 고르면 참모 권고안이 자동 실행된다.</li>
+      <li>같은 도발이라도 <b>내 함대가 어디 있느냐(이전 배치 버튼 선택)</b>에 따라 선택지가 달라진다 — 구축함이 근처에 있어야 "격침 허가"가 뜬다.</li>
+      <li>버튼엔 결과 요약이 미리 적혀 있다 — 기억력 테스트가 아니라 판단 테스트.</li>
+      <li>하단은 손패가 아니라 <b>속보 티커</b> — 세계의 반응이 자막으로 흐른다. 카드는 내부 데이터로만 존재하고, 화면엔 항상 버튼만 뜬다.</li>
+    </ul>
+  </div>
+
+  <ol class="flow">
+    <li><b>아침 브리핑 (5초)</b><em>날짜 카운터가 넘어가고, 카메라가 밤사이 사건 지점으로 이동. 참모 보고 2~3줄.</em></li>
+    <li><b>아침 방침 선택 (15초, 무입력 시 자동)</b><em>상황이 큐레이션한 3택 버튼. 전략의 무게중심을 정한다.</em></li>
+    <li><b>배치 제안 (해당일에만)</b><em>"항모를 병목 안으로?" 같은 함대 이동 버튼이 방침에 딸려 나온다.</em></li>
+    <li><b>연출 재생 (5~8초, 스킵 가능)</b><em>낸 카드가 3D에서 실행된다.</em></li>
+    <li><b>이란의 수 (불시)</b><em>타이머 선택 팝업 또는 개입 미니게임 발동. 정찰해뒀다면 미리 보였을 것이다.</em></li>
+    <li><b>정산 (5초)</b><em>지표 변동. 확전이 올랐으면 화면 전체가 한 번 붉게 번쩍인다.</em></li>
+  </ol>
+</section>
+
+<!-- ── 07 ── -->
+<section id="s07">
+  <span class="sec-no">SECTION 07</span>
+  <h2>4막 구조 — 소강 · 재개전 · 소모 · 출구</h2>
+  <p class="oneline">한 줄 요약 — 막은 날짜가 아니라 <b>상태로 전환</b>된다. 총 18일(7.28 ~ 8.14) 안에서 매판 다른 경로를 그린다.</p>
+
+  <div class="acts">
+    <div class="act a1">
+      <div class="hd"><span class="no">ACT I</span><h3>소강 — 지금 이 상태</h3><span class="chip">DAY 1부터</span></div>
+      <p>공습은 멎었지만 기뢰는 그대로, 후티는 홍해를 조이고, 오만 협상은 살얼음이다. 소강을 <strong>유지하며</strong> 통항을 회복하고 협상 모멘텀을 만들 수 있는가.</p>
+      <p class="exit"><b>갈림길 →</b> 확전을 2까지 내리고 협상을 타결하면 <strong>재개전 없이 최고 엔딩</strong>. 이란 상선 공격 재개(7/6의 재현) 또는 플레이어의 공세 카드로 <strong>ACT II로 추락</strong>.</p>
+    </div>
+    <div class="act a2">
+      <div class="hd"><span class="no">ACT II</span><h3>재개전</h3><span class="chip">상태 전환</span></div>
+      <p>첫 재교전. 확전 4로 강제 상승, 유가 급등 이벤트 자동 발동. 전 공격 카드 해금, 일부 외교 카드 잠금. <strong>초반 72시간에 제해권을 굳히면 짧게 끝낼 수 있다</strong> — 12일 전쟁이 증명한 모델이다.</p>
+      <p class="exit"><b>갈림길 →</b> 여기서 확전 5 도달 시 즉시 최악 엔딩. 사흘 내 이란 타격력을 꺾으면 유리한 소모전으로.</p>
+    </div>
+    <div class="act a3">
+      <div class="hd"><span class="no">ACT III</span><h3>소모</h3><span class="chip">재개전 +3일 후</span></div>
+      <p>본편. <strong>요격탄 재고와 이란 미사일 재고의 고갈 경주.</strong> 후티 제2전선(바브엘만데브)이 유가를 이중으로 조인다. 이란 정권 안정도가 흔들리기 시작 — 무너뜨릴 것인가, 협상 상대로 남길 것인가.</p>
+      <p class="exit"><b>갈림길 →</b> 휴전 트랙은 언제든 개방. 이르면 협상력이 없고 늦으면 지지율이 무너진다.</p>
+    </div>
+    <div class="act a4">
+      <div class="hd"><span class="no">ACT IV</span><h3>출구</h3><span class="chip">DAY 13+ 또는 협상 개시</span></div>
+      <p>양쪽 다 지쳤다. 종전 카드 전면 해금, 공격 카드 비용 2배(여론 저항). <strong>매일 지지율 −4 자동 하락 — 시간이 적이다.</strong> 이슬라마바드 양해각서 2.0을 조립하라(11섹션).</p>
+      <p class="exit"><b>끝 →</b> 협상 성립 시 합의 조항이 그대로 엔딩 텍스트가 된다. DAY 18까지 못 끝내면 「끝나지 않는 전쟁」.</p>
+    </div>
+  </div>
+
+  <h3>확전 사다리 — 올라가긴 쉽고 내려오긴 어렵다</h3>
+  <div class="ladder">
+    <div class="rung r1"><span class="lv">LV 1</span><div><strong>종전 국면</strong><small>총성이 멎고 절차만 남음</small></div></div>
+    <div class="rung r2"><span class="lv">LV 2</span><div><strong>잠정 정전</strong><small>공습 중단이 구조화됨 — 협상의 창</small></div></div>
+    <div class="rung r3 now"><span class="lv">LV 3</span><div><strong>제한 교전 — 시작 지점</strong><small>산발적 타격·나포가 오가는 소강. 7월 27일의 현실</small></div></div>
+    <div class="rung r4"><span class="lv">LV 4</span><div><strong>전면 교전</strong><small>본토 타격 재개. 이란 '절박' 전이 위험. 동맹 이탈 시작</small></div></div>
+    <div class="rung r5"><span class="lv">LV 5</span><div><strong>통제 불능</strong><small>지역 대전·핵 문턱 — 즉시 게임 종료</small></div></div>
+  </div>
+  <p>내리는 방법은 오만 중재·임시 정전·인도적 조치뿐, 그마저 조건부다. 이 비대칭이 <strong>"전쟁은 시작보다 끝내기가 어렵다"</strong>는 메시지를 룰로 말한다.</p>
+</section>
+
+<!-- ── 08 ── -->
+<section id="s08">
+  <span class="sec-no">SECTION 08</span>
+  <h2>계기판 6+1 — 재고가 곧 전략</h2>
+  <p class="oneline">한 줄 요약 — 항상 떠 있는 6개 지표. 그리고 <b>재고 시스템</b>이 이 게임을 다른 전쟁 게임과 다르게 만든다.</p>
+
+  <div class="stats">
+    <div class="stat"><span>해협 통항률</span><b>30%</b><i>목표 지표. 90%+ = 해협 개방 판정</i></div>
+    <div class="stat"><span>국제 유가</span><b>$84</b><i>$200 초과 = 세계경제 붕괴 엔딩</i></div>
+    <div class="stat"><span>국내 지지율</span><b>44</b><i>30 미만 2일 연속 = 레임덕 엔딩</i></div>
+    <div class="stat"><span>국제 지지</span><b>55</b><i>동맹·보증 카드의 사용 조건</i></div>
+    <div class="stat"><span>전력·탄약</span><b>45</b><i>요격탄+토마호크+가동률 통합. 0이면 작전 불가</i></div>
+    <div class="stat"><span>확전 단계</span><b>3 / 5</b><i>5 도달 즉시 종료</i></div>
+  </div>
+
+  <div class="note calm">
+    <span class="lab">숨은 7번째 — 이란 정권 안정도 (시작 40)</span>
+    <p>평소엔 "동요하는 듯" 같은 흐릿한 문구만 보인다. 정찰 카드를 써야 실측된다. 하메네이 사후 승계 위기로 <strong>이미 '절박' 문턱(35) 바로 위에서 시작</strong>한다 — 한두 번의 압박이 정권을 낭떠러지로 민다. 이 게임의 중앙 함정.</p>
+  </div>
+
+  <h3>재고 시스템 — 실전 데이터가 룰이 된다</h3>
+  <p>무기가 무한하지 않다. 2026년 전쟁의 <strong>실제 소모 데이터</strong>를 그대로 초기값으로 쓴다.</p>
+  <div class="scroll">
+    <table>
+      <caption>실제 소모 현황 → 게임 재고 룰</caption>
+      <thead><tr><th>자원</th><th>실제 상황 (보도 기준)</th><th>게임 룰</th></tr></thead>
+      <tbody>
+        <tr><td>토마호크</td><td>재고 약 3,100발 중 1,000발+ 소모. 재생산 47개월</td><td>타격 카드 사용 횟수 유한. 잔량이 카드에 표시</td></tr>
+        <tr><td>THAAD 요격탄</td><td>360발 중 290발 소모 — <strong>잔여 70발</strong></td><td>탄도탄 방어 자동 성공률이 재고에 비례해 하락</td></tr>
+        <tr><td>패트리엇</td><td>2,330발 중 최대 1,430발 소모. 발당 $2~4M</td><td>기지 방어 이벤트의 성공 확률 자원</td></tr>
+        <tr><td>MQ-9 리퍼</td><td>개전 후 24대 격추 (약 $7.2억 손실)</td><td>정찰 카드 실패 시 드론 손실 → 정찰 비용 상승</td></tr>
+        <tr><td>이란 탄도탄</td><td>12일 전쟁에서 550발+ 발사 실적 — 물량은 여전</td><td>이란도 소모된다: 파상공세를 버텨내면 후반 화력 급감</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><strong>지표끼리 서로 싸운다</strong> — 통항을 올리는 군사작전은 확전·탄약을 깎고, 지지율을 올리는 강경 발언은 협상 문을 닫고, 이란을 압박하면 정권이 '절박'으로 넘어간다. 모든 지표를 동시에 올리는 수는 존재하지 않는다. 그게 게임의 전부다.</p>
+</section>
+
+<!-- ── 09 ── -->
+<section id="s09">
+  <span class="sec-no">SECTION 09</span>
+  <h2>이란 AI — 역사가 만든 행동 규칙</h2>
+  <p class="oneline">한 줄 요약 — 이란은 난이도 수치가 아니라 <b>1섹션 연표에서 추출한 실제 행동 패턴</b>으로 움직이는 인격체다. 그 태세는 플레이어가 만든다.</p>
+
+  <div class="scroll">
+    <table>
+      <caption>3태세 — 전이 조건과 행동</caption>
+      <thead><tr><th>태세</th><th class="num">조건</th><th>주로 두는 수 (실제 전례)</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>실용</strong><br><small>협상파 주도</small></td>
+          <td class="num">안정도 55↑<br>확전 ≤2</td>
+          <td>나포 후 석방(탈라라 모델), 회색지대 사보타주, 협상 제안, 조건부 통항 허용</td>
+        </tr>
+        <tr>
+          <td><strong>강경</strong><br><small>IRGC 주도 — 시작 태세</small></td>
+          <td class="num">안정도 35~55<br>또는 확전 4</td>
+          <td>상선 미사일 공격(7월의 재현), 고속정 스웜, 샤헤드 파상공세, 후티 전선 확대</td>
+        </tr>
+        <tr>
+          <td><strong>절박</strong><br><small>정권 존망 국면</small></td>
+          <td class="num">안정도 35↓<br>또는 확전 5 근접</td>
+          <td>해협 전면 봉쇄 실행(결의의 실행), 기지 실사격 타격(사전통보 없는 알우데이드), <strong>60% 우라늄 400kg 핵 돌파 선언</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>역사 패턴 → AI 규칙 변환표</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>실제 패턴 (연도)</th><th>게임 속 규칙</th></tr></thead>
+      <tbody>
+        <tr><td>체면치레형 사전통보 보복 (2020 알아사드, 2025 알우데이드)</td><td>'실용·강경' 태세의 보복은 <strong>피해 최소화형</strong> — 예고가 오면 요격 미니게임 난이도가 낮다</td></tr>
+        <tr><td>나포엔 나포, 대칭 보복 (2019 Stena Impero)</td><td>플레이어가 이란 유조선을 나포하면 반드시 상선 나포로 응수한다</td></tr>
+        <tr><td>부인 가능한 사보타주 (2019 유조선 연쇄)</td><td>확전을 안 올리는 저강도 도발 — 대응 버튼에서 과잉 대응하면 오히려 내 확전만 오른다</td></tr>
+        <tr><td>대리세력 간접전 (2023~ 후티)</td><td>이란 본토를 때릴수록 후티 전선이 활성화 — 정면이 조용해도 유가는 계속 죈다</td></tr>
+        <tr><td>봉쇄 위협은 카드, 실행은 최후 수단 (2025 의회 결의)</td><td>전면 봉쇄는 '절박' 태세 전용 — 그 전까지는 협박으로만 쓴다</td></tr>
+        <tr><td>물량 포화 공격 (2024~25, 탄도탄 550발+드론 1,000기)</td><td>요격탄 소진을 노린 파상공세 — 전부 요격하려 들면 재고가 먼저 마른다</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note warn">
+    <span class="lab">중앙 함정 — 이기고 있는데 끝낼 수가 없다</span>
+    <p>제재·타격·심리전으로 계속 몰아붙이면 안정도가 35 아래로 떨어지고, '절박' 태세의 이란은 <strong>협상 자체를 거부한다.</strong> 순수 강경 플레이는 승리 직전에 출구를 잃는다. 반대로 순수 유화 플레이는 통항이 회복되지 않는다. <strong>정답은 "압박하되 출구를 남겨두기" — 게임은 절대 이걸 직접 알려주지 않는다.</strong> 플레이어가 2~3판째 스스로 깨닫는 순간이 이 게임의 정점이다.</p>
+  </div>
+</section>
+
+<!-- ── 10 ── -->
+<section id="s10">
+  <span class="sec-no">SECTION 10</span>
+  <h2>전쟁 도구 — 실물 카드 34장</h2>
+  <p class="oneline">한 줄 요약 — 5계열 34장. <b>전부 실존 무기·실제 있었던 수</b>다. 카드는 내부 데이터 — <b>화면에는 상황이 큐레이션한 3택 버튼으로만 표출</b>된다. 계열을 눌러 펼쳐 보세요. 수치는 1차 밸런싱 초안.</p>
+
+  <div class="scroll">
+    <table>
+      <caption>대표 카드 5장 미리보기</caption>
+      <thead><tr><th>카드</th><th class="num">AP</th><th>효과</th><th>대가</th></tr></thead>
+      <tbody>
+        <tr><td><strong>이지스 호송</strong> [알레이버크급 DDG]</td><td class="num">1</td><td>통항 <span class="up">+10</span>, 유가 <span class="up">−8</span></td><td>탄약 <span class="dn">−8</span>, 구축함이 표적이 된다</td></tr>
+        <tr><td><strong>소해 작전</strong> [LCS+무인소해정]</td><td class="num">2</td><td>통항 <span class="up">+15</span> (2일에 걸쳐) + 소해 미니게임</td><td>느리다 — 어벤저급 퇴역 공백의 대가</td></tr>
+        <tr><td><strong>오만 중재 채널</strong> [실제 진행 중]</td><td class="num">1</td><td>확전 <span class="up">−1</span>, 이란 다음 수 완화</td><td>'절박' 태세엔 무효</td></tr>
+        <tr><td><strong>B-2 정밀 폭격</strong> [GBU-57 MOP]</td><td class="num">3</td><td>지정 표적 파괴 + 폭격 런 미니게임</td><td>확전 <span class="dn">+2</span>, 국제 <span class="dn">−20</span>, 이란 '절박' 위험</td></tr>
+        <tr><td><strong>휴전 협상 개시</strong> [이슬라마바드 2.0]</td><td class="num">2</td><td>협상 트랙 개방 (총 3회 시도)</td><td>지지율 <span class="dn">−5</span> — "약해 보인다"</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <details class="fold">
+    <summary>군사 — 12장 <small>항모전단 · 이지스 · 소해 · 잠수함 · 토마호크 · B-2 …</small></summary>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>카드 [실물]</th><th class="num">AP</th><th>효과</th><th>대가 · 위험</th></tr></thead>
+        <tbody>
+          <tr><td>항모전단 전진 배치 [니미츠급 CSG]</td><td class="num">2</td><td>통항 <span class="up">+8</span>, 유가 <span class="up">−6</span>, 이후 군사카드 효율 +20%</td><td>확전 <span class="dn">+1</span>. 대함탄도탄(Khalij Fars) 최우선 표적</td></tr>
+          <tr><td>이지스 호송 [알레이버크급 DDG]</td><td class="num">1</td><td>통항 <span class="up">+10</span>, 유가 <span class="up">−8</span></td><td>탄약 <span class="dn">−8</span>. 피격 시 지지율 <span class="dn">−6</span></td></tr>
+          <tr><td>소해 작전 [LCS 기뢰전 패키지+MH-53E]</td><td class="num">2</td><td>통항 <span class="up">+15</span> (2일) + 미니게임</td><td>탄약 <span class="dn">−6</span>, 소해정 피격 15%</td></tr>
+          <tr><td>초계·정찰 [P-8A / MQ-9]</td><td class="num">1</td><td>다음 날 이란 수 공개 + 안정도 실측 + 항로 드로잉</td><td>격추 15% → 정찰 비용 영구 상승</td></tr>
+          <tr><td>잠수함 매복 [버지니아급 SSN]</td><td class="num">1</td><td>이란 기뢰 부설·잠수정 활동 차단</td><td>노출 시 확전 <span class="dn">+1</span></td></tr>
+          <tr><td>고속정 요격 [MH-60R+아파치 헬파이어]</td><td class="num">1</td><td>스웜 1회 무효화 (실제 5/4 교전 6척 격침 모델)</td><td>탄약 <span class="dn">−5</span></td></tr>
+          <tr><td>토마호크 정밀타격 [Block V]</td><td class="num">2</td><td>연안 미사일 포대 제거, 통항 <span class="up">+6</span></td><td>확전 <span class="dn">+1</span>, <strong>토마호크 재고 소모</strong></td></tr>
+          <tr><td>항모 항공단 공습 [F/A-18E/F+F-35C]</td><td class="num">2</td><td>이란 군사력 <span class="up">−15</span></td><td>확전 <span class="dn">+1</span>, 국제 <span class="dn">−8</span></td></tr>
+          <tr><td>전자전·사이버 [EA-18G+사이버사령부]</td><td class="num">2</td><td>이란 지휘망 1일 마비 (다음 수 무효)</td><td>발각 30% → 국제 <span class="dn">−10</span></td></tr>
+          <tr><td>특수부대 도서 작전 [아부무사·툰브 기뢰 거점]</td><td class="num">3</td><td>기뢰 보급 거점 제거, 통항 <span class="up">+20</span></td><td>실패 25% → 지지율 <span class="dn">−15</span>, 확전 <span class="dn">+1</span></td></tr>
+          <tr><td>B-2 정밀 폭격 [GBU-57 MOP]</td><td class="num">3</td><td>지하 표적 파괴 + 폭격 런 미니게임</td><td>확전 <span class="dn">+2</span>, 국제 <span class="dn">−20</span>, '절박' 위험</td></tr>
+          <tr><td>"대규모 공격" 실행 [140개 표적급 캠페인]</td><td class="num">3</td><td>이란 군사력 <span class="up">−35</span>, 통항 <span class="up">+10</span></td><td>확전 <span class="dn">+2</span>, 국제 <span class="dn">−25</span>, 유가 <span class="dn">+20</span>, 토마호크 대량 소모</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <details class="fold">
+    <summary>외교 — 6장 <small>오만 채널 · 파키스탄 중재 · 안보리 · 동맹 함대 …</small></summary>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>카드 [전례]</th><th class="num">AP</th><th>효과</th><th>대가 · 위험</th></tr></thead>
+        <tbody>
+          <tr><td>오만 비밀 중재 채널 [7/25 실제 가동 중]</td><td class="num">1</td><td>확전 <span class="up">−1</span>, 이란 다음 수 완화</td><td>'절박' 태세엔 무효</td></tr>
+          <tr><td>파키스탄 정상 중재 [4월 2주 휴전 전례]</td><td class="num">2</td><td>임시 정전 2일 (교전 중단)</td><td>이란도 재정비한다 (군사력 회복)</td></tr>
+          <tr><td>유엔 안보리 결의 [스냅백 연장선]</td><td class="num">2</td><td>국제 <span class="up">+15</span></td><td>거부권 40%. 다음 날 군사카드 −1AP</td></tr>
+          <tr><td>다국적 호송연합 [Prosperity Guardian 모델]</td><td class="num">2</td><td>탄약 <span class="up">+15</span>, 호송 효율 영구 +30%</td><td>국제 지지 60↑일 때만 가능</td></tr>
+          <tr><td>중·인 원유 수입국 압박</td><td class="num">2</td><td>이란 안정도 <span class="dn">−8</span></td><td>국제 <span class="dn">−5</span></td></tr>
+          <tr><td>이스라엘 자제 요청</td><td class="num">1</td><td>돌발 확전 이벤트 2일 차단</td><td>지지율 <span class="dn">−4</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <details class="fold">
+    <summary>경제 — 5장 <small>전략비축유 · 세컨더리 제재 · 걸프 증산 · 우회 송유관 …</small></summary>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>카드 [전례]</th><th class="num">AP</th><th>효과</th><th>대가 · 위험</th></tr></thead>
+        <tbody>
+          <tr><td>전략비축유(SPR) 방출</td><td class="num">1</td><td>유가 <span class="up">−25</span> (2일)</td><td><strong>게임당 1회</strong></td></tr>
+          <tr><td>세컨더리 제재 강화 [스냅백+α]</td><td class="num">2</td><td>이란 안정도 <span class="dn">−12</span></td><td>유가 <span class="dn">+8</span>, '절박' 가속</td></tr>
+          <tr><td>걸프 증산 요청 [사우디·UAE]</td><td class="num">2</td><td>유가 <span class="up">−15</span></td><td>국제 <span class="dn">−5</span> (반대급부 수용)</td></tr>
+          <tr><td>우회 송유관 확충 [UAE 하브샨-푸자이라 실존 노선]</td><td class="num">2</td><td>해협 의존도 영구 −20% (3일 뒤 발효)</td><td>즉효 없음 — 초반 전용 장기 수</td></tr>
+          <tr><td>그림자 함대 나포</td><td class="num">1</td><td>이란 전비 고갈, 안정도 <span class="dn">−6</span></td><td>확전 <span class="dn">+1</span>, <strong>이란이 반드시 맞나포로 응수</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <details class="fold">
+    <summary>여론·정보 — 5장 <small>대국민 연설 · 위성사진 공개 · SNS 최후통첩 …</small></summary>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>카드 [전례]</th><th class="num">AP</th><th>효과</th><th>대가 · 위험</th></tr></thead>
+        <tbody>
+          <tr><td>대국민 연설</td><td class="num">1</td><td>지지율 <span class="up">+8</span></td><td>연속 사용 시 반감 (안전한 낭비 카드)</td></tr>
+          <tr><td>위성사진 기밀 해제 [2019 기뢰 회수 영상 전례]</td><td class="num">1</td><td>국제 <span class="up">+10</span></td><td>이후 정찰 효율 <span class="dn">−30%</span></td></tr>
+          <tr><td>SNS 최후통첩 ["대규모 공격" 경고 전례]</td><td class="num">1</td><td>지지율 <span class="up">+12</span>, 이란 1일 위축</td><td>확전 <span class="dn">+1</span>, 이후 외교·종전 카드 −50%</td></tr>
+          <tr><td>대이란 심리전 방송</td><td class="num">1</td><td>안정도 <span class="dn">−8</span></td><td>강경화 확률 상승</td></tr>
+          <tr><td>보도 관리</td><td class="num">1</td><td>이날 손실의 지지율 타격 절반</td><td>발각 35% → 지지율 <span class="dn">−20</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <details class="fold">
+    <summary>종전 — 6장 <small>임시 정전 · 인도 회랑 · 협상 개시 · 제3국 보증 · 재건 패키지 …</small></summary>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>카드 [전례]</th><th class="num">AP</th><th>효과</th><th>대가 · 위험</th></tr></thead>
+        <tbody>
+          <tr><td>임시 정전 제안 [4월 파키스탄 모델]</td><td class="num">1</td><td>확전 <span class="up">−1</span>, 1일 교전 중단</td><td>이란 군사력도 회복</td></tr>
+          <tr><td>인도적 통항 회랑</td><td class="num">1</td><td>통항 <span class="up">+6</span>, 국제 <span class="up">+8</span></td><td>이란 안정도도 회복</td></tr>
+          <tr><td><strong>휴전 협상 개시</strong> [이슬라마바드 2.0]</td><td class="num">2</td><td>협상 트랙 개방 (3회 시도)</td><td>지지율 <span class="dn">−5</span></td></tr>
+          <tr><td>제3국 보증 [오만·카타르·파키스탄]</td><td class="num">2</td><td>성립 확률 <span class="up">+20%</span>, 위반 확률 반감</td><td>국제 지지 65↑ 필요</td></tr>
+          <tr><td>재건 패키지 제시 [실제 MoU의 300억 달러 항목]</td><td class="num">2</td><td>이란 요구 강도 <span class="up">−10</span>, 안정도 안정화</td><td>지지율 <span class="dn">−6</span> ("퍼주기" 비판)</td></tr>
+          <tr><td>조항 강경 고수</td><td class="num">1</td><td>성립 시 엔딩 등급 상승</td><td>성립 확률 <span class="dn">−25%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <h3>이란의 수 — 상대 행동 카탈로그 10종</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>수 [실물·전례]</th><th>태세</th><th>효과</th><th>플레이어 대응</th></tr></thead>
+      <tbody>
+        <tr><td>상선 미사일 공격 [Noor·Qader, 7월 9척 전례]</td><td>강경</td><td>통항 <span class="dn">−12</span>, 유가 <span class="dn">+10</span></td><td>요격 미니게임 / 호송 배치로 예방</td></tr>
+        <tr><td>유조선 나포 [탈라라 모델]</td><td>실용·강경</td><td>보험료 급등, 유가 <span class="dn">+6</span></td><td>타이머 선택: 구출작전 / 협상 / 맞나포</td></tr>
+        <tr><td>기뢰 추가 부설 [EM-52 상승기뢰]</td><td>강경</td><td>기뢰밭 확장, 통항 <span class="dn">−8</span></td><td>잠수함 매복으로 사전 차단 가능</td></tr>
+        <tr><td>고속정 스웜 [IRGC 수십 척]</td><td>강경</td><td>호송대 위협</td><td>타이머 선택: 경고사격 / 회피 / 격침</td></tr>
+        <tr><td>샤헤드 파상공세 [Shahed-136 수십 기]</td><td>강경</td><td><strong>요격탄 소진 유도</strong></td><td>요격 미니게임 — 다 쏘면 지는 싸움</td></tr>
+        <tr><td>대함탄도탄 [Khalij Fars, 마하 3~4]</td><td>강경·절박</td><td>항모 직접 위협</td><td>항모를 사거리 밖에 뒀다면 무효</td></tr>
+        <tr><td>기지 타격 — 사전통보형 [알우데이드 모델]</td><td>강경</td><td>피해 최소, 이란 안정도 회복</td><td>요격 난이도 낮음 — 과잉 반응이 함정</td></tr>
+        <tr><td>기지 타격 — 실사격형</td><td>절박</td><td>사상자 발생, 지지율 <span class="dn">−10</span></td><td>THAAD/패트리엇 재고 소모전</td></tr>
+        <tr><td>후티 전선 확대 [바브엘만데브 봉쇄]</td><td>강경·절박</td><td>유가 이중 압박 <span class="dn">+8</span></td><td>본토 압박을 줄여야 가라앉는다</td></tr>
+        <tr><td>협상 제안 / 전면 봉쇄 선언</td><td>실용 / 절박</td><td>출구 또는 파국</td><td>어느 쪽을 부를지는 당신의 지난 수가 정한다</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── 11 ── -->
+<section id="s11">
+  <span class="sec-no">SECTION 11</span>
+  <h2>휴전 — 이슬라마바드 2.0</h2>
+  <p class="oneline">한 줄 요약 — 실제 6월 양해각서는 <b>3주 만에 깨졌다.</b> 플레이어의 과제는 서명이 아니라 <b>깨지지 않는 구조</b>를 만드는 것. 후반부 전체가 이 미니게임이다.</p>
+
+  <p>「휴전 협상 개시」 카드로 트랙이 열리면 <strong>총 3회</strong>의 시도 기회. 매 시도마다 4개 조항의 강도를 직접 조절한다 — 실제 협상에서 결렬됐던 쟁점 그대로다.</p>
+
+  <div class="terms">
+    <div class="term">
+      <b>① 호르무즈 통항 관리 — 4월 협상의 실제 결렬 쟁점</b>
+      <div class="opts">
+        <div class="opt o-hard"><em>강경</em>국제 감시단 + 완전 자유 통항</div>
+        <div class="opt o-mid"><em>절충</em>오만 공동관리 · 사전 통보제</div>
+        <div class="opt o-soft"><em>양보</em>이란 관리권 일부 인정</div>
+      </div>
+    </div>
+    <div class="term">
+      <b>② 핵 검증 — 60% 우라늄 400kg의 행방</b>
+      <div class="opts">
+        <div class="opt o-hard"><em>강경</em>IAEA 전면 사찰 + 재고 국외 반출</div>
+        <div class="opt o-mid"><em>절충</em>제한 사찰 + 농축 동결</div>
+        <div class="opt o-soft"><em>양보</em>검증 유예 (추후 협상)</div>
+      </div>
+    </div>
+    <div class="term">
+      <b>③ 제재와 재건 — 실제 MoU의 300억 달러 항목</b>
+      <div class="opts">
+        <div class="opt o-hard"><em>강경</em>스냅백 제재 전면 유지</div>
+        <div class="opt o-mid"><em>절충</em>인도적 부문 해제 + 재건 일부</div>
+        <div class="opt o-soft"><em>양보</em>재건 300억 + 원유 수출 허용</div>
+      </div>
+    </div>
+    <div class="term">
+      <b>④ 억류 선원·포로 — 탈라라 사건의 유산</b>
+      <div class="opts">
+        <div class="opt o-hard"><em>강경</em>즉시 무조건 송환 + 배상</div>
+        <div class="opt o-mid"><em>절충</em>단계적 상호 교환</div>
+        <div class="opt o-soft"><em>양보</em>제재 해제와 연동</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>판정 — 협상력 vs 요구 강도</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>값</th><th>계산</th></tr></thead>
+      <tbody>
+        <tr><td><strong>협상력</strong></td><td>통항률 30% + (100−이란 안정도) 30% + 전력·탄약 20% + 국제 지지 20% <small>+ 제3국 보증 시 +20</small></td></tr>
+        <tr><td><strong>요구 강도</strong></td><td>4개 조항 합산 (강경 30 / 절충 18 / 양보 8) <small>+ 강경 고수 시 +15, 재건 패키지 시 −10</small></td></tr>
+        <tr><td><strong>결과</strong></td><td>협상력 ≥ 요구 강도 → <span class="up">성립</span> · 차이 15 이내 → 이란 역제안 (한 조항 완화 요구) · 그 이상 → <span class="dn">결렬</span> (시도 소진, 확전 +1)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ul>
+    <li><strong>'절박' 이란과는 협상 불가</strong> — 시도가 자동 결렬된다. 안정도를 35 위로 되돌려야(인도 회랑·정전·재건 제시) 테이블이 다시 열린다.</li>
+    <li><strong>서명 후 1일의 유예</strong> — 실제 6월처럼 위반 이벤트 15%(제3국 보증 시 7%). 여기서 깨지면 재협상. 무사히 넘기면 <strong>합의 조항 그대로 엔딩 텍스트가 된다.</strong></li>
+  </ul>
+</section>
+
+<!-- ── 12 ── -->
+<section id="s12">
+  <span class="sec-no">SECTION 12</span>
+  <h2>엔딩 10종과 성향 라벨</h2>
+  <p class="oneline">한 줄 요약 — 승패가 아니라 <b>"어떤 역사를 만들었는가"</b>. 종료 화면엔 항상 <b>"당신의 전쟁은 8월 N일에 끝났다"</b>가 찍힌다 — 그게 공유 문구다.</p>
+
+  <div class="scroll">
+    <table>
+      <caption>Endings</caption>
+      <thead><tr><th>엔딩</th><th>조건</th><th class="num">등급</th></tr></thead>
+      <tbody>
+        <tr><td><strong>무너지지 않은 소강</strong><br><small>재개전 없이, 전쟁이 끝났다</small></td><td>ACT I에서 협상 성립 · 통항 75↑</td><td class="num">S+</td></tr>
+        <tr><td><strong>짧은 전쟁</strong><br><small>세게, 그리고 빨리 — 12일 전쟁의 모델</small></td><td>재개전 후 10일 내 휴전 · 통항 85↑ · 확전 ≤3</td><td class="num">S</td></tr>
+        <tr><td><strong>호르무즈 협정</strong><br><small>깨지지 않는 구조를 만들었다</small></td><td>강경·절충 조항 성립 + 국제 70↑</td><td class="num">A</td></tr>
+        <tr><td><strong>불안한 정전</strong><br><small>6월의 반복 — 서명은 했다, 다음은 모른다</small></td><td>양보 위주 조항 성립</td><td class="num">B</td></tr>
+        <tr><td><strong>테헤란의 겨울</strong><br><small>정권은 무너졌다. 400kg의 행방은 아무도 모른다</small></td><td>이란 안정도 0</td><td class="num">B</td></tr>
+        <tr><td><strong>끝나지 않는 전쟁</strong><br><small>18일이 지났고, 아무것도 끝나지 않았다</small></td><td>DAY 18 종료 · 미타결</td><td class="num">C</td></tr>
+        <tr><td><strong>배럴당 300달러</strong><br><small>전쟁은 이겼는지 몰라도, 경제가 죽었다</small></td><td>유가 $200 초과</td><td class="num">D</td></tr>
+        <tr><td><strong>레임덕</strong><br><small>당신은 더 이상 결정권자가 아니다</small></td><td>지지율 30 미만 2일 연속</td><td class="num">D</td></tr>
+        <tr><td><strong>10개의 탄두</strong><br><small>60% 우라늄 400kg이 답을 정했다</small></td><td>'절박' 3일 지속 + 핵시계 만료</td><td class="num">E</td></tr>
+        <tr><td><strong>제3차 걸프전쟁</strong><br><small>당신이 원한 건 이게 아니었다</small></td><td>확전 5 도달</td><td class="num">F</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>성향 라벨 — 같은 등급도 다시 자랑하게 만드는 장치</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>라벨</th><th>조건</th><th>결과 카드 문구</th></tr></thead>
+      <tbody>
+        <tr><td><strong>매파 The Hawk</strong></td><td>군사 카드 50%↑</td><td>"당신은 힘으로 해협을 열었다"</td></tr>
+        <tr><td><strong>중재자 The Broker</strong></td><td>외교+종전 40%↑</td><td>"당신은 총 대신 전화기를 들었다"</td></tr>
+        <tr><td><strong>기술관료 The Technocrat</strong></td><td>경제 35%↑</td><td>"당신은 전쟁을 회계로 이겼다"</td></tr>
+        <tr><td><strong>흥행사 The Showman</strong></td><td>여론 35%↑</td><td>"지지율은 지켰다. 해협은 글쎄"</td></tr>
+        <tr><td><strong>도박사 The Gambler</strong></td><td>3AP 카드 4회↑</td><td>"당신은 매번 판을 걸었다"</td></tr>
+        <tr><td><strong>평화주의자 The Dove</strong></td><td>공격 카드 0회</td><td>"당신은 한 발도 쏘지 않았다" (희귀)</td></tr>
+        <tr><td><strong>균형자 The Balancer</strong></td><td>5계열 모두 15%↑</td><td>"당신은 모든 도구를 썼다" (희귀)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>공유 카드</strong> — 종료 화면에서 세로 1080×1350 이미지를 생성(캔버스): 로고 · "당신의 전쟁은 8월 N일에 끝났다" · 엔딩명 · 등급 · 성향 라벨 · 최종 지표 · 휴전 조항 요약 · 플레이 URL. 이 한 장이 스레드·엑스·커뮤니티를 돈다. 서버가 생기면 "전체 플레이어 중 N%만 이 엔딩에 도달" 희소성 표시를 추가한다(crimeGame의 Firebase 재사용, 단 1단계 목표엔 미포함).</p>
+</section>
+
+<!-- ═══════════ PART 3 ═══════════ -->
+<div class="part">
+  <span class="p-no">PART 3 / 3</span>
+  <h2>제작 — 스택, 원칙, 순서</h2>
+  <p>crimeGame·catAgentGame에서 검증된 방식을 그대로 잇는다. 서버 0원, 빌드 0단계, 소스 전체 공개.</p>
+</div>
+
+<!-- ── 13 ── -->
+<section id="s13" class="first">
+  <span class="sec-no">SECTION 13</span>
+  <h2>기술 구성</h2>
+  <p class="oneline">한 줄 요약 — three.js + Vanilla JS + JSON 데이터 분리. <b>빌드 없이 그대로 읽히고 그대로 고쳐지는 소스.</b></p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>항목</th><th>선택</th><th>이유</th></tr></thead>
+      <tbody>
+        <tr><td>렌더링</td><td>three.js (파일 동봉)</td><td>catAgentGame 검증 스택. CDN 미의존</td></tr>
+        <tr><td>언어</td><td>Vanilla JS (ES2020) · 빌드 없음</td><td>오픈소스로 공개했을 때 진입장벽 0 — crimeGame 원칙</td></tr>
+        <tr><td>UI</td><td>HTML+CSS 오버레이</td><td>한글·접근성·모바일이 공짜로 해결</td></tr>
+        <tr><td>데이터</td><td>카드·이란 수·연표·엔딩·막 정의 전부 JSON</td><td>기획 수정 ≠ 코드 수정. "내 시나리오로 개조" 가이드의 근거</td></tr>
+        <tr><td>유닛 예산</td><td>유닛당 300~800폴리 · 텍스처 0 · 라이트 2</td><td>보급형 폰 60fps</td></tr>
+        <tr><td>입력</td><td>탭/드래그 공용 레이어 (마우스=터치 동일 처리)</td><td>지휘·미니게임이 PC/모바일 동일 코드</td></tr>
+        <tr><td>저장</td><td>localStorage (일차·지표·협상 상태)</td><td>새로고침 복구</td></tr>
+        <tr><td>브리핑 텍스트</td><td><strong>고정 텍스트 (확정)</strong> — 상황별 변형 문구를 JSON 풀로 사전 작성</td><td>외부 의존 0, 오프라인 동작. 문구 풀을 넉넉히 만들어 반복감만 관리</td></tr>
+        <tr><td>배포</td><td>정적 파일 → sidak.kr/autodev/GameCreator/hormuz/</td><td>crimeGame 경로 규칙</td></tr>
+        <tr><td>언어판</td><td><strong>한/영 동시 (확정)</strong> — 문자열 테이블 처음부터 이중화</td><td>국제 소재 — 영문판이 확산 핵심</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── 14 ── -->
+<section id="s14">
+  <span class="sec-no">SECTION 14</span>
+  <h2>민감한 소재 규칙</h2>
+  <p class="oneline">한 줄 요약 — <b>실화 파트는 보도된 사실만, 픽션 파트는 실명 없이.</b> 경계를 게임 안팎에 명시한다.</p>
+  <ul>
+    <li><strong>실화(Part 1·오프닝 연표)</strong> — 보도로 확인된 공적 사실과 공인의 공개 발언만 사용. 출처 계열(주요 통신사·군사 전문지)을 README에 명기.</li>
+    <li><strong>픽션(DAY 1 이후)</strong> — 플레이어는 직함뿐인 "미합중국 대통령". 얼굴·캐리커처 없음. 이란 신임 지도부는 가상 인물. 첫 화면과 <span class="mono">DISCLAIMER.md</span>에 "가상 시뮬레이션" 고지.</li>
+    <li><strong>고인 존중</strong> — 실제 사망자(지휘관·민간인)를 게임 목표나 점수로 쓰지 않는다. 연표에서는 사실 서술로만.</li>
+    <li><strong>사상자는 추상 수치로만</strong> — 유혈·시신 묘사 없음. 홀로그램 기호 표현이 이를 구조적으로 보장.</li>
+    <li><strong>어느 쪽도 악마화하지 않는다</strong> — 이란은 자기 논리로 움직이는 합리적 행위자. 국가·민족·종교 비하 전면 금지.</li>
+    <li><strong>중립은 밸런스로 증명</strong> — 강경 일변도도 유화 일변도도 좋은 엔딩에 못 간다. 메시지이자 게임 디자인.</li>
+    <li><strong>군사 정보 흉내 금지</strong> — 게임 수치는 보도 기반이되 밸런싱용 허구임을 명기.</li>
+  </ul>
+</section>
+
+<!-- ── 15 ── -->
+<section id="s15">
+  <span class="sec-no">SECTION 15</span>
+  <h2>만드는 순서</h2>
+  <p class="oneline">한 줄 요약 — <b>재미 검증(룰) → 손맛(3D+조작) → 확산(공유·영문) → 공개(오픈소스).</b> 각 단계가 독립적으로 완결된다.</p>
+  <div class="phases">
+    <div class="phase">
+      <span class="when">STEP 1 — 재미 검증</span>
+      <b>룰 프로토타입 (3D 없음)</b>
+      <ul>
+        <li>18일 진행 · 카드 34장 · 이란 3태세 · 재고 시스템 · 협상 미니게임 · 엔딩 10종 전부 동작 (2D 도형+텍스트)</li>
+        <li>목표: "이 룰이 재미있는가"에 예/아니오 — 여기서 재미없으면 3D는 낭비다</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <span class="when">STEP 2 — 손맛</span>
+      <b>3D 씬 + 직접 조작</b>
+      <ul>
+        <li>해협 지형·유닛 실루엣 10종·연출 프리셋 8종·막 전환 색온도</li>
+        <li>지휘 페이즈(배치)와 개입 미니게임 4종 + 자동 해결 토글</li>
+        <li>타이머 선택 팝업 UI</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <span class="when">STEP 3 — 확산 장치</span>
+      <b>재연 챕터 · 공유 카드 · 모바일 · 영문</b>
+      <ul>
+        <li>전사 15초 뉴스릴 + 재연 결정 ①~⑤ 구현 (역사 일치율 표시 포함)</li>
+        <li>1080×1350 공유 이미지 · 모바일 세로 최적화 · 한/영 문자열 동시 완성</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <span class="when">STEP 4 — 공개</span>
+      <b>오픈소스 패키징 · 배포</b>
+      <ul>
+        <li>README · LICENSE(MIT) · DISCLAIMER · 개조 가이드("대만 해협 버전을 만들어 보세요") · CONTRIBUTING</li>
+        <li>sidak.kr 배포 · 플레이 GIF · 커뮤니티 공개글(GeekNews·SIR·디스콰이엇)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ── 16 ── -->
+<section id="s16">
+  <span class="sec-no">SECTION 16</span>
+  <h2>확정된 결정 (2026-07-27)</h2>
+  <p class="oneline">한 줄 요약 — 5개 쟁점 전부 결정 완료. <b>이 문서 v0.4에 모두 반영됐고, 바로 STEP 1 프로토타입에 들어갈 수 있다.</b></p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th class="num">#</th><th>쟁점</th><th>결정</th><th>반영 위치</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td>실화 수위</td><td><strong>실화 파트만 실명, 픽션은 익명</strong></td><td>1·14섹션</td></tr>
+        <tr><td class="num">2</td><td>조작 비중</td><td><strong>손맛을 살짝 느끼는 수준</strong> — 요격+소해 완성, B-2 런은 입력 재사용, 초계 드로잉은 후속</td><td>5섹션</td></tr>
+        <tr><td class="num">3</td><td>분량</td><td><strong>본편 18일 + 재연 12일 전쟁(결정 5개)</strong> — 총 8~10분</td><td>3·7섹션</td></tr>
+        <tr><td class="num">4</td><td>브리핑</td><td><strong>고정 텍스트</strong> — JSON 문구 풀, 외부 의존 0</td><td>13섹션</td></tr>
+        <tr><td class="num">5</td><td>언어</td><td><strong>한/영 동시 출시</strong> — 문자열 테이블 처음부터 이중화</td><td>13·15섹션</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <p><strong>호르무즈 (HORMUZ)</strong> · 게임 기획서 v0.5 · 2026-07-27 · 화면·3D 상세는 「화면 구성서 v1.0」 참조</p>
+  <p>Part 1의 연표는 2026년 7월 27일까지의 보도(주요 통신사·USNI News·FPRI·CSIS 계열)를 교차 확인해 작성했다. DAY 1 이후는 가상 시뮬레이션이다.</p>
+  <p>게임 내 모든 수치는 보도를 참고한 밸런싱용 허구이며 실제 군사 정보가 아니다. 실존 인물의 초상을 사용하지 않는다.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  /* ── 공통: 테마 토큰 리더 ── */
+  var C = {};
+  function readTokens(){
+    var cs = getComputedStyle(document.documentElement);
+    ['line','muted','buoy','shoal','text','alarm','good'].forEach(function(k){
+      C[k] = cs.getPropertyValue('--'+k).trim();
+    });
+  }
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── 1. 해협 상황도 ── */
+  var cv = document.getElementById('straitChart');
+  var sctx = cv ? cv.getContext('2d') : null;
+  var north = [[0,120],[180,96],[330,110],[470,84],[600,120],[700,168],[790,186],[880,150],[1010,132],[1160,150],[1320,120],[1480,138]];
+  var south = [[0,368],[190,352],[360,336],[520,318],[640,300],[730,272],[830,268],[960,300],[1120,318],[1290,306],[1480,322]];
+  var lane  = [[40,250],[230,238],[420,224],[600,222],[720,228],[800,226],[930,222],[1120,232],[1320,224],[1450,230]];
+
+  function poly(ctx, pts, dy){
+    ctx.beginPath();
+    ctx.moveTo(pts[0][0], pts[0][1]+dy);
+    for(var i=1;i<pts.length-1;i++){
+      var xc=(pts[i][0]+pts[i+1][0])/2, yc=(pts[i][1]+pts[i+1][1])/2+dy;
+      ctx.quadraticCurveTo(pts[i][0], pts[i][1]+dy, xc, yc);
+    }
+    ctx.lineTo(pts[pts.length-1][0], pts[pts.length-1][1]+dy);
+    ctx.stroke();
+  }
+  function pointOnLane(p){
+    var seg = (lane.length-1)*p, i = Math.min(Math.floor(seg), lane.length-2), f = seg-i;
+    return [lane[i][0]+(lane[i+1][0]-lane[i][0])*f, lane[i][1]+(lane[i+1][1]-lane[i][1])*f];
+  }
+
+  function drawStrait(t){
+    if(!sctx) return;
+    var ctx = sctx, W = cv.width, H = cv.height, x, y, i;
+    ctx.clearRect(0,0,W,H);
+
+    ctx.strokeStyle = C.line; ctx.globalAlpha = .5; ctx.lineWidth = 1;
+    for(x=0;x<W;x+=74){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for(y=0;y<H;y+=74){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+    ctx.globalAlpha = 1;
+
+    ctx.strokeStyle = C.shoal; ctx.lineWidth = 1.5;
+    [0,22,44].forEach(function(d,j){ ctx.globalAlpha = .5 - j*.15; poly(ctx, north, d); poly(ctx, south, -d); });
+    ctx.globalAlpha = 1;
+
+    ctx.strokeStyle = C.text; ctx.lineWidth = 2.4; ctx.globalAlpha = .82;
+    poly(ctx, north, 0); poly(ctx, south, 0);
+    ctx.globalAlpha = 1;
+
+    ctx.strokeStyle = C.buoy; ctx.lineWidth = 2; ctx.setLineDash([10,9]);
+    ctx.globalAlpha = .75; poly(ctx, lane, 0); ctx.setLineDash([]); ctx.globalAlpha = 1;
+
+    /* 기뢰밭 (빗금 구역) */
+    ctx.save();
+    ctx.beginPath(); ctx.ellipse(650, 235, 120, 42, -0.06, 0, Math.PI*2); ctx.clip();
+    ctx.strokeStyle = C.alarm; ctx.globalAlpha = .5; ctx.lineWidth = 1.5;
+    for(i=-3;i<9;i++){ ctx.beginPath(); ctx.moveTo(500+i*36,300); ctx.lineTo(600+i*36,170); ctx.stroke(); }
+    ctx.restore();
+    ctx.strokeStyle = C.alarm; ctx.globalAlpha = .8; ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.ellipse(650, 235, 120, 42, -0.06, 0, Math.PI*2); ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    /* 미 항모전단 (청록 삼각형 + 호위 링) */
+    var cgx = 1150, cgy = 262;
+    ctx.strokeStyle = C.shoal; ctx.globalAlpha = .45; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.arc(cgx, cgy, 34, 0, Math.PI*2); ctx.stroke();
+    ctx.globalAlpha = 1; ctx.fillStyle = C.shoal;
+    [[0,0,9],[30,14,5],[-28,16,5],[6,-30,5]].forEach(function(u){
+      var ux=cgx+u[0], uy=cgy+u[1], s=u[2];
+      ctx.beginPath(); ctx.moveTo(ux, uy-s); ctx.lineTo(ux+s*.8, uy+s); ctx.lineTo(ux-s*.8, uy+s); ctx.closePath(); ctx.fill();
+    });
+
+    /* IRGC 세력 (호박 점 무리 — 반다르아바스 근해) */
+    ctx.fillStyle = C.buoy;
+    [[705,180],[720,171],[736,178],[748,168],[762,176],[730,190],[752,188]].forEach(function(pnt,j){
+      ctx.globalAlpha = .55 + (j%3)*.15;
+      ctx.beginPath(); ctx.arc(pnt[0], pnt[1], 3.2, 0, Math.PI*2); ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+
+    /* 유조선 */
+    [0,.34,.68].forEach(function(off,j){
+      var p = (t*0.00013 + off) % 1, xy = pointOnLane(p);
+      ctx.fillStyle = C.text; ctx.globalAlpha = j===1 ? .95 : .5;
+      ctx.beginPath(); ctx.ellipse(xy[0], xy[1], 9, 4, 0, 0, Math.PI*2); ctx.fill();
+      ctx.globalAlpha = 1;
+    });
+
+    ctx.fillStyle = C.muted; ctx.font = '600 20px Consolas, monospace';
+    ctx.fillText('IRAN', 60, 70);
+    ctx.fillText('OMAN / U.A.E.', 60, 398);
+    ctx.fillStyle = C.alarm; ctx.font = '600 14px Consolas, monospace';
+    ctx.fillText('MINEFIELD', 596, 240);
+    ctx.fillStyle = C.shoal;
+    ctx.fillText('CSG', 1132, 316);
+    ctx.fillStyle = C.buoy; ctx.font = '600 17px Consolas, monospace';
+    ctx.fillText('STRAIT OF HORMUZ', 830, 340);
+  }
+
+  /* ── 2. 유닛 시안 갤러리 ── */
+  var gv = document.getElementById('unitGallery');
+  function drawGallery(){
+    if(!gv) return;
+    var ctx = gv.getContext('2d');
+    var W = gv.width, H = gv.height, cw = W/5, ch = H/2;
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle = C.line; ctx.lineWidth = 1; ctx.globalAlpha = .8;
+    for(var i=1;i<5;i++){ ctx.beginPath(); ctx.moveTo(cw*i,0); ctx.lineTo(cw*i,H); ctx.stroke(); }
+    ctx.beginPath(); ctx.moveTo(0,ch); ctx.lineTo(W,ch); ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    function cell(ix, iy, label, sub, fn){
+      var cx = cw*ix + cw/2, cy = ch*iy + ch/2 - 22;
+      ctx.save(); ctx.translate(cx, cy); fn(ctx); ctx.restore();
+      ctx.fillStyle = C.text; ctx.font = '600 17px "Malgun Gothic", sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText(label, cx, ch*iy + ch - 44);
+      ctx.fillStyle = C.muted; ctx.font = '12px Consolas, monospace';
+      ctx.fillText(sub, cx, ch*iy + ch - 22);
+      ctx.textAlign = 'start';
+    }
+    function glow(color){ ctx.shadowColor = color; ctx.shadowBlur = 14; }
+
+    /* 1 항모 */
+    cell(0,0,'항모전단','NIMITZ-CLASS CSG',function(c){
+      glow(C.shoal); c.fillStyle = C.shoal; c.strokeStyle = C.shoal;
+      c.beginPath();
+      c.moveTo(-14,-66); c.lineTo(16,-58); c.lineTo(20,54) ; c.lineTo(-2,64); c.lineTo(-20,52); c.lineTo(-22,-52);
+      c.closePath(); c.globalAlpha=.28; c.fill(); c.globalAlpha=1; c.lineWidth=2.4; c.stroke();
+      c.lineWidth=1.6; c.beginPath(); c.moveTo(-20,30); c.lineTo(12,-40); c.stroke();
+      c.fillRect(8,-6,9,26);
+      c.globalAlpha=.5; c.beginPath(); c.arc(0,0,86,0,Math.PI*2); c.setLineDash([5,7]); c.stroke(); c.setLineDash([]); c.globalAlpha=1;
+    });
+    /* 2 이지스 구축함 */
+    cell(1,0,'이지스 구축함','ARLEIGH BURKE DDG',function(c){
+      glow(C.shoal); c.fillStyle = C.shoal; c.strokeStyle = C.shoal;
+      c.beginPath();
+      c.moveTo(0,-62); c.lineTo(11,-30); c.lineTo(9,52); c.lineTo(0,62); c.lineTo(-9,52); c.lineTo(-11,-30);
+      c.closePath(); c.globalAlpha=.28; c.fill(); c.globalAlpha=1; c.lineWidth=2.2; c.stroke();
+      for(var r=0;r<3;r++)for(var q=0;q<2;q++) c.fillRect(-6+q*7,-22+r*8,4,4);
+      c.fillRect(-5,8,10,20);
+    });
+    /* 3 소해함 */
+    cell(2,0,'소해함 + 무인정','LCS · MCM USV',function(c){
+      glow(C.shoal); c.fillStyle = C.shoal; c.strokeStyle = C.shoal;
+      c.beginPath();
+      c.moveTo(0,-48); c.lineTo(14,-8); c.lineTo(12,44); c.lineTo(-12,44); c.lineTo(-14,-8);
+      c.closePath(); c.globalAlpha=.28; c.fill(); c.globalAlpha=1; c.lineWidth=2.2; c.stroke();
+      c.setLineDash([4,5]); c.lineWidth=1.3;
+      c.beginPath(); c.moveTo(0,44); c.quadraticCurveTo(-30,64,-44,58); c.stroke(); c.setLineDash([]);
+      c.beginPath(); c.moveTo(-44,52); c.lineTo(-38,58); c.lineTo(-44,64); c.lineTo(-50,58); c.closePath(); c.fill();
+    });
+    /* 4 잠수함 */
+    cell(3,0,'공격 잠수함','VIRGINIA SSN (은닉)',function(c){
+      c.strokeStyle = C.shoal; c.fillStyle = C.shoal;
+      c.setLineDash([7,6]); c.lineWidth=2.2; c.globalAlpha=.75;
+      c.beginPath(); c.ellipse(0,0,16,58,0,0,Math.PI*2); c.stroke();
+      c.setLineDash([]); c.globalAlpha=.3; c.fillRect(-5,-26,10,20); c.globalAlpha=1;
+    });
+    /* 5 전투기 편대 */
+    cell(4,0,'함재기 편대','F/A-18E/F + F-35C',function(c){
+      glow(C.shoal); c.fillStyle = C.shoal;
+      [[0,-26],[-34,18],[34,18]].forEach(function(o){
+        c.save(); c.translate(o[0],o[1]);
+        c.beginPath(); c.moveTo(0,-20); c.lineTo(15,10); c.lineTo(5,7); c.lineTo(6,17); c.lineTo(-6,17); c.lineTo(-5,7); c.lineTo(-15,10);
+        c.closePath(); c.fill(); c.restore();
+      });
+    });
+    /* 6 B-2 */
+    cell(0,1,'스텔스 폭격기','B-2 SPIRIT · GBU-57',function(c){
+      glow(C.shoal); c.fillStyle = C.shoal;
+      c.beginPath();
+      c.moveTo(0,-30); c.lineTo(58,22); c.lineTo(38,14); c.lineTo(24,26); c.lineTo(10,16); c.lineTo(0,24);
+      c.lineTo(-10,16); c.lineTo(-24,26); c.lineTo(-38,14); c.lineTo(-58,22);
+      c.closePath(); c.fill();
+    });
+    /* 7 고속정 스웜 */
+    cell(1,1,'고속정 스웜','IRGC FAST BOATS',function(c){
+      glow(C.buoy); c.fillStyle = C.buoy;
+      [[-40,-30,.5],[-10,-42,.2],[22,-30,-.3],[44,-6,-.6],[-46,6,.9],[-16,-6,.4],[14,4,-.1],[38,26,-.5],[-28,32,.7],[4,36,.1]].forEach(function(o){
+        c.save(); c.translate(o[0],o[1]); c.rotate(o[2]);
+        c.beginPath(); c.moveTo(0,-9); c.lineTo(5,8); c.lineTo(-5,8); c.closePath(); c.fill();
+        c.restore();
+      });
+    });
+    /* 8 자폭 드론 */
+    cell(2,1,'자폭 드론','SHAHED-136',function(c){
+      glow(C.buoy); c.fillStyle = C.buoy; c.strokeStyle = C.buoy;
+      c.beginPath(); c.moveTo(0,-26); c.lineTo(34,16); c.lineTo(10,12); c.lineTo(6,24); c.lineTo(-6,24); c.lineTo(-10,12); c.lineTo(-34,16);
+      c.closePath(); c.fill();
+      c.setLineDash([3,6]); c.lineWidth=1.6; c.globalAlpha=.7;
+      c.beginPath(); c.moveTo(0,-70); c.lineTo(0,-30); c.stroke(); c.setLineDash([]); c.globalAlpha=1;
+    });
+    /* 9 기뢰밭 */
+    cell(3,1,'기뢰밭','EM-52 · M-08',function(c){
+      c.strokeStyle = C.alarm; c.fillStyle = C.alarm;
+      [[-32,-14],[26,-26],[6,22]].forEach(function(o){
+        c.save(); c.translate(o[0],o[1]);
+        c.beginPath(); c.arc(0,0,11,0,Math.PI*2); c.globalAlpha=.3; c.fill(); c.globalAlpha=1; c.lineWidth=2; c.stroke();
+        for(var a=0;a<8;a++){
+          var ang=a*Math.PI/4;
+          c.beginPath(); c.moveTo(Math.cos(ang)*11,Math.sin(ang)*11); c.lineTo(Math.cos(ang)*17,Math.sin(ang)*17); c.stroke();
+        }
+        c.restore();
+      });
+    });
+    /* 10 요격전 */
+    cell(4,1,'미사일 요격전','SM-6 · ESSM · CIWS',function(c){
+      c.strokeStyle = C.buoy; c.lineWidth=2.2;
+      c.beginPath(); c.moveTo(-58,34); c.quadraticCurveTo(-10,-64,44,-18); c.stroke();
+      c.fillStyle = C.buoy;
+      c.beginPath(); c.arc(44,-18,4.5,0,Math.PI*2); c.fill();
+      c.strokeStyle = C.shoal;
+      c.beginPath(); c.moveTo(52,40); c.lineTo(46,-14); c.stroke();
+      glow(C.alarm); c.strokeStyle = C.alarm; c.lineWidth=2.6;
+      c.beginPath(); c.moveTo(36,-28); c.lineTo(54,-8); c.moveTo(54,-28); c.lineTo(36,-8); c.stroke();
+    });
+    ctx.shadowBlur = 0;
+  }
+
+  /* ── 구동 ── */
+  var raf = null;
+  function loop(ts){ drawStrait(ts); raf = requestAnimationFrame(loop); }
+  function drawAll(){ readTokens(); drawStrait(0); drawGallery(); }
+  drawAll();
+  if(!reduce && sctx) raf = requestAnimationFrame(loop);
+
+  new MutationObserver(drawAll).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  (mq.addEventListener ? mq.addEventListener.bind(mq,'change') : mq.addListener.bind(mq))(drawAll);
+})();
+</script>
+<!--ARTIFACT-END-->
+</body>
+</html>

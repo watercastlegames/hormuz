@@ -1,0 +1,96 @@
+{
+  "generator": "Meshy source GLB -> clean PBR vertex palette -> UV removal -> gltfpack simplification",
+  "purpose": "Clean strategic LOD color without damaged texture-atlas UVs or baked atlas noise",
+  "jobs": [
+    {
+      "id": "destroyer",
+      "source": "assets/models/ships-v1/arleigh-burke-destroyer-meshy6-web-v1.glb",
+      "output": "assets/models/battle-ultra-v2/arleigh-burke-destroyer-meshy-ultra-v2.glb",
+      "targetRatio": 0.022,
+      "colorSource": "Clean unit-type PBR palette with height and upward-normal shading",
+      "uvRemoved": true,
+      "sourceTextureRemoved": true,
+      "bytes": 13644
+    },
+    {
+      "id": "fighter",
+      "source": "assets/models/combat-v1/fa-18e-super-hornet-meshy6-web-v1.glb",
+      "output": "assets/models/battle-ultra-v2/fa-18e-super-hornet-meshy-ultra-v2.glb",
+      "targetRatio": 0.012,
+      "colorSource": "Clean unit-type PBR palette with height and upward-normal shading",
+      "uvRemoved": true,
+      "sourceTextureRemoved": true,
+      "bytes": 8612
+    },
+    {
+      "id": "helicopter",
+      "source": "assets/models/combat-v1/mh-60r-seahawk-meshy6-web-v1.glb",
+      "output": "assets/models/battle-ultra-v2/mh-60r-seahawk-meshy-ultra-v2.glb",
+      "targetRatio": 0.016,
+      "colorSource": "Clean unit-type PBR palette with height and upward-normal shading",
+      "uvRemoved": true,
+      "sourceTextureRemoved": true,
+      "bytes": 10360
+    },
+    {
+      "id": "carrier",
+      "source": "assets/models/ships-v1/nimitz-carrier-meshy6-web-v1.glb",
+      "output": "assets/models/battle-ultra-v2/nimitz-carrier-meshy-ultra-v2.glb",
+      "targetRatio": 0.03,
+      "colorSource": "Clean unit-type PBR palette with height and upward-normal shading",
+      "uvRemoved": true,
+      "sourceTextureRemoved": true,
+      "bytes": 17824
+    },
+    {
+      "id": "usv",
+      "source": "assets/models/combat-v1/mcm-usv-meshy6-web-v1.glb",
+      "output": "assets/models/battle-ultra-v2/mcm-usv-meshy-ultra-v2.glb",
+      "targetRatio": 0.015,
+      "colorSource": "Clean unit-type PBR palette with height and upward-normal shading",
+      "uvRemoved": true,
+      "sourceTextureRemoved": true,
+      "bytes": 9712
+    },
+    {
+      "id": "bomber",
+      "source": "assets/models/combined-arms-v1/b2-spirit-meshy-t2-web-v1.glb",
+      "output": "assets/models/battle-ultra-v2/b2-spirit-meshy-ultra-v2.glb",
+      "targetRatio": 0.08,
+      "colorSource": "Clean unit-type PBR palette with height and upward-normal shading",
+      "uvRemoved": true,
+      "sourceTextureRemoved": true,
+      "bytes": 7684
+    },
+    {
+      "id": "fastBoat",
+      "source": "assets/models/combat-v1/irgc-fast-attack-craft-meshy6-web-v1.glb",
+      "output": "assets/models/battle-ultra-v2/irgc-fast-attack-craft-meshy-ultra-v2.glb",
+      "targetRatio": 0.012,
+      "colorSource": "Clean unit-type PBR palette with height and upward-normal shading",
+      "uvRemoved": true,
+      "sourceTextureRemoved": true,
+      "bytes": 7900
+    },
+    {
+      "id": "tanker",
+      "source": "assets/models/strategic-v1/vlcc-tanker-meshy6-web-v1.glb",
+      "output": "assets/models/battle-ultra-v2/vlcc-tanker-meshy-ultra-v2.glb",
+      "targetRatio": 0.024,
+      "colorSource": "Clean unit-type PBR palette with height and upward-normal shading",
+      "uvRemoved": true,
+      "sourceTextureRemoved": true,
+      "bytes": 15956
+    },
+    {
+      "id": "tel",
+      "source": "assets/models/strategic-v1/coastal-defense-tel-meshy6-web-v1.glb",
+      "output": "assets/models/battle-ultra-v2/coastal-defense-tel-meshy-ultra-v2.glb",
+      "targetRatio": 0.018,
+      "colorSource": "Clean unit-type PBR palette with height and upward-normal shading",
+      "uvRemoved": true,
+      "sourceTextureRemoved": true,
+      "bytes": 10756
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "createdAt": "2026-07-27",
+  "purpose": "HORMUZ STEP 0 first Meshy quality gate",
+  "credits": {
+    "carrier": 30,
+    "destroyer": 30,
+    "total": 60
+  },
+  "generation": {
+    "aiModel": "meshy-6",
+    "mode": "image-to-3d",
+    "modelType": "standard",
+    "targetFormats": [
+      "glb"
+    ],
+    "shouldTexture": true,
+    "enablePbr": false,
+    "hdTexture": true,
+    "imageEnhancement": false,
+    "removeLighting": true,
+    "shouldRemesh": true,
+    "topology": "triangle",
+    "targetPolycount": 40000,
+    "savePreRemeshedModel": true,
+    "alphaThumbnail": true,
+    "multiViewThumbnails": true
+  },
+  "assets": [
+    {
+      "id": "nimitz-carrier",
+      "taskId": "019fa2c9-b689-7d8c-b3db-2f802de7b000",
+      "status": "SUCCEEDED",
+      "referenceImage": "assets/meshy-references/ships-v1/nimitz-carrier-reference-v1.png",
+      "sourceGlb": "assets/meshy-source/ships-v1/nimitz-carrier-meshy6-v1.glb",
+      "sourceBytes": 15326048,
+      "sourceTexture": "assets/meshy-source/ships-v1/nimitz-carrier-meshy6-v1_base_color.png",
+      "sourceTextureDimensions": "4096x4096",
+      "webGlb": "assets/models/ships-v1/nimitz-carrier-meshy6-web-v1.glb",
+      "webBytes": 2761768,
+      "webTextureDimensions": "2048x2048",
+      "triangles": 40298,
+      "vertices": 40995,
+      "primitives": 1
+    },
+    {
+      "id": "arleigh-burke-destroyer",
+      "taskId": "019fa2c9-ddc7-7d95-8aa4-0478159f20bf",
+      "status": "SUCCEEDED",
+      "referenceImage": "assets/meshy-references/ships-v1/arleigh-burke-destroyer-reference-v1.png",
+      "sourceGlb": "assets/meshy-source/ships-v1/arleigh-burke-destroyer-meshy6-v1.glb",
+      "sourceBytes": 15423880,
+      "sourceTexture": "assets/meshy-source/ships-v1/arleigh-burke-destroyer-meshy6-v1_base_color.png",
+      "sourceTextureDimensions": "4096x4096",
+      "webGlb": "assets/models/ships-v1/arleigh-burke-destroyer-meshy6-web-v1.glb",
+      "webBytes": 2798764,
+      "webTextureDimensions": "2048x2048",
+      "triangles": 41000,
+      "vertices": 39404,
+      "primitives": 1
+    }
+  ],
+  "webIntegration": {
+    "mockup": "mockup.html",
+    "qualityGate": "output/step0/meshy-ship-quality-gate.html",
+    "loader": "assets/js/vendor/GLTFLoader.js",
+    "meshoptDecoder": "assets/js/vendor/meshopt_decoder.module.js",
+    "fallback": "Procedural fleet remains visible if either GLB fails to load."
+  }
+}

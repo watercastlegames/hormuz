@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HORMUZ 본편 전투·예산·의회 시스템 개선 기획서 v1.0</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg:#04090d;--panel:#091820;--panel2:#0d222b;--line:#24525e;
+      --cyan:#6be1ed;--amber:#f2b967;--red:#ff7469;--text:#e4f4f6;--muted:#9cb4ba;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(circle at 75% 0,#12303a 0,transparent 32%),var(--bg);color:var(--text);font:16px/1.7 "Noto Sans KR","Malgun Gothic",sans-serif}
+    main{width:min(1120px,calc(100% - 32px));margin:0 auto;padding:64px 0 100px}
+    header{padding:34px;border:1px solid var(--line);border-top:4px solid var(--cyan);background:linear-gradient(135deg,rgba(14,45,55,.92),rgba(5,16,22,.96))}
+    .kicker{color:var(--cyan);font:700 14px ui-monospace,Consolas,monospace;letter-spacing:.18em}
+    h1{margin:8px 0 10px;font-size:clamp(30px,5vw,55px);line-height:1.15}
+    header p{max-width:850px;margin:0;color:#bad0d4;font-size:18px}
+    nav{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 0}
+    nav a{padding:7px 10px;color:#bdebf0;text-decoration:none;border:1px solid var(--line);background:#08161c}
+    section{margin-top:22px;padding:26px;border:1px solid #193943;background:rgba(7,22,29,.92)}
+    h2{margin:0 0 14px;color:#f0ffff;font-size:26px}
+    h3{margin:20px 0 8px;color:var(--amber);font-size:19px}
+    p{margin:8px 0;color:#bed0d4}
+    strong{color:#f2ffff}
+    .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:16px 0}
+    .flow div{position:relative;min-height:105px;padding:13px;border:1px solid var(--line);background:var(--panel2)}
+    .flow b{display:block;color:var(--cyan);font:700 13px ui-monospace,Consolas,monospace}
+    .flow span{display:block;margin-top:7px}
+    .flow div:not(:last-child)::after{content:"›";position:absolute;right:-8px;top:33px;z-index:2;color:var(--amber);font-size:28px}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+    .card{padding:15px;border-left:3px solid var(--cyan);background:var(--panel)}
+    .card.warn{border-color:var(--amber)}.card.danger{border-color:var(--red)}
+    .card b,.card span{display:block}.card b{font-size:18px}.card span{margin-top:5px;color:var(--muted)}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:11px;text-align:left;vertical-align:top;border:1px solid #24434c}
+    th{color:var(--cyan);background:#0a222b}
+    td{color:#bfd1d5}
+    .formula{padding:13px;color:#dffcff;border:1px solid #2e5e69;background:#06151b;font:700 16px/1.7 ui-monospace,Consolas,monospace}
+    .status{display:inline-block;padding:2px 7px;border-radius:12px;color:#031014;background:var(--cyan);font-size:13px;font-weight:700}
+    .status.next{background:var(--amber)}.status.plan{color:#d6e6e9;background:#38545b}
+    .note{padding:12px;border-left:3px solid var(--amber);background:rgba(128,82,28,.12)}
+    ul,ol{padding-left:22px}li{margin:5px 0;color:#bfd1d5}
+    code{color:#a5edf4}
+    footer{margin-top:22px;padding:18px;color:#809ba2;border-top:1px solid var(--line)}
+    @media(max-width:800px){main{width:min(100% - 18px,1120px);padding-top:18px}header,section{padding:18px}.flow,.cards{grid-template-columns:1fr}.flow div:not(:last-child)::after{content:"↓";right:14px;top:auto;bottom:-19px}.table-wrap{overflow:auto}table{min-width:760px}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <span class="kicker">HORMUZ · CAMPAIGN SYSTEM v1.0</span>
+    <h1>본편 전투·예산·의회 시스템 개선 기획서</h1>
+    <p>첫 호송대 방어를 대통령 취임 직후의 필수 위기로 배치하고, 이후 18일 동안 전략 결정 → 예산 확보 → 전력 편성 → 3D RTS 전투 → 정치 결과가 하나의 루프로 이어지게 한다.</p>
+    <nav>
+      <a href="#gate">첫 전투 게이트</a><a href="#loop">본편 반복 구조</a><a href="#budget">예산</a>
+      <a href="#congress">의회</a><a href="#operations">작전 로드맵</a><a href="#acceptance">완료 기준</a>
+    </nav>
+  </header>
+
+  <section id="gate">
+    <h2>1. 첫 시작: 호송대 방어 성공이 본편 입장 조건</h2>
+    <div class="flow">
+      <div><b>01 · 새 게임</b><span>전쟁 상황과 임무 목표 확인</span></div>
+      <div><b>02 · 예산 확인</b><span>초기 작전 한도 $480M</span></div>
+      <div><b>03 · 전력 편성</b><span>구축함·전투기·헬기 0대부터 선택</span></div>
+      <div><b>04 · RTS 전투</b><span>드래그 선택, 우클릭 이동·공격</span></div>
+      <div><b>05 · 성공</b><span>결과·작전비를 인계하고 상황실 개방</span></div>
+    </div>
+    <p class="note"><strong>실패하면 본편이 시작되지 않는다.</strong> 패배 원인과 손실을 확인한 뒤 편성을 바꾸어 재도전한다. ‘이어하기’는 저장된 본편 진행을 복구하므로 이 게이트를 다시 강제하지 않는다.</p>
+  </section>
+
+  <section id="loop">
+    <h2>2. 지루함을 줄이는 본편 반복 구조</h2>
+    <div class="cards">
+      <div class="card"><b>전략 결정</b><span>180초 안에 외교·경제·군사 대응을 선택한다.</span></div>
+      <div class="card warn"><b>정치 협상</b><span>필요할 때만 의회 설득을 열어 전투 전 긴장을 만든다.</span></div>
+      <div class="card danger"><b>3D 전투</b><span>같은 지도라도 목표·적 증원·민간 보호 조건을 바꾼다.</span></div>
+    </div>
+    <h3>권장 하루 리듬</h3>
+    <p><strong>상황 방송 20~35초 → 전략 선택 60~180초 → 결과 변화 → 전투 발생 시 3~4분 RTS → 전투 결과 15초 → 다음 날.</strong> 매일 전투를 강제하지 않고 2~3일 간격으로 큰 전투를 배치해 전투의 의미를 유지한다.</p>
+  </section>
+
+  <section id="budget">
+    <h2>3. 사용점수 폐기, 승인 예산 기반 편성</h2>
+    <div class="formula">사용 가능 예산 = 승인 총액 + 추가예산 − 누적 작전비<br>편성 가능 조건 = 선택한 전력의 작전비 합계 ≤ 이번 작전 한도와 사용 가능 예산</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>전력</th><th>게임상 1개 단위 작전비</th><th>역할</th><th>편성 의미</th></tr></thead>
+        <tbody>
+          <tr><td>미 해군 구축함</td><td>$240M</td><td>장거리 함대함·함포·방공</td><td>비싸지만 생존성과 화력이 높다.</td></tr>
+          <tr><td>F/A-18E 전투기</td><td>$85M</td><td>신속 타격·추격</td><td>각 기체를 따로 선택하고 공격시킬 수 있다.</td></tr>
+          <tr><td>MH-60R 헬기</td><td>$55M</td><td>근접 제압·정찰</td><td>저렴하지만 적 대공 위협에 취약하다.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">금액과 전투력은 조달가격의 실측값이 아니라 게임 밸런스를 위한 <strong>가상 작전비</strong>다. 실제 무기 성능·비용이라고 표시하지 않는다.</p>
+  </section>
+
+  <section id="congress">
+    <h2>4. 예산이 부족할 때의 의회 게임</h2>
+    <div class="flow">
+      <div><b>부족 감지</b><span>예산 초과 전력은 추가할 수 없음</span></div>
+      <div><b>설득 선택</b><span>기밀 브리핑·지역 일자리·동맹 분담</span></div>
+      <div><b>찬성 계산</b><span>51% 이상이면 표결 통과</span></div>
+      <div><b>추가 승인</b><span>전투 중 +$240M, 본편 +$600M</span></div>
+      <div><b>정치 반영</b><span>국민·여당·의회·국제 지지 변화</span></div>
+    </div>
+    <div class="cards">
+      <div class="card"><b>정상 표결 통과</b><span>예산 확보, 여당 결속과 국민 지지에 소폭 이익.</span></div>
+      <div class="card warn"><b>표결 부결</b><span>예산 없음. 의회 찬성과 국민 지지가 추가 하락.</span></div>
+      <div class="card danger"><b>대통령 강행</b><span>즉시 예산 확보. 의회 −12, 여당 −10, 국민 −7.</span></div>
+    </div>
+    <p>강행 처리는 단기적으로 더 강한 전력을 투입하게 하지만, 반복할수록 엔딩 점수와 협상력이 약해진다. 플레이어가 ‘군사적으로 이기는 선택’과 ‘정치적으로 버틸 수 있는 선택’을 동시에 고민하게 만드는 장치다.</p>
+  </section>
+
+  <section id="operations">
+    <h2>5. 연속 전투 작전 로드맵</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>순서</th><th>작전</th><th>핵심 목표</th><th>예산 범위</th><th>상태</th></tr></thead>
+        <tbody>
+          <tr><td>01</td><td>해협 호송대 방어</td><td>고속정 8척 무력화, 유조선 2척 이상 생존</td><td>$55~480M</td><td><span class="status">플레이 가능</span></td></tr>
+          <tr><td>02</td><td>기뢰 회랑 개척</td><td>소해 전력을 보호하며 안전 통항로 확보</td><td>$160~520M</td><td><span class="status next">다음 개발</span></td></tr>
+          <tr><td>03</td><td>대함 미사일 방어</td><td>다방향 포화 공격에서 함대와 항만 보호</td><td>$220~640M</td><td><span class="status next">다음 개발</span></td></tr>
+          <tr><td>04</td><td>피격 유조선 구조</td><td>화재 진압·구조 헬기 엄호·탈출 항로 확보</td><td>$120~420M</td><td><span class="status plan">기획 확정</span></td></tr>
+          <tr><td>05</td><td>연안 발사대 제압</td><td>표적 확인 뒤 제한 타격, 민간 피해 억제</td><td>$260~720M</td><td><span class="status plan">기획 확정</span></td></tr>
+          <tr><td>06</td><td>중동 기지 반격 방어</td><td>기지 방공과 해상 증원을 동시에 지휘</td><td>$300~760M</td><td><span class="status plan">기획 확정</span></td></tr>
+          <tr><td>07</td><td>항모 전단 방어</td><td>복합 위협 차단, 항모 생존과 제공권 유지</td><td>$420~900M</td><td><span class="status plan">기획 확정</span></td></tr>
+          <tr><td>08</td><td>휴전 회랑 엄호</td><td>교전 규칙을 지키며 철수·민간 항로 보호</td><td>$180~560M</td><td><span class="status plan">기획 확정</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>각 작전은 같은 RTS 조작을 공유하되 <strong>승리 조건, 보호 대상, 적 증원 방향, 교전 규칙, 예산 압박</strong>을 다르게 한다. 별도 미니게임을 추가하지 않는다.</p>
+  </section>
+
+  <section>
+    <h2>6. 본편에 저장되는 결과</h2>
+    <ul>
+      <li>승인 예산, 추가예산, 누적 작전비</li>
+      <li>의회 찬성, 여당 지지, 국민 지지, 국제 지지</li>
+      <li>정상 통과 횟수와 대통령 강행 횟수</li>
+      <li>작전별 성공·실패, 파괴 수, 생존 아군·민간 선박, 투입 전력</li>
+      <li>마지막 전투 결과와 발생 시각</li>
+    </ul>
+  </section>
+
+  <section id="acceptance">
+    <h2>7. 이번 적용 완료 기준</h2>
+    <ol>
+      <li>새 게임을 누르면 호송대 방어가 먼저 열리고, 성공 전에는 본편 상황실로 갈 수 있다.</li>
+      <li>구축함·전투기·헬기를 각각 0대부터 선택할 수 있고 전체 0대면 시작이 막힌다.</li>
+      <li>편성비가 승인 예산을 넘으면 증가 버튼이 막히고 부족 메시지가 보인다.</li>
+      <li>의회 설득, 표결, 강행 처리 결과가 예산과 세 종류 지지에 반영된다.</li>
+      <li>전투 성공 결과와 집행 예산이 본편 상태로 돌아와 상단 HUD와 작전·예산실에 표시된다.</li>
+      <li>후속 작전 8종의 목표·예산·정치 쟁점이 데이터로 분리되어 확장 가능하다.</li>
+    </ol>
+  </section>
+
+  <footer>HORMUZ는 실제 사건에서 영감을 받은 가상 전략 시뮬레이션이다. 작전비·전투력·정치 수치는 게임 설계용 추정치이며 실제 군사 평가를 뜻하지 않는다.</footer>
+</main>
+</body>
+</html>

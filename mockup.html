@@ -1,0 +1,1688 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <title>HORMUZ — 3D Scene Quality Mockup</title>
+  <style>
+    :root {
+      --ink: #eaf4f2;
+      --muted: #8aa9aa;
+      --cyan: #45e6e2;
+      --cyan-soft: rgba(69, 230, 226, .14);
+      --amber: #ffb04a;
+      --red: #ff4d4d;
+      --panel: rgba(3, 16, 26, .82);
+      --line: rgba(104, 228, 224, .4);
+      --safe-top: max(12px, env(safe-area-inset-top));
+      --safe-bottom: max(8px, env(safe-area-inset-bottom));
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #020911;
+      color: var(--ink);
+      font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", sans-serif;
+    }
+
+    button { font: inherit; }
+
+    #stage {
+      position: fixed;
+      inset: 0;
+      isolation: isolate;
+      overflow: hidden;
+      background:
+        radial-gradient(120% 90% at 55% 88%, rgba(7, 99, 111, .2), transparent 55%),
+        linear-gradient(#07111d 0%, #10141c 46%, #c87937 83%, #04121a 100%);
+    }
+
+    #stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(0deg, rgba(180, 255, 248, .018) 0 1px, transparent 1px 4px),
+        radial-gradient(ellipse at center, transparent 42%, rgba(0, 4, 8, .32) 77%, rgba(0, 2, 6, .82) 100%);
+      mix-blend-mode: screen, normal;
+      opacity: .72;
+    }
+
+    body[data-quality="basic"] #stage::before { opacity: .38; }
+    body[data-quality="cinematic"] #stage::before { opacity: .92; }
+
+    #cinematic-plate {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background:
+        linear-gradient(180deg, rgba(1, 7, 13, .04), rgba(1, 8, 14, .12)),
+        url("./assets/environment/cinematic-v1/hormuz-environment-cleanplate-v1.png") center / cover no-repeat;
+      opacity: 0;
+      transform: scale(1.002);
+      transition: opacity .35s ease;
+    }
+
+    body[data-quality="cinematic"] #cinematic-plate { opacity: 1; }
+    body[data-quality="cinematic"] #webgl {
+      opacity: .08;
+      mix-blend-mode: screen;
+    }
+
+    #tactical-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      transition: opacity .35s ease;
+    }
+
+    body[data-quality="cinematic"] #tactical-overlay { opacity: .62; }
+
+    .cinematic-impostor {
+      position: absolute;
+      z-index: 2;
+      height: auto;
+      opacity: 0;
+      pointer-events: none;
+      filter: drop-shadow(0 0 8px rgba(65, 225, 224, .32));
+      transition: opacity .35s ease;
+    }
+
+    #carrier-impostor { top: 37%; left: 4%; width: 41%; }
+    #tanker-impostor { top: 25%; left: 67%; width: 28%; }
+    #speedboat-impostor {
+      top: 41%;
+      left: 49%;
+      width: 23%;
+      filter: drop-shadow(0 0 9px rgba(255, 170, 56, .4));
+    }
+    #crane-impostor {
+      top: 18%;
+      left: 77%;
+      width: 22%;
+      filter: drop-shadow(0 0 8px rgba(255, 173, 62, .42));
+    }
+    #crane-impostor-secondary {
+      top: 36%;
+      left: 87%;
+      width: 14%;
+      filter: drop-shadow(0 0 7px rgba(255, 173, 62, .36));
+    }
+
+    body[data-quality="cinematic"] .cinematic-impostor { opacity: .96; }
+
+    #carrier-zone {
+      position: absolute;
+      z-index: 1;
+      top: 55%;
+      left: 22.5%;
+      width: 640px;
+      height: 300px;
+      border: 1px solid rgba(72, 231, 229, .48);
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+      box-shadow: inset 0 0 28px rgba(54, 220, 218, .025);
+      transform: translate(-50%, -50%) rotate(-7deg);
+    }
+
+    #carrier-zone::after {
+      content: "";
+      position: absolute;
+      inset: 38px 72px;
+      border: 1px solid rgba(72, 231, 229, .36);
+      border-radius: 50%;
+    }
+
+    body[data-quality="cinematic"] #carrier-zone { opacity: 1; }
+
+    #cinematic-minefield {
+      position: absolute;
+      z-index: 2;
+      top: 59%;
+      left: 59%;
+      width: 190px;
+      height: 105px;
+      border: 1px solid rgba(255, 70, 70, .7);
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(24deg, rgba(255, 70, 70, .12) 0 1px, transparent 1px 11px),
+        rgba(120, 8, 16, .05);
+      box-shadow: inset 0 0 22px rgba(255, 55, 55, .08), 0 0 12px rgba(255, 55, 55, .08);
+      transform: translate(-50%, -50%) rotate(-4deg);
+    }
+
+    #cinematic-minefield i {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border: 1px solid #ff5555;
+      border-radius: 50%;
+      box-shadow: 0 0 6px rgba(255, 55, 55, .75);
+    }
+
+    #cinematic-minefield i::before {
+      content: "";
+      position: absolute;
+      bottom: 5px;
+      left: 2px;
+      width: 1px;
+      height: 8px;
+      background: #ff5555;
+    }
+
+    #cinematic-minefield i:nth-child(1) { top: 25%; left: 18%; }
+    #cinematic-minefield i:nth-child(2) { top: 46%; left: 29%; }
+    #cinematic-minefield i:nth-child(3) { top: 68%; left: 20%; }
+    #cinematic-minefield i:nth-child(4) { top: 22%; left: 48%; }
+    #cinematic-minefield i:nth-child(5) { top: 53%; left: 51%; }
+    #cinematic-minefield i:nth-child(6) { top: 75%; left: 45%; }
+    #cinematic-minefield i:nth-child(7) { top: 35%; left: 70%; }
+    #cinematic-minefield i:nth-child(8) { top: 69%; left: 76%; }
+
+    body[data-quality="cinematic"] #cinematic-minefield { opacity: 1; }
+
+    #cinematic-strike {
+      position: absolute;
+      z-index: 2;
+      top: 29.5%;
+      left: 64%;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(222, 254, 255, .95);
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+      background: #fff;
+      box-shadow:
+        0 0 9px 4px #fff,
+        0 0 28px 13px rgba(167, 239, 255, .94),
+        0 0 60px 32px rgba(87, 205, 255, .48);
+      transform: translate(-50%, -50%);
+      animation: strikePulse 2.8s ease-in-out infinite;
+    }
+
+    #cinematic-strike::before,
+    #cinematic-strike::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border: 2px solid rgba(198, 246, 255, .68);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) rotateX(68deg);
+      box-shadow: 0 0 18px rgba(144, 232, 255, .55);
+    }
+
+    #cinematic-strike::before { width: 122px; height: 122px; }
+    #cinematic-strike::after { width: 210px; height: 210px; opacity: .48; }
+
+    #cinematic-strike > i {
+      position: absolute;
+      right: -8px;
+      bottom: 8px;
+      width: min(31vw, 470px);
+      height: min(18vw, 260px);
+      border-top: 3px solid rgba(255, 188, 108, .92);
+      border-radius: 50% 50% 0 0;
+      filter: drop-shadow(0 0 7px rgba(255, 175, 82, .72));
+      transform: rotate(12deg);
+      transform-origin: right bottom;
+    }
+
+    body[data-quality="cinematic"] #cinematic-strike { opacity: 1; }
+
+    #webgl {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+    }
+
+    #color-wash {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background:
+        linear-gradient(110deg, rgba(0, 194, 205, .08), transparent 44%),
+        linear-gradient(290deg, rgba(255, 122, 36, .09), transparent 38%);
+      mix-blend-mode: screen;
+    }
+
+    .hud {
+      position: absolute;
+      z-index: 5;
+      pointer-events: none;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, .85);
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(135deg, rgba(69, 230, 226, .08), transparent 30%),
+        var(--panel);
+      box-shadow:
+        inset 0 0 22px rgba(69, 230, 226, .04),
+        0 10px 40px rgba(0, 0, 0, .3);
+      backdrop-filter: blur(10px);
+    }
+
+    .top-left {
+      top: var(--safe-top);
+      left: 18px;
+      width: min(290px, 38vw);
+      padding: 11px 14px 12px;
+      clip-path: polygon(0 0, 100% 0, 91% 100%, 0 100%);
+    }
+
+    .brand {
+      margin-bottom: 8px;
+      color: #f0ffff;
+      font: 700 clamp(24px, 3vw, 42px)/.9 Georgia, "Times New Roman", serif;
+      letter-spacing: .07em;
+    }
+
+    .phase-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 4px 0;
+      color: #cce5e3;
+      font-size: clamp(11px, 1.1vw, 16px);
+      letter-spacing: .04em;
+    }
+
+    .phase-row strong {
+      color: var(--cyan);
+      font-weight: 650;
+    }
+
+    .role {
+      margin-top: 6px;
+      color: #6fd8d5;
+      font-size: clamp(9px, .9vw, 12px);
+      letter-spacing: .09em;
+    }
+
+    .gauges {
+      top: var(--safe-top);
+      right: 18px;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(68px, 86px));
+      gap: 6px;
+    }
+
+    .gauge {
+      position: relative;
+      min-height: 86px;
+      padding: 8px 7px 7px;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .gauge::after {
+      content: "";
+      position: absolute;
+      inset: auto 12px 0;
+      height: 2px;
+      background: var(--cyan);
+      box-shadow: 0 0 11px var(--cyan);
+      opacity: .45;
+    }
+
+    .gauge.danger {
+      border-color: rgba(255, 77, 77, .72);
+      animation: dangerPulse 1.8s ease-in-out infinite;
+    }
+
+    .gauge.danger::after { background: var(--red); box-shadow: 0 0 12px var(--red); }
+
+    .gauge-label {
+      color: #a5d2d0;
+      font-size: 11px;
+      letter-spacing: .08em;
+    }
+
+    .gauge-icon {
+      position: relative;
+      width: 24px;
+      height: 17px;
+      margin: 6px auto 3px;
+      opacity: .9;
+    }
+
+    .gauge-icon::before,
+    .gauge-icon::after {
+      content: "";
+      position: absolute;
+      left: 2px;
+      right: 2px;
+      border: 1px solid var(--cyan);
+      box-shadow: 0 0 7px rgba(69, 230, 226, .5);
+    }
+
+    .gauge-icon::before { top: 2px; height: 7px; border-bottom: 0; border-radius: 10px 10px 0 0; }
+    .gauge-icon::after { bottom: 1px; height: 4px; border-left: 0; border-right: 0; }
+    .danger .gauge-icon::before, .danger .gauge-icon::after { border-color: var(--red); }
+
+    .gauge-value {
+      color: #efffff;
+      font-size: clamp(16px, 1.55vw, 23px);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .decision {
+      left: 50%;
+      bottom: calc(52px + var(--safe-bottom));
+      width: min(830px, calc(100vw - 32px));
+      padding: 14px 16px 12px;
+      transform: translateX(-50%);
+      pointer-events: auto;
+      clip-path: polygon(2% 0, 98% 0, 100% 16%, 100% 84%, 98% 100%, 2% 100%, 0 84%, 0 16%);
+    }
+
+    .alert-title {
+      margin-bottom: 9px;
+      color: #ff695d;
+      text-align: center;
+      font-size: clamp(13px, 1.35vw, 19px);
+      font-weight: 750;
+      letter-spacing: .025em;
+    }
+
+    .timer {
+      position: relative;
+      height: 7px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 110, 92, .4);
+      background: rgba(255, 255, 255, .05);
+    }
+
+    .timer > i {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 72%;
+      background: linear-gradient(90deg, #d94b42, #ff826a);
+      box-shadow: 0 0 14px rgba(255, 88, 68, .6);
+      animation: timerSweep 10s linear infinite;
+    }
+
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    .choice {
+      min-height: 66px;
+      padding: 10px 12px;
+      border: 1px solid rgba(69, 230, 226, .55);
+      border-radius: 2px;
+      color: #dffffc;
+      background:
+        linear-gradient(180deg, rgba(69, 230, 226, .12), rgba(69, 230, 226, .035)),
+        rgba(2, 28, 39, .88);
+      box-shadow: inset 0 0 18px rgba(69, 230, 226, .04);
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .choice:hover,
+    .choice:focus-visible {
+      outline: 0;
+      border-color: var(--cyan);
+      background-color: rgba(7, 50, 60, .96);
+      transform: translateY(-2px);
+    }
+
+    .choice:last-child {
+      border-color: rgba(255, 77, 77, .75);
+      color: #ffd9d4;
+      background:
+        linear-gradient(180deg, rgba(255, 77, 77, .24), rgba(120, 10, 18, .16)),
+        rgba(39, 5, 11, .88);
+    }
+
+    .choice b {
+      display: block;
+      margin-bottom: 3px;
+      font-size: clamp(15px, 1.4vw, 21px);
+    }
+
+    .choice small {
+      color: #8fbcba;
+      font-size: clamp(9px, .85vw, 12px);
+    }
+
+    .choice:last-child small { color: #e5a5a0; }
+
+    .camera-chip {
+      right: 18px;
+      bottom: calc(59px + var(--safe-bottom));
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      color: #bce7e5;
+      font-size: 11px;
+      letter-spacing: .08em;
+      pointer-events: auto;
+      cursor: pointer;
+    }
+
+    .camera-chip i {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan);
+    }
+
+    .ticker {
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: calc(43px + var(--safe-bottom));
+      display: flex;
+      align-items: flex-start;
+      overflow: hidden;
+      border-top: 1px solid rgba(69, 230, 226, .35);
+      background: rgba(1, 12, 20, .92);
+      pointer-events: none;
+    }
+
+    .breaking {
+      flex: 0 0 auto;
+      min-width: 102px;
+      height: 43px;
+      padding: 10px 18px;
+      border-right: 1px solid rgba(255, 91, 72, .7);
+      color: #fff3ef;
+      background: linear-gradient(90deg, rgba(142, 19, 22, .88), rgba(76, 7, 13, .8));
+      font-size: 17px;
+      font-weight: 750;
+      text-align: center;
+    }
+
+    .ticker-track {
+      padding: 11px 0 0 24px;
+      color: #c7d8d7;
+      font-size: 14px;
+      white-space: nowrap;
+      animation: ticker 28s linear infinite;
+    }
+
+    .quality {
+      position: absolute;
+      z-index: 7;
+      top: 112px;
+      right: 18px;
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid rgba(69, 230, 226, .22);
+      background: rgba(2, 15, 24, .56);
+      backdrop-filter: blur(7px);
+    }
+
+    .quality a {
+      padding: 4px 7px;
+      color: #779b9a;
+      font-size: 9px;
+      letter-spacing: .08em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .quality a.active {
+      color: #dffffc;
+      background: rgba(69, 230, 226, .14);
+      box-shadow: inset 0 0 0 1px rgba(69, 230, 226, .28);
+    }
+
+    #impact-flash {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+      background: rgba(255, 49, 38, .35);
+      opacity: 0;
+      mix-blend-mode: screen;
+    }
+
+    #impact-flash.fire { animation: impactFlash .62s ease-out; }
+
+    @keyframes timerSweep {
+      from { width: 100%; }
+      to { width: 3%; }
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-52%); }
+    }
+
+    @keyframes dangerPulse {
+      0%, 100% { box-shadow: inset 0 0 15px rgba(255, 77, 77, .02); }
+      50% { box-shadow: inset 0 0 22px rgba(255, 77, 77, .14), 0 0 14px rgba(255, 77, 77, .08); }
+    }
+
+    @keyframes impactFlash {
+      0% { opacity: .95; }
+      100% { opacity: 0; }
+    }
+
+    @keyframes strikePulse {
+      0%, 100% { filter: brightness(.92); }
+      50% { filter: brightness(1.32); }
+    }
+
+    @media (max-width: 760px), (orientation: portrait) {
+      #carrier-impostor { top: 47%; left: -19%; width: 112%; }
+      #tanker-impostor { top: 31%; left: 19%; width: 92%; }
+      #speedboat-impostor { top: 43%; left: 25%; width: 78%; }
+      #crane-impostor { top: 20%; left: 47%; width: 69%; }
+      #crane-impostor-secondary { display: none; }
+      #carrier-zone { top: 61%; left: 22%; transform: translate(-50%, -50%) scale(.63); }
+      #cinematic-minefield { top: 57%; left: 70%; transform: translate(-50%, -50%) scale(.75); }
+
+      .top-left {
+        top: var(--safe-top);
+        left: 10px;
+        width: 47vw;
+        padding: 9px 10px;
+      }
+
+      .brand { font-size: 23px; }
+      .phase-row { display: block; font-size: 10px; line-height: 1.45; }
+      .role { display: none; }
+
+      .gauges {
+        top: var(--safe-top);
+        right: 9px;
+        grid-template-columns: repeat(2, 54px);
+        gap: 4px;
+      }
+
+      .gauge {
+        min-height: 49px;
+        padding: 4px 4px 3px;
+      }
+
+      .gauge-label { font-size: 8px; }
+      .gauge-icon { display: none; }
+      .gauge-value { margin-top: 2px; font-size: 13px; }
+
+      .quality {
+        top: 166px;
+        right: 9px;
+        flex-direction: column;
+      }
+
+      .decision {
+        bottom: calc(34px + var(--safe-bottom));
+        width: calc(100vw - 16px);
+        padding: 11px 10px 10px;
+        clip-path: polygon(3% 0, 97% 0, 100% 8%, 100% 100%, 0 100%, 0 8%);
+      }
+
+      .alert-title {
+        margin: 0 auto 7px;
+        max-width: 92%;
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .timer { margin-bottom: 7px; }
+      .choices { grid-template-columns: 1fr; gap: 5px; }
+
+      .choice {
+        display: grid;
+        grid-template-columns: 42% 58%;
+        align-items: center;
+        min-height: 44px;
+        padding: 7px 10px;
+        text-align: left;
+      }
+
+      .choice b { margin: 0; font-size: 14px; }
+      .choice small { font-size: 9px; text-align: right; }
+
+      .camera-chip {
+        right: auto;
+        bottom: calc(248px + var(--safe-bottom));
+        left: 12px;
+        padding: 7px 9px;
+        font-size: 9px;
+      }
+
+      .ticker { height: calc(31px + var(--safe-bottom)); }
+      .breaking { min-width: 60px; height: 31px; padding: 7px 8px; font-size: 12px; }
+      .ticker-track { padding: 7px 0 0 13px; font-size: 11px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .timer > i, .ticker-track, .gauge.danger { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <main id="stage" aria-label="호르무즈 해협 3D 전술 상황 화면">
+    <div id="cinematic-plate" aria-hidden="true"></div>
+    <canvas id="webgl"></canvas>
+    <svg id="tactical-overlay" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <filter id="routeGlow">
+          <feGaussianBlur stdDeviation="1.8" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <g fill="none" stroke="#43e8ee" stroke-width="1.5" stroke-dasharray="7 9" filter="url(#routeGlow)">
+        <path d="M-80 410 C210 330 455 390 720 366 S1125 248 1670 226"/>
+        <path d="M-60 500 C260 420 520 490 780 430 S1210 284 1660 330"/>
+        <path d="M-30 615 C290 560 540 565 820 485 S1220 345 1660 420"/>
+        <path d="M325 760 C520 630 790 590 1030 458 S1320 340 1660 370"/>
+        <path d="M710 940 C820 690 1040 605 1240 485 S1460 410 1660 430"/>
+      </g>
+      <g fill="#5ffcff" opacity=".82">
+        <circle cx="172" cy="446" r="3"/><circle cx="352" cy="405" r="3"/>
+        <circle cx="536" cy="454" r="3"/><circle cx="730" cy="420" r="3"/>
+        <circle cx="1128" cy="322" r="3"/><circle cx="1390" cy="286" r="3"/>
+      </g>
+    </svg>
+    <div id="carrier-zone" aria-hidden="true"></div>
+    <img class="cinematic-impostor" id="carrier-impostor"
+         src="./assets/impostors/cinematic-v1/carrier-strike-group-v1.png" alt="" aria-hidden="true">
+    <img class="cinematic-impostor" id="tanker-impostor"
+         src="./assets/impostors/cinematic-v1/tanker-convoy-v1.png" alt="" aria-hidden="true">
+    <img class="cinematic-impostor" id="speedboat-impostor"
+         src="./assets/impostors/cinematic-v1/fast-attack-swarm-v1.png" alt="" aria-hidden="true">
+    <img class="cinematic-impostor" id="crane-impostor"
+         src="./assets/impostors/cinematic-v1/port-cranes-v1.png" alt="" aria-hidden="true">
+    <img class="cinematic-impostor" id="crane-impostor-secondary"
+         src="./assets/impostors/cinematic-v1/port-cranes-v1.png" alt="" aria-hidden="true">
+    <div id="cinematic-minefield" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+    <div id="cinematic-strike" aria-hidden="true"><i></i></div>
+    <div id="color-wash"></div>
+    <div id="impact-flash"></div>
+
+    <section class="hud panel top-left" aria-label="날짜와 국면">
+      <div class="brand">HORMUZ</div>
+      <div class="phase-row"><span>DAY 6 · 8.02</span><strong>ACT II · 재개전</strong></div>
+      <div class="role">미합중국 대통령 상황실</div>
+    </section>
+
+    <section class="hud gauges" aria-label="전황 계기판">
+      <div class="panel gauge"><div class="gauge-label">통항</div><div class="gauge-icon"></div><div class="gauge-value">34%</div></div>
+      <div class="panel gauge"><div class="gauge-label">유가</div><div class="gauge-icon"></div><div class="gauge-value">$96</div></div>
+      <div class="panel gauge"><div class="gauge-label">지지</div><div class="gauge-icon"></div><div class="gauge-value">47</div></div>
+      <div class="panel gauge"><div class="gauge-label">국제</div><div class="gauge-icon"></div><div class="gauge-value">52</div></div>
+      <div class="panel gauge"><div class="gauge-label">탄약</div><div class="gauge-icon"></div><div class="gauge-value">38</div></div>
+      <div class="panel gauge danger"><div class="gauge-label">확전</div><div class="gauge-icon"></div><div class="gauge-value">4</div></div>
+    </section>
+
+    <nav class="quality" aria-label="렌더 품질">
+      <a href="?q=basic" data-q="basic">basic</a>
+      <a href="?q=rich" data-q="rich">rich</a>
+      <a href="?q=cinematic" data-q="cinematic">cinematic</a>
+    </nav>
+
+    <section class="hud panel decision" aria-label="긴급 대응 선택">
+      <div class="alert-title">IRGC 고속정 6척, 유조선 호송대 500m까지 접근</div>
+      <div class="timer" aria-label="선택 제한 시간"><i></i></div>
+      <div class="choices">
+        <button class="choice" data-message="경고사격을 명령했습니다. 호송 편대가 진형을 유지합니다.">
+          <b>경고사격</b><small>확전 유지 · 이탈 확률 60%</small>
+        </button>
+        <button class="choice" data-message="호송대가 회피 기동에 들어갑니다. 통항률이 일시 하락합니다.">
+          <b>회피 기동</b><small>안전 우선 · 통항 −4</small>
+        </button>
+        <button class="choice" data-danger="1" data-message="격침을 허가했습니다. 확전 단계가 상승합니다.">
+          <b>격침 허가</b><small>위협 제거 · 확전 +1</small>
+        </button>
+      </div>
+    </section>
+
+    <button class="hud panel camera-chip" type="button" aria-pressed="true">
+      <i></i><span>AUTO CAM</span>
+    </button>
+
+    <section class="hud ticker" aria-label="속보 티커">
+      <div class="breaking">속보</div>
+      <div class="ticker-track" id="ticker-text">
+        브렌트유 배럴당 96달러 돌파 ··· 오만 외무부 “중재 채널은 열려 있다” ··· 제5함대, 호송대 E-2 운항 지속 ··· 국제 유가 2% 상승 ···
+        브렌트유 배럴당 96달러 돌파 ··· 오만 외무부 “중재 채널은 열려 있다” ··· 제5함대, 호송대 E-2 운항 지속 ··· 국제 유가 2% 상승 ···
+      </div>
+    </section>
+  </main>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./assets/js/vendor/three.module.js"
+      }
+    }
+  </script>
+  <script type="module">
+    import * as THREE from "three";
+    import { GLTFLoader } from "./assets/js/vendor/GLTFLoader.js";
+    import { MeshoptDecoder } from "./assets/js/vendor/meshopt_decoder.module.js";
+
+    const params = new URLSearchParams(location.search);
+    const qualityName = ["basic", "rich", "cinematic"].includes(params.get("q"))
+      ? params.get("q")
+      : "cinematic";
+
+    const QUALITY = {
+      basic: { dpr: 1, city: 70, boats: 8, tankers: 5, particles: 90, terrainLines: 1, glow: .64 },
+      rich: { dpr: 1.5, city: 130, boats: 14, tankers: 8, particles: 180, terrainLines: 2, glow: .82 },
+      cinematic: { dpr: 2, city: 220, boats: 22, tankers: 11, particles: 320, terrainLines: 3, glow: 1 }
+    }[qualityName];
+
+    document.body.dataset.quality = qualityName;
+    document.body.dataset.meshyStatus = "loading";
+    document.querySelector(`[data-q="${qualityName}"]`)?.classList.add("active");
+
+    const canvas = document.querySelector("#webgl");
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: qualityName !== "basic",
+      alpha: true,
+      powerPreference: "high-performance"
+    });
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = qualityName === "cinematic" ? 1.22 : 1.08;
+    renderer.setPixelRatio(Math.min(devicePixelRatio, QUALITY.dpr));
+    renderer.setSize(innerWidth, innerHeight, false);
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x06101a, qualityName === "basic" ? .0068 : .0056);
+
+    const camera = new THREE.PerspectiveCamera(innerWidth < 760 ? 68 : 55, innerWidth / innerHeight, .1, 500);
+    const cameraTarget = new THREE.Vector3(0, 0, 0);
+    let cameraTheta = .68;
+    let cameraPhi = .73;
+    let cameraRadius = innerWidth < 760 ? 136 : 116;
+    let autoCamera = true;
+    let userCameraUntil = 0;
+
+    const hemi = new THREE.HemisphereLight(0x68cbd1, 0x180f0b, 1.05);
+    scene.add(hemi);
+    const key = new THREE.DirectionalLight(0xffb36b, 2.3);
+    key.position.set(-65, 90, -100);
+    scene.add(key);
+    const cyanFill = new THREE.PointLight(0x33d9d8, 55, 180, 2);
+    cyanFill.position.set(-45, 25, 45);
+    scene.add(cyanFill);
+
+    let lastFrameMs = performance.now();
+    let elapsedSeconds = 0;
+    const animated = [];
+    const pulseObjects = [];
+    const shipMovers = [];
+
+    const COLORS = {
+      cyan: 0x45e6e2,
+      amber: 0xffb04a,
+      red: 0xff4d4d,
+      white: 0xeaf4f2,
+      terrain: 0x101a1a,
+      terrainSide: 0x061013
+    };
+
+    function seeded(seed) {
+      let a = seed >>> 0;
+      return () => {
+        a |= 0;
+        a = a + 0x6D2B79F5 | 0;
+        let t = Math.imul(a ^ a >>> 15, 1 | a);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      };
+    }
+
+    const rand = seeded(20260727);
+
+    function makeRadialTexture(inner = "rgba(255,255,255,1)", outer = "rgba(255,255,255,0)") {
+      const c = document.createElement("canvas");
+      c.width = c.height = 128;
+      const ctx = c.getContext("2d");
+      const g = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      g.addColorStop(0, inner);
+      g.addColorStop(.18, inner);
+      g.addColorStop(1, outer);
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, 128, 128);
+      const texture = new THREE.CanvasTexture(c);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      return texture;
+    }
+
+    const glowTexture = makeRadialTexture();
+
+    function addGlow(parent, color, scale = 7, y = 1.2, opacity = .6) {
+      const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: glowTexture,
+        color,
+        transparent: true,
+        opacity: opacity * QUALITY.glow,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      }));
+      sprite.position.y = y;
+      sprite.scale.set(scale, scale, 1);
+      parent.add(sprite);
+      pulseObjects.push({ sprite, base: opacity * QUALITY.glow, phase: rand() * Math.PI * 2 });
+      return sprite;
+    }
+
+    const proceduralEnvironment = new THREE.Group();
+    proceduralEnvironment.name = "ProceduralEnvironment";
+    scene.add(proceduralEnvironment);
+
+    const waterUniforms = {
+      uTime: { value: 0 },
+      uCinematic: { value: qualityName === "cinematic" ? 1 : qualityName === "rich" ? .6 : .15 }
+    };
+
+    const water = new THREE.Mesh(
+      new THREE.PlaneGeometry(230, 180, qualityName === "basic" ? 38 : 72, qualityName === "basic" ? 30 : 56),
+      new THREE.ShaderMaterial({
+        uniforms: waterUniforms,
+        vertexShader: `
+          uniform float uTime;
+          varying vec2 vUv;
+          varying float vWave;
+          void main() {
+            vUv = uv;
+            vec3 p = position;
+            float w = sin(p.x * .13 + uTime * .55) * .46
+                    + sin(p.y * .18 - uTime * .42) * .22
+                    + sin((p.x + p.y) * .07 + uTime * .22) * .28;
+            p.z += w;
+            vWave = w;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform float uTime;
+          uniform float uCinematic;
+          varying vec2 vUv;
+          varying float vWave;
+          float line(float v, float width) {
+            float f = abs(fract(v) - .5);
+            return 1.0 - smoothstep(width, width + .02, f);
+          }
+          void main() {
+            vec3 deep = vec3(.004, .045, .073);
+            vec3 teal = vec3(.008, .18, .23);
+            float horizon = pow(1.0 - vUv.y, 2.2);
+            float wave = vWave * .12 + .18;
+            float grid = max(line(vUv.x * 30.0, .018), line(vUv.y * 24.0, .018));
+            float scan = sin((vUv.x + vUv.y) * 45.0 - uTime * 1.6) * .5 + .5;
+            vec3 color = mix(deep, teal, horizon * .55 + wave);
+            color += vec3(.02, .25, .28) * grid * (.10 + uCinematic * .12);
+            color += vec3(.02, .16, .19) * pow(scan, 8.0) * .12 * uCinematic;
+            gl_FragColor = vec4(color, 1.0);
+          }
+        `,
+        side: THREE.DoubleSide
+      })
+    );
+    water.rotation.x = -Math.PI / 2;
+    water.position.y = -.55;
+    proceduralEnvironment.add(water);
+
+    function terrainMaterial(color = COLORS.terrain) {
+      return new THREE.MeshStandardMaterial({
+        color,
+        roughness: .96,
+        metalness: .04,
+        emissive: 0x071314,
+        emissiveIntensity: .32,
+        flatShading: true
+      });
+    }
+
+    function addLand(points, height = 2.2, color = COLORS.terrain, name = "") {
+      const shape = new THREE.Shape();
+      shape.moveTo(points[0][0], points[0][1]);
+      points.slice(1).forEach(([x, y]) => shape.lineTo(x, y));
+      shape.closePath();
+      const geo = new THREE.ExtrudeGeometry(shape, {
+        depth: height,
+        bevelEnabled: true,
+        bevelThickness: .42,
+        bevelSize: .65,
+        bevelSegments: 1,
+        curveSegments: 1
+      });
+      geo.rotateX(Math.PI / 2);
+      geo.computeVertexNormals();
+      const mesh = new THREE.Mesh(geo, terrainMaterial(color));
+      mesh.position.y = height;
+      mesh.name = name;
+      proceduralEnvironment.add(mesh);
+
+      const edgeGeo = new THREE.EdgesGeometry(geo, 24);
+      const edges = new THREE.LineSegments(edgeGeo, new THREE.LineBasicMaterial({
+        color: 0x5bc7c6,
+        transparent: true,
+        opacity: qualityName === "basic" ? .16 : .26
+      }));
+      edges.position.copy(mesh.position);
+      proceduralEnvironment.add(edges);
+
+      for (let layer = 1; layer < QUALITY.terrainLines; layer++) {
+        const echo = edges.clone();
+        echo.material = edges.material.clone();
+        echo.material.opacity *= .42;
+        echo.scale.setScalar(1 + layer * .018);
+        echo.position.y += layer * .42;
+        proceduralEnvironment.add(echo);
+      }
+      return mesh;
+    }
+
+    addLand([
+      [-116, -88], [116, -88], [116, -32], [89, -25], [64, -31], [41, -25],
+      [19, -34], [-7, -28], [-26, -37], [-53, -28], [-77, -39], [-99, -31], [-116, -42]
+    ], 3.5, 0x101817, "iran");
+
+    addLand([
+      [-61, -17], [-48, -22], [-29, -21], [-11, -14], [11, -13], [32, -7],
+      [50, -5], [59, 1], [43, 5], [19, 2], [-4, -3], [-28, -5], [-50, -9]
+    ], 2.1, 0x111b19, "qeshm");
+
+    addLand([
+      [37, 83], [116, 83], [116, 4], [99, 7], [91, 18], [75, 22], [83, 32],
+      [68, 37], [75, 49], [59, 54], [64, 67], [48, 71]
+    ], 4.2, 0x111918, "musandam");
+
+    const smallIslands = [
+      [-10, -26, 4, 1.4], [31, -19, 4, 1.2], [9, 8, 5, 1.4],
+      [-62, 34, 4, 1], [-37, 45, 5, 1.3], [-19, 47, 4, 1], [40, 19, 3, 1]
+    ];
+    smallIslands.forEach(([x, z, sx, sy], i) => addLand([
+      [x - sx, z], [x - sx * .3, z - sy], [x + sx, z - sy * .3],
+      [x + sx * .7, z + sy], [x - sx * .5, z + sy * .7]
+    ], 1.1, 0x111b19, `island-${i}`));
+
+    function addCityLights(count) {
+      const positions = [];
+      const colors = [];
+      const c = new THREE.Color();
+      for (let i = 0; i < count; i++) {
+        const north = i < count * .7;
+        const x = -105 + rand() * 210;
+        const z = north ? -35 - rand() * 30 : 20 + rand() * 52;
+        const y = north ? 3.6 + rand() * 1.3 : 4.2 + rand() * 1.5;
+        positions.push(x, y, z);
+        c.setHSL(.09 + rand() * .045, .78, .58 + rand() * .24);
+        colors.push(c.r, c.g, c.b);
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+      geo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+      const mat = new THREE.PointsMaterial({
+        size: qualityName === "cinematic" ? .75 : .58,
+        vertexColors: true,
+        map: glowTexture,
+        transparent: true,
+        opacity: .86,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        sizeAttenuation: true
+      });
+      const points = new THREE.Points(geo, mat);
+      proceduralEnvironment.add(points);
+      animated.push((t) => { mat.opacity = .72 + Math.sin(t * 1.7) * .12; });
+    }
+    addCityLights(QUALITY.city);
+    proceduralEnvironment.visible = qualityName !== "cinematic";
+
+    function pathLine(points, color, opacity = .72, dashed = true) {
+      const curve = new THREE.CatmullRomCurve3(points);
+      const geo = new THREE.BufferGeometry().setFromPoints(curve.getPoints(90));
+      const mat = dashed
+        ? new THREE.LineDashedMaterial({ color, dashSize: 2.4, gapSize: 1.8, transparent: true, opacity })
+        : new THREE.LineBasicMaterial({ color, transparent: true, opacity });
+      const line = new THREE.Line(geo, mat);
+      if (dashed) line.computeLineDistances();
+      scene.add(line);
+      return { curve, line };
+    }
+
+    const laneA = pathLine([
+      new THREE.Vector3(-108, .32, 33), new THREE.Vector3(-46, .42, 20),
+      new THREE.Vector3(15, .42, 15), new THREE.Vector3(90, .42, 7)
+    ], COLORS.white, .58, true);
+    pathLine([
+      new THREE.Vector3(-108, .3, 40), new THREE.Vector3(-45, .4, 29),
+      new THREE.Vector3(13, .4, 24), new THREE.Vector3(92, .4, 16)
+    ], COLORS.cyan, .54, true);
+    pathLine([
+      new THREE.Vector3(-100, .24, 48), new THREE.Vector3(-34, .32, 38),
+      new THREE.Vector3(27, .32, 34), new THREE.Vector3(95, .32, 26)
+    ], 0x4ec6c8, .23, true);
+
+    function ring(radius, color, opacity = .45, segments = 96) {
+      const pts = [];
+      for (let i = 0; i <= segments; i++) {
+        const a = i / segments * Math.PI * 2;
+        pts.push(new THREE.Vector3(Math.cos(a) * radius, 0, Math.sin(a) * radius));
+      }
+      const line = new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(pts),
+        new THREE.LineBasicMaterial({ color, transparent: true, opacity, blending: THREE.AdditiveBlending, depthWrite: false })
+      );
+      return line;
+    }
+
+    function shipMaterial(color, opacity = .78) {
+      return new THREE.MeshStandardMaterial({
+        color: 0x0a2227,
+        emissive: color,
+        emissiveIntensity: 1.1,
+        roughness: .48,
+        metalness: .56,
+        transparent: true,
+        opacity,
+        flatShading: true
+      });
+    }
+
+    function addWire(group, mesh, color, opacity = .82) {
+      const edge = new THREE.LineSegments(
+        new THREE.EdgesGeometry(mesh.geometry, 24),
+        new THREE.LineBasicMaterial({ color, transparent: true, opacity })
+      );
+      edge.position.copy(mesh.position);
+      edge.rotation.copy(mesh.rotation);
+      edge.scale.copy(mesh.scale);
+      group.add(edge);
+    }
+
+    function makeCarrier() {
+      const g = new THREE.Group();
+      const mat = shipMaterial(COLORS.cyan, .78);
+      const hull = new THREE.Mesh(new THREE.BoxGeometry(18, 2.2, 5.2), mat);
+      hull.position.y = 1.7;
+      g.add(hull); addWire(g, hull, COLORS.cyan);
+      const deck = new THREE.Mesh(new THREE.BoxGeometry(21, .55, 6.2), mat);
+      deck.position.set(-.4, 3.1, 0);
+      g.add(deck); addWire(g, deck, COLORS.cyan, .95);
+      const island = new THREE.Mesh(new THREE.BoxGeometry(3.1, 2.5, 1.7), mat);
+      island.position.set(2.5, 4.5, -1.7);
+      g.add(island); addWire(g, island, COLORS.cyan);
+      for (let i = 0; i < 7; i++) {
+        const jet = new THREE.Mesh(new THREE.ConeGeometry(.36, 1.25, 3), mat);
+        jet.rotation.z = -Math.PI / 2;
+        jet.position.set(-5 + i * 1.8, 3.7, (i % 2 ? 1.35 : -1.15));
+        g.add(jet);
+      }
+      addGlow(g, COLORS.cyan, 27, 2.2, .38);
+      return g;
+    }
+
+    function makeDestroyer(color = COLORS.cyan, scale = 1) {
+      const g = new THREE.Group();
+      const mat = shipMaterial(color, .78);
+      const hull = new THREE.Mesh(new THREE.CapsuleGeometry(1.4 * scale, 5.4 * scale, 2, 6), mat);
+      hull.rotation.z = Math.PI / 2;
+      hull.scale.z = .55;
+      hull.position.y = 1.1 * scale;
+      g.add(hull); addWire(g, hull, color);
+      const tower = new THREE.Mesh(new THREE.BoxGeometry(1.3 * scale, 1.3 * scale, 1.1 * scale), mat);
+      tower.position.set(.5 * scale, 2 * scale, 0);
+      g.add(tower); addWire(g, tower, color);
+      addGlow(g, color, 9 * scale, 1.1, .28);
+      return g;
+    }
+
+    const MESHY_MODELS = {
+      carrier: "./assets/models/ships-v1/nimitz-carrier-meshy6-web-v1.glb",
+      destroyer: "./assets/models/ships-v1/arleigh-burke-destroyer-meshy6-web-v1.glb",
+      tanker: "./assets/models/strategic-v1/vlcc-tanker-meshy6-web-v1.glb",
+      fastBoat: null,
+      crane: "./assets/models/strategic-v1/port-gantry-crane-meshy6-web-v1.glb",
+      tel: "./assets/models/strategic-v1/coastal-defense-tel-meshy6-web-v1.glb"
+    };
+
+    function prepareMeshyShip(source, targetLength, glowScale, accentColor = COLORS.cyan, baseHeight = .42) {
+      const ship = source;
+      ship.updateMatrixWorld(true);
+      const sourceBounds = new THREE.Box3().setFromObject(ship);
+      const sourceSize = sourceBounds.getSize(new THREE.Vector3());
+      const scale = targetLength / Math.max(sourceSize.x, sourceSize.y, sourceSize.z);
+      ship.scale.setScalar(scale);
+      ship.updateMatrixWorld(true);
+
+      const scaledBounds = new THREE.Box3().setFromObject(ship);
+      const center = scaledBounds.getCenter(new THREE.Vector3());
+      ship.position.set(-center.x, baseHeight - scaledBounds.min.y, -center.z);
+
+      ship.traverse((object) => {
+        if (!object.isMesh) return;
+        object.frustumCulled = true;
+        object.castShadow = false;
+        object.receiveShadow = false;
+        if (!object.material) return;
+        object.material = object.material.clone();
+        if (object.material.map) {
+          object.material.map.colorSpace = THREE.SRGBColorSpace;
+          object.material.map.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+        }
+        if (object.material.isMeshStandardMaterial) {
+          object.material.metalness = Math.max(.22, object.material.metalness ?? 0);
+          object.material.roughness = Math.min(.72, object.material.roughness ?? .72);
+          object.material.emissive = new THREE.Color(accentColor);
+          object.material.emissiveIntensity = .1;
+        }
+        const outline = new THREE.LineSegments(
+          new THREE.EdgesGeometry(object.geometry, 32),
+          new THREE.LineBasicMaterial({
+            color: accentColor,
+            transparent: true,
+            opacity: .72,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+          })
+        );
+        outline.name = "CinematicCyanOutline";
+        object.add(outline);
+      });
+
+      const shell = new THREE.Group();
+      shell.add(ship);
+      addGlow(shell, accentColor, glowScale, 1.3, .2);
+      return shell;
+    }
+
+    async function loadMeshyFleet(proceduralFleet, carrierGroup) {
+      const loader = new GLTFLoader();
+      loader.setMeshoptDecoder(MeshoptDecoder);
+      try {
+        const [carrierGltf, destroyerGltf] = await Promise.all([
+          loader.loadAsync(MESHY_MODELS.carrier),
+          loader.loadAsync(MESHY_MODELS.destroyer)
+        ]);
+
+        const meshyFleet = new THREE.Group();
+        meshyFleet.name = "MeshyFleet";
+        const carrierModel = prepareMeshyShip(carrierGltf.scene, 74, 76);
+        carrierModel.name = "MeshyNimitzCarrier";
+        meshyFleet.add(carrierModel);
+
+        const destroyerTemplate = prepareMeshyShip(destroyerGltf.scene, 14.5, 16);
+        [[-23, -10], [-17, 15], [19, -14], [23, 11]].forEach(([x, z], index) => {
+          const destroyer = destroyerTemplate.clone(true);
+          destroyer.name = `MeshyArleighBurke-${index + 1}`;
+          destroyer.position.set(x, 0, z);
+          destroyer.rotation.y = .04 + index * .16;
+          meshyFleet.add(destroyer);
+        });
+
+        carrierGroup.add(meshyFleet);
+        proceduralFleet.visible = false;
+        document.body.dataset.meshyStatus = "ready";
+        window.dispatchEvent(new CustomEvent("hormuz:meshy-ready"));
+      } catch (error) {
+        document.body.dataset.meshyStatus = "fallback";
+        console.error("Meshy fleet load failed; procedural fallback retained.", error);
+      }
+    }
+
+    async function loadStrategicMeshyAssets(tankerSlots, proceduralSwarm, telFallback) {
+      const loader = new GLTFLoader();
+      loader.setMeshoptDecoder(MeshoptDecoder);
+      const strategicAssets = new THREE.Group();
+      strategicAssets.name = "MeshyStrategicAssets";
+      scene.add(strategicAssets);
+      document.body.dataset.meshyStrategicStatus = "loading";
+
+      try {
+        const [tankerResult, fastBoatResult, craneResult, telResult] = await Promise.allSettled([
+          loader.loadAsync(MESHY_MODELS.tanker),
+          MESHY_MODELS.fastBoat
+            ? loader.loadAsync(MESHY_MODELS.fastBoat)
+            : Promise.reject(new Error("Meshy fast craft generation failed; using procedural fallback.")),
+          loader.loadAsync(MESHY_MODELS.crane),
+          loader.loadAsync(MESHY_MODELS.tel)
+        ]);
+        let loadedAssetCount = 0;
+
+        if (tankerResult.status === "fulfilled") {
+          const tankerTemplate = prepareMeshyShip(tankerResult.value.scene, 11.5, 12, COLORS.white, .18);
+          tankerSlots.forEach(({ fallback, mover }, index) => {
+            const tanker = tankerTemplate.clone(true);
+            tanker.name = `MeshyVLCCTanker-${index + 1}`;
+            tanker.position.copy(fallback.position);
+            tanker.rotation.copy(fallback.rotation);
+            tanker.scale.copy(fallback.scale);
+            strategicAssets.add(tanker);
+            fallback.visible = false;
+            mover.object = tanker;
+          });
+          loadedAssetCount++;
+        } else {
+          console.error("Meshy VLCC unavailable; procedural tanker retained.", tankerResult.reason);
+        }
+
+        if (fastBoatResult.status === "fulfilled") {
+          const boatTemplate = prepareMeshyShip(fastBoatResult.value.scene, 4.4, 5.2, COLORS.amber, .12);
+          proceduralSwarm.children.forEach((fallback, index) => {
+            const boat = boatTemplate.clone(true);
+            boat.name = `MeshyIRGCFastAttackCraft-${index + 1}`;
+            boat.position.copy(fallback.position);
+            boat.rotation.copy(fallback.rotation);
+            boat.scale.copy(fallback.scale);
+            strategicAssets.add(boat);
+          });
+          proceduralSwarm.visible = false;
+          loadedAssetCount++;
+        } else {
+          console.info("Meshy fast craft unavailable; procedural swarm retained.", fastBoatResult.reason);
+        }
+
+        if (craneResult.status === "fulfilled") {
+          const craneTemplate = prepareMeshyShip(craneResult.value.scene, 17, 15, COLORS.amber, .1);
+          [[54, 4.1, -42, -.16], [72, 4.4, -48, .08], [88, 4.7, -42, .22]].forEach(
+            ([x, y, z, rotation], index) => {
+              const crane = craneTemplate.clone(true);
+              crane.name = `MeshyPortGantryCrane-${index + 1}`;
+              crane.position.set(x, y, z);
+              crane.rotation.y = rotation;
+              strategicAssets.add(crane);
+            }
+          );
+          loadedAssetCount++;
+        } else {
+          console.error("Meshy port crane unavailable.", craneResult.reason);
+        }
+
+        if (telResult.status === "fulfilled") {
+          const telTemplate = prepareMeshyShip(telResult.value.scene, 5.8, 6.6, COLORS.amber, .1);
+          telFallback.children.forEach((fallback, index) => {
+            const tel = telTemplate.clone(true);
+            tel.name = `MeshyCoastalDefenseTEL-${index + 1}`;
+            tel.position.copy(fallback.position);
+            tel.rotation.copy(fallback.rotation);
+            strategicAssets.add(tel);
+          });
+          telFallback.visible = false;
+          loadedAssetCount++;
+        } else {
+          console.error("Meshy coastal TEL unavailable; procedural TEL retained.", telResult.reason);
+        }
+
+        document.body.dataset.meshyStrategicStatus = loadedAssetCount === 4 ? "ready" : "partial";
+        document.body.dataset.meshyStrategicCount = String(loadedAssetCount);
+        window.dispatchEvent(new CustomEvent("hormuz:strategic-meshy-ready"));
+      } catch (error) {
+        strategicAssets.removeFromParent();
+        document.body.dataset.meshyStrategicStatus = "fallback";
+        console.error("Strategic Meshy assets failed; procedural fallbacks retained.", error);
+      }
+    }
+
+    function makeTanker() {
+      const g = new THREE.Group();
+      const mat = shipMaterial(COLORS.white, .72);
+      const hull = new THREE.Mesh(new THREE.BoxGeometry(8.4, 1.25, 2.4), mat);
+      hull.position.y = .9;
+      g.add(hull); addWire(g, hull, COLORS.white, .76);
+      const bridge = new THREE.Mesh(new THREE.BoxGeometry(1.45, 1.65, 1.8), mat);
+      bridge.position.set(2.8, 1.9, 0);
+      g.add(bridge); addWire(g, bridge, COLORS.white, .72);
+      for (let i = -2; i <= 1; i++) {
+        const tank = new THREE.Mesh(new THREE.CylinderGeometry(.62, .62, 1.2, 8), mat);
+        tank.rotation.z = Math.PI / 2;
+        tank.position.set(i * 1.15, 1.65, 0);
+        g.add(tank);
+      }
+      addGlow(g, COLORS.white, 10, 1.1, .18);
+      return g;
+    }
+
+    function makeSpeedboat() {
+      const g = new THREE.Group();
+      const mat = shipMaterial(COLORS.amber, .88);
+      const hull = new THREE.Mesh(new THREE.ConeGeometry(.85, 3.2, 4), mat);
+      hull.rotation.z = -Math.PI / 2;
+      hull.scale.z = .65;
+      hull.position.y = .65;
+      g.add(hull); addWire(g, hull, COLORS.amber, .95);
+      const cabin = new THREE.Mesh(new THREE.BoxGeometry(.78, .52, .58), mat);
+      cabin.position.set(.2, 1.18, 0);
+      g.add(cabin); addWire(g, cabin, COLORS.amber, .92);
+      const wakeGeometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(-2.1, .08, -.52), new THREE.Vector3(-5.2, .05, -1.2),
+        new THREE.Vector3(-2.1, .08, .52), new THREE.Vector3(-5.2, .05, 1.2)
+      ]);
+      const wake = new THREE.LineSegments(wakeGeometry, new THREE.LineBasicMaterial({
+        color: 0xffd39a,
+        transparent: true,
+        opacity: .34,
+        blending: THREE.AdditiveBlending
+      }));
+      g.add(wake);
+      addGlow(g, COLORS.amber, 4.6, .8, .34);
+      return g;
+    }
+
+    const carrierGroup = new THREE.Group();
+    carrierGroup.position.set(-30, 0, 60);
+    carrierGroup.rotation.y = .1;
+    const proceduralFleet = new THREE.Group();
+    proceduralFleet.name = "ProceduralFleetFallback";
+    carrierGroup.add(proceduralFleet);
+    const carrier = makeCarrier();
+    proceduralFleet.add(carrier);
+    const defenseRing = ring(27, COLORS.cyan, .45);
+    defenseRing.position.y = .3;
+    carrierGroup.add(defenseRing);
+    [[-23, -10], [-17, 15], [19, -14], [23, 11]].forEach(([x, z], i) => {
+      const ddg = makeDestroyer(COLORS.cyan, .82);
+      ddg.position.set(x, 0, z);
+      ddg.rotation.y = .04 + i * .16;
+      proceduralFleet.add(ddg);
+    });
+    scene.add(carrierGroup);
+    loadMeshyFleet(proceduralFleet, carrierGroup);
+
+    const tankerSlots = [];
+    for (let i = 0; i < QUALITY.tankers; i++) {
+      const tanker = makeTanker();
+      const offset = (i / Math.max(1, QUALITY.tankers - 1)) * .82 + .08;
+      tanker.position.copy(laneA.curve.getPoint(offset));
+      tanker.position.y = .25;
+      tanker.rotation.y = -.14;
+      tanker.scale.setScalar(.72 + (i % 3) * .06);
+      scene.add(tanker);
+      const mover = { object: tanker, curve: laneA.curve, u: offset, speed: .0022 + rand() * .0012 };
+      shipMovers.push(mover);
+      tankerSlots.push({ fallback: tanker, mover });
+    }
+
+    const swarm = new THREE.Group();
+    swarm.position.set(16, 0, 15);
+    for (let i = 0; i < QUALITY.boats; i++) {
+      const boat = makeSpeedboat();
+      const a = rand() * Math.PI * 2;
+      const r = 4 + rand() * 16;
+      boat.position.set(Math.cos(a) * r, 0, Math.sin(a) * r * .55);
+      boat.rotation.y = -1.1 + rand() * .5;
+      boat.scale.setScalar(.68 + rand() * .36);
+      swarm.add(boat);
+    }
+    scene.add(swarm);
+    animated.push((t) => {
+      swarm.children.forEach((boat, i) => {
+        boat.position.z += Math.sin(t * 1.4 + i) * .002;
+      });
+    });
+
+    const mineField = new THREE.Group();
+    mineField.position.set(34, .2, 45);
+    const mineRing = ring(17, COLORS.red, .65);
+    mineRing.scale.z = .58;
+    mineField.add(mineRing);
+    for (let i = 0; i < 18; i++) {
+      const mine = new THREE.Mesh(
+        new THREE.IcosahedronGeometry(.5, 0),
+        new THREE.MeshBasicMaterial({ color: COLORS.red, transparent: true, opacity: .82 })
+      );
+      const a = rand() * Math.PI * 2;
+      const r = 3 + rand() * 13;
+      mine.position.set(Math.cos(a) * r, .05 + rand() * .8, Math.sin(a) * r * .56);
+      mineField.add(mine);
+      if (i % 3 === 0) addGlow(mine, COLORS.red, 3.1, .2, .35);
+    }
+    for (let i = -12; i <= 12; i += 3) {
+      const geo = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(i - 8, .03, -9), new THREE.Vector3(i + 8, .03, 9)
+      ]);
+      mineField.add(new THREE.Line(geo, new THREE.LineBasicMaterial({
+        color: COLORS.red, transparent: true, opacity: .16
+      })));
+    }
+    scene.add(mineField);
+
+    const telFallback = new THREE.Group();
+    telFallback.name = "ProceduralTELFallback";
+    scene.add(telFallback);
+    for (let i = 0; i < 6; i++) {
+      const tel = new THREE.Group();
+      const mat = shipMaterial(COLORS.amber, .88);
+      const base = new THREE.Mesh(new THREE.BoxGeometry(2.8, .8, 1.4), mat);
+      tel.add(base); addWire(tel, base, COLORS.amber);
+      const launcher = new THREE.Mesh(new THREE.BoxGeometry(2.4, .5, .8), mat);
+      launcher.position.set(0, .9, 0);
+      launcher.rotation.z = -.3;
+      tel.add(launcher); addWire(tel, launcher, COLORS.amber);
+      tel.position.set(30 + i * 12, 4.2, -31 - (i % 2) * 7);
+      tel.rotation.y = .35;
+      telFallback.add(tel);
+      addGlow(tel, COLORS.amber, 7, 1.1, .25);
+    }
+    loadStrategicMeshyAssets(tankerSlots, swarm, telFallback);
+
+    const webglCombatEffects = new THREE.Group();
+    webglCombatEffects.name = "WebGLCombatEffects";
+    webglCombatEffects.visible = qualityName !== "cinematic";
+    scene.add(webglCombatEffects);
+
+    const missileCurve = new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(70, 6, -37),
+      new THREE.Vector3(31, 58, -3),
+      new THREE.Vector3(20, 4, 18)
+    );
+    const missileTrail = new THREE.Mesh(
+      new THREE.TubeGeometry(missileCurve, 96, .22, 6, false),
+      new THREE.MeshBasicMaterial({
+        color: 0xffc789,
+        transparent: true,
+        opacity: .85,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      })
+    );
+    webglCombatEffects.add(missileTrail);
+
+    const missileHead = new THREE.Mesh(
+      new THREE.SphereGeometry(.85, 12, 8),
+      new THREE.MeshBasicMaterial({ color: 0xffffff })
+    );
+    addGlow(missileHead, 0xffb36b, 9, 0, .82);
+    webglCombatEffects.add(missileHead);
+
+    const intercept = new THREE.Group();
+    intercept.position.set(20, 4, 18);
+    const ringA = ring(2.5, COLORS.white, .9);
+    ringA.rotation.x = Math.PI / 2;
+    const ringB = ring(2.5, COLORS.white, .72);
+    ringB.rotation.z = Math.PI / 2;
+    intercept.add(ringA, ringB);
+    const flash = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: glowTexture,
+      color: COLORS.white,
+      transparent: true,
+      opacity: .95,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    }));
+    flash.scale.set(18, 18, 1);
+    intercept.add(flash);
+    webglCombatEffects.add(intercept);
+
+    const particlePositions = new Float32Array(QUALITY.particles * 3);
+    const particleSpeed = new Float32Array(QUALITY.particles * 3);
+    for (let i = 0; i < QUALITY.particles; i++) {
+      const a = rand() * Math.PI * 2;
+      const r = rand() * 6;
+      particlePositions[i * 3] = 20 + Math.cos(a) * r;
+      particlePositions[i * 3 + 1] = 4 + (rand() - .5) * 6;
+      particlePositions[i * 3 + 2] = 18 + Math.sin(a) * r;
+      particleSpeed[i * 3] = (rand() - .5) * .018;
+      particleSpeed[i * 3 + 1] = rand() * .027;
+      particleSpeed[i * 3 + 2] = (rand() - .5) * .018;
+    }
+    const particleGeo = new THREE.BufferGeometry();
+    particleGeo.setAttribute("position", new THREE.BufferAttribute(particlePositions, 3));
+    const particles = new THREE.Points(particleGeo, new THREE.PointsMaterial({
+      color: COLORS.white,
+      size: qualityName === "cinematic" ? .8 : .55,
+      map: glowTexture,
+      transparent: true,
+      opacity: .75,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    }));
+    webglCombatEffects.add(particles);
+
+    animated.push((t, dt) => {
+      const cycle = (t % 9) / 9;
+      const travel = Math.min(1, cycle * 1.28);
+      missileHead.position.copy(missileCurve.getPoint(travel));
+      const burst = Math.max(0, 1 - Math.abs(cycle - .78) * 11);
+      const scale = 1 + burst * 8;
+      ringA.scale.setScalar(scale);
+      ringB.scale.setScalar(scale * .78);
+      ringA.material.opacity = burst * .85;
+      ringB.material.opacity = burst * .65;
+      flash.material.opacity = .08 + burst * .92;
+      flash.scale.setScalar(12 + burst * 22);
+      missileTrail.material.opacity = .22 + (1 - travel) * .7;
+
+      const pos = particleGeo.attributes.position.array;
+      for (let i = 0; i < QUALITY.particles; i++) {
+        pos[i * 3] += particleSpeed[i * 3] * dt * 60;
+        pos[i * 3 + 1] += particleSpeed[i * 3 + 1] * dt * 60;
+        pos[i * 3 + 2] += particleSpeed[i * 3 + 2] * dt * 60;
+        if (pos[i * 3 + 1] > 13) pos[i * 3 + 1] = 2.5;
+      }
+      particleGeo.attributes.position.needsUpdate = true;
+      particles.material.opacity = .18 + burst * .66;
+    });
+
+    function updateCamera(t) {
+      if (autoCamera && performance.now() > userCameraUntil) cameraTheta += .0007;
+      const sinPhi = Math.sin(cameraPhi);
+      camera.position.set(
+        cameraTarget.x + cameraRadius * sinPhi * Math.cos(cameraTheta),
+        cameraTarget.y + cameraRadius * Math.cos(cameraPhi),
+        cameraTarget.z + cameraRadius * sinPhi * Math.sin(cameraTheta)
+      );
+      camera.lookAt(cameraTarget);
+    }
+
+    let pointerDown = false;
+    let lastX = 0;
+    let lastY = 0;
+    canvas.addEventListener("pointerdown", (event) => {
+      pointerDown = true;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      canvas.setPointerCapture(event.pointerId);
+    });
+    canvas.addEventListener("pointermove", (event) => {
+      if (!pointerDown) return;
+      cameraTheta -= (event.clientX - lastX) * .006;
+      cameraPhi = THREE.MathUtils.clamp(cameraPhi + (event.clientY - lastY) * .004, .43, 1.08);
+      lastX = event.clientX;
+      lastY = event.clientY;
+      userCameraUntil = performance.now() + 5000;
+    });
+    canvas.addEventListener("pointerup", () => { pointerDown = false; });
+    canvas.addEventListener("wheel", (event) => {
+      cameraRadius = THREE.MathUtils.clamp(cameraRadius + event.deltaY * .06, 75, 190);
+      userCameraUntil = performance.now() + 5000;
+    }, { passive: true });
+
+    document.querySelector(".camera-chip").addEventListener("click", (event) => {
+      autoCamera = !autoCamera;
+      event.currentTarget.setAttribute("aria-pressed", String(autoCamera));
+      event.currentTarget.querySelector("span").textContent = autoCamera ? "AUTO CAM" : "FREE CAM";
+      userCameraUntil = autoCamera ? 0 : Number.POSITIVE_INFINITY;
+    });
+
+    const flashOverlay = document.querySelector("#impact-flash");
+    document.querySelectorAll(".choice").forEach((button) => {
+      button.addEventListener("click", () => {
+        const ticker = document.querySelector("#ticker-text");
+        const message = button.dataset.message;
+        ticker.textContent = `${message} ··· ${ticker.textContent}`;
+        if (button.dataset.danger) {
+          flashOverlay.classList.remove("fire");
+          void flashOverlay.offsetWidth;
+          flashOverlay.classList.add("fire");
+        }
+      });
+    });
+
+    function onResize() {
+      const mobile = innerWidth < 760 || innerHeight > innerWidth;
+      camera.fov = mobile ? 68 : 55;
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      cameraTarget.set(mobile ? -43 : 0, 0, mobile ? 24 : 0);
+      cameraRadius = mobile ? 122 : Math.min(cameraRadius, 145);
+      renderer.setPixelRatio(Math.min(devicePixelRatio, QUALITY.dpr));
+      renderer.setSize(innerWidth, innerHeight, false);
+    }
+    addEventListener("resize", onResize);
+
+    function animate() {
+      const frameNow = performance.now();
+      const dt = Math.min((frameNow - lastFrameMs) / 1000, .05);
+      lastFrameMs = frameNow;
+      elapsedSeconds += dt;
+      const t = elapsedSeconds;
+      waterUniforms.uTime.value = t;
+      updateCamera(t);
+
+      pulseObjects.forEach(({ sprite, base, phase }) => {
+        sprite.material.opacity = base * (.82 + Math.sin(t * 2.1 + phase) * .18);
+      });
+
+      shipMovers.forEach((mover) => {
+        mover.u = (mover.u + mover.speed * dt * 6) % 1;
+        mover.object.position.copy(mover.curve.getPoint(mover.u));
+        mover.object.position.y = .25;
+        const tangent = mover.curve.getTangent(mover.u);
+        mover.object.rotation.y = Math.atan2(tangent.x, tangent.z) + Math.PI / 2;
+      });
+
+      animated.forEach((fn) => fn(t, dt));
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+    onResize();
+    animate();
+  </script>
+</body>
+</html>

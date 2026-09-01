@@ -1,0 +1,378 @@
+{
+  "assets": [
+    {
+      "id": "fighter",
+      "name": "F/A-18E 타격 편대",
+      "role": "고속 정밀타격",
+      "desc": "속도와 선회력이 높습니다. AGM-65E로 고속정을 빠르게 제거합니다.",
+      "model": "fighter",
+      "weapon": "AGM-65E",
+      "speed": 22,
+      "turn": 1.8,
+      "range": 38,
+      "cooldown": 0.55,
+      "ammo": 14,
+      "armor": 70,
+      "altitude": 5.5,
+      "nameEn": "F/A-18E Strike Flight",
+      "roleEn": "Fast precision strike",
+      "descEn": "High speed and turn rate. Clears fast attack craft quickly with the AGM-65E.",
+      "weaponEn": "AGM-65E"
+    },
+    {
+      "id": "destroyer",
+      "name": "알레이버크급 구축함",
+      "role": "장거리 함대 방공",
+      "desc": "속도는 느리지만 사거리와 방어력이 높습니다. 함포와 유도탄을 운용합니다.",
+      "model": "destroyer",
+      "weapon": "SM-6 / 127mm",
+      "speed": 8,
+      "turn": 0.72,
+      "range": 48,
+      "cooldown": 0.9,
+      "ammo": 18,
+      "armor": 120,
+      "altitude": 0.2,
+      "nameEn": "Arleigh Burke Destroyer",
+      "roleEn": "Long-range fleet air defense",
+      "descEn": "Slow, but long-ranged and hard to kill. Operates naval guns and guided missiles.",
+      "weaponEn": "SM-6 / 127 mm"
+    },
+    {
+      "id": "helicopter",
+      "name": "MH-60R 시호크",
+      "role": "근접 해상타격",
+      "desc": "저고도에서 고속정과 기뢰를 추적합니다. 헬파이어 연속 공격에 적합합니다.",
+      "model": "helicopter",
+      "weapon": "AGM-114 Hellfire",
+      "speed": 14,
+      "turn": 1.35,
+      "range": 28,
+      "cooldown": 0.7,
+      "ammo": 16,
+      "armor": 85,
+      "altitude": 3.4,
+      "nameEn": "MH-60R Seahawk",
+      "roleEn": "Close maritime strike",
+      "descEn": "Tracks fast boats and mines at low altitude. Well suited to sustained Hellfire attacks.",
+      "weaponEn": "AGM-114 Hellfire"
+    },
+    {
+      "id": "usv",
+      "name": "LCS 무인소해정",
+      "role": "기뢰 제거",
+      "desc": "좁은 위험수역에서 직접 항로를 개척합니다. 근거리 소해 펄스를 사용합니다.",
+      "model": "usv",
+      "weapon": "MCM 소해 펄스",
+      "speed": 10,
+      "turn": 1.1,
+      "range": 12,
+      "cooldown": 0.45,
+      "ammo": 24,
+      "armor": 90,
+      "altitude": 0.15,
+      "nameEn": "LCS Unmanned Minesweeper",
+      "roleEn": "Mine clearance",
+      "descEn": "Cuts a lane directly through tight danger areas. Uses a short-range sweep pulse.",
+      "weaponEn": "MCM sweep pulse"
+    },
+    {
+      "id": "b2",
+      "name": "B-2A 스피릿",
+      "role": "전략 침투타격",
+      "desc": "고고도에서 육상의 이동식 미사일 발사 차량과 전략표적을 타격합니다. 넓은 선회 반경을 가집니다.",
+      "model": "b2",
+      "weapon": "GBU-57 / JDAM",
+      "speed": 19,
+      "turn": 0.82,
+      "range": 34,
+      "cooldown": 1.15,
+      "ammo": 10,
+      "armor": 80,
+      "altitude": 7.2,
+      "nameEn": "B-2A Spirit",
+      "roleEn": "Strategic penetration strike",
+      "descEn": "Strikes land-based mobile launchers and strategic targets from high altitude. Has a wide turning radius.",
+      "weaponEn": "GBU-57 / JDAM"
+    },
+    {
+      "id": "carrier",
+      "name": "니미츠급 항공모함",
+      "role": "함대 방공·지휘",
+      "desc": "강한 생존성과 넓은 방공 범위를 제공하지만 작전 비용이 큽니다.",
+      "model": "carrier",
+      "weapon": "ESSM / RAM / CIWS",
+      "speed": 7,
+      "turn": 0.4,
+      "range": 46,
+      "cooldown": 1.2,
+      "ammo": 24,
+      "armor": 260,
+      "altitude": 0.2,
+      "nameEn": "Nimitz-class Carrier",
+      "roleEn": "Fleet air defense and command",
+      "descEn": "Provides strong survivability and a wide air defense envelope, at a high operating cost.",
+      "weaponEn": "ESSM / RAM / CIWS"
+    },
+    {
+      "id": "marine",
+      "name": "미 해병 소총수",
+      "role": "해안 지상전",
+      "desc": "육지에서 이동·공격 이동·위치 방어 명령을 수행합니다.",
+      "model": "marine",
+      "weapon": "M27 보병자동소총",
+      "speed": 8,
+      "turn": 1.5,
+      "range": 12,
+      "cooldown": 0.5,
+      "ammo": 12,
+      "armor": 72,
+      "altitude": 0.04,
+      "nameEn": "US Marine Rifleman",
+      "roleEn": "Coastal ground combat",
+      "descEn": "Carries out move, attack-move and hold-position orders on land.",
+      "weaponEn": "M27 infantry automatic rifle"
+    }
+  ],
+  "missions": [
+    {
+      "id": "surface_swarm",
+      "kicker": "OPERATION STRAIT SHIELD",
+      "title": "해협 호송대 방어",
+      "brief": "아군 전력을 묶어 선택하고 이동·집중 공격 명령으로 무장 고속정 8척을 저지하십시오.",
+      "targetType": "fast_boat",
+      "targetCount": 8,
+      "duration": 240000,
+      "combatMode": "rts",
+      "scenario": "convoy_shield",
+      "budgetMin": 240,
+      "budgetRecommended": 1410,
+      "budgetCap": 1700,
+      "assetIds": [
+        "fighter",
+        "destroyer",
+        "helicopter",
+        "carrier",
+        "usv"
+      ],
+      "success": {
+        "transit": 8,
+        "approval": 5,
+        "ammo": -5,
+        "intl": -3,
+        "stability": -4
+      },
+      "failure": {
+        "transit": -10,
+        "oil": 8,
+        "approval": -5
+      },
+      "titleEn": "Strait Convoy Defense",
+      "briefEn": "Select your units as a group and stop eight armed fast attack craft with move and focused-attack orders."
+    },
+    {
+      "id": "air_defense",
+      "kicker": "AEGIS DEFENSE ZONE",
+      "title": "내습 표적 8기 요격",
+      "brief": "호송 선단을 향하는 미사일·무인기 8기를 직접 추적하여 요격하십시오.",
+      "targetType": "drone",
+      "targetCount": 8,
+      "duration": 180000,
+      "combatMode": "rts",
+      "scenario": "missile_screen",
+      "budgetMin": 240,
+      "budgetRecommended": 1365,
+      "budgetCap": 1600,
+      "assetIds": [
+        "fighter",
+        "destroyer",
+        "helicopter",
+        "carrier"
+      ],
+      "success": {
+        "ammo": -5,
+        "approval": 4,
+        "transit": 3
+      },
+      "failure": {
+        "transit": -11,
+        "oil": 9,
+        "ammo": -8,
+        "approval": -5
+      },
+      "titleEn": "Intercept 8 Inbound Targets",
+      "briefEn": "Track and intercept the eight missiles and drones heading for the convoy."
+    },
+    {
+      "id": "mine_clearance",
+      "kicker": "MCM SAFE CORRIDOR",
+      "title": "기뢰 7발 무력화",
+      "brief": "TSS 남쪽 레인을 따라 무인소해정 또는 헬기를 직접 조종해 안전항로를 확보하십시오.",
+      "targetType": "mine",
+      "targetCount": 7,
+      "duration": 210000,
+      "combatMode": "rts",
+      "scenario": "mine_corridor",
+      "budgetMin": 140,
+      "budgetRecommended": 385,
+      "budgetCap": 700,
+      "assetIds": [
+        "usv",
+        "helicopter",
+        "destroyer"
+      ],
+      "success": {
+        "transit": 12,
+        "oil": -5,
+        "ammo": -3
+      },
+      "failure": {
+        "transit": -12,
+        "oil": 10,
+        "approval": -4
+      },
+      "titleEn": "Neutralize 7 Mines",
+      "briefEn": "Take direct control of the unmanned minesweeper or the helicopter and secure a safe lane along the southern TSS lane."
+    },
+    {
+      "id": "tanker_rescue",
+      "kicker": "OPERATION LARAK RECOVERY",
+      "title": "나포 유조선 구출",
+      "brief": "고속정 6척을 차단한 뒤 구조 헬기를 유조선 가까이 투입하고 안전 해역 이탈을 엄호하십시오.",
+      "targetType": "fast_boat",
+      "targetCount": 6,
+      "duration": 300000,
+      "combatMode": "rts",
+      "scenario": "tanker_rescue",
+      "budgetMin": 180,
+      "budgetRecommended": 425,
+      "budgetCap": 600,
+      "assetIds": [
+        "fighter",
+        "destroyer",
+        "helicopter",
+        "usv"
+      ],
+      "success": {
+        "transit": 7,
+        "approval": 7,
+        "ammo": -4,
+        "intl": -2,
+        "stability": -2
+      },
+      "failure": {
+        "transit": -8,
+        "oil": 6,
+        "approval": -7,
+        "intl": -3
+      },
+      "titleEn": "Recover the Seized Tanker",
+      "briefEn": "Cut off the six fast attack craft, bring the rescue helicopter alongside the tanker, and cover its withdrawal to safe water."
+    },
+    {
+      "id": "strategic_strike",
+      "kicker": "DEEP STRIKE PACKAGE",
+      "title": "육상 이동식 미사일 발사 차량 4기 파괴",
+      "brief": "발사 준비 중인 이동식 미사일 포대를 직접 추적·타격하십시오.",
+      "targetType": "tel",
+      "targetCount": 4,
+      "duration": 210000,
+      "combatMode": "rts",
+      "scenario": "coastal_battery",
+      "budgetMin": 260,
+      "budgetRecommended": 770,
+      "budgetCap": 1000,
+      "assetIds": [
+        "fighter",
+        "b2",
+        "destroyer",
+        "marine"
+      ],
+      "success": {
+        "stability": -8,
+        "approval": 5,
+        "intl": -7,
+        "esc": 1
+      },
+      "failure": {
+        "stability": -3,
+        "approval": -4,
+        "esc": 1
+      },
+      "titleEn": "Destroy 4 Land-Based Mobile Launchers",
+      "briefEn": "Track and strike the mobile missile battery while it prepares to launch."
+    },
+    {
+      "id": "pickaxe_strike",
+      "kicker": "OPERATION DEEP ACCESS DENIAL",
+      "title": "곡괭이산 지하시설 제한 타격",
+      "brief": "B-2 스텔스 전략폭격기를 편성해 GBU-57을 투하하고, 확인된 지하 진입부 2곳만 봉쇄하십시오. 시설 용도와 내부 피해는 확인되지 않았습니다.",
+      "targetType": "bunker_entrance",
+      "targetCount": 2,
+      "duration": 260000,
+      "combatMode": "rts",
+      "scenario": "pickaxe_mountain",
+      "budgetMin": 320,
+      "budgetRecommended": 320,
+      "budgetCap": 960,
+      "assetIds": [
+        "b2"
+      ],
+      "success": {
+        "stability": -10,
+        "approval": 6,
+        "intl": -18,
+        "ammo": -10,
+        "esc": 2
+      },
+      "failure": {
+        "stability": -4,
+        "approval": -7,
+        "intl": -8,
+        "ammo": -8,
+        "esc": 1
+      },
+      "titleEn": "Pickaxe Mountain Limited Strike",
+      "briefEn": "Assemble the B-2 stealth bomber package, release the GBU-57s, and seal only the two confirmed underground entrances. The purpose of the facility and the damage inside remain unverified."
+    },
+    {
+      "id": "large_fleet_battle",
+      "kicker": "OPERATION FULL STRAIT SHIELD",
+      "title": "호르무즈 대규모 해상 결전",
+      "brief": "함대·항공·무인전력을 편성해 고속정 12척, 무인수상정 4척, 공중 위협 4기를 제압하고 유조선 3척 중 최소 2척을 보호하십시오.",
+      "targetType": "fast_boat",
+      "targetCount": 20,
+      "duration": 600000,
+      "combatMode": "rts",
+      "scenario": "large_fleet_battle",
+      "budgetMin": 2800,
+      "budgetRecommended": 4200,
+      "budgetCap": 5200,
+      "assetIds": [
+        "fighter",
+        "destroyer",
+        "helicopter",
+        "carrier",
+        "usv",
+        "b2",
+        "marine"
+      ],
+      "success": {
+        "transit": 15,
+        "approval": 7,
+        "ammo": -12,
+        "intl": -5,
+        "stability": -8
+      },
+      "failure": {
+        "transit": -18,
+        "oil": 14,
+        "approval": -9,
+        "ammo": -10,
+        "esc": 1
+      },
+      "titleEn": "Decisive Naval Battle for Hormuz",
+      "briefEn": "Assemble fleet, air and unmanned forces to defeat 12 fast attack craft, 4 unmanned surface vessels and 4 air threats while protecting at least two of the three tankers."
+    }
+  ]
+}

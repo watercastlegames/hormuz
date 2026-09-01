@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ko" data-i18n-title-key="meta.devTitle" data-i18n-description-key="meta.devDescription">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#020b10">
+  <meta name="description" content="HORMUZ를 만든 Water Castle Games의 개발 기록과 다른 게임들">
+  <title>개발자 정보 · HORMUZ</title>
+  <link rel="stylesheet" href="assets/css/developer.css?v=1">
+</head>
+<body>
+  <header class="developer-nav">
+    <a class="back-link" href="index.html" data-i18n="dev.back" data-i18n-attr="aria-label:dev.backAria">← 게임으로</a>
+    <span>WATER CASTLE GAMES</span>
+    <div class="lang-switch" id="lang-switch" role="group" data-i18n-attr="aria-label:lang.switch" aria-label="언어 선택">
+      <button type="button" data-lang="ko" data-i18n="lang.ko">한국어</button>
+      <button type="button" data-lang="en" data-i18n="lang.en">English</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="developer-hero" aria-labelledby="developerTitle">
+      <div class="hero-copy">
+        <span class="eyebrow" data-i18n="dev.heroEyebrow">DEVELOPER FILE</span>
+        <h1 id="developerTitle" data-i18n-html="dev.heroTitle">끝나지 않는 전쟁을,<br><em>직접 지휘해 보고 싶었습니다.</em></h1>
+        <p data-i18n="dev.heroLead">호르무즈 해협을 둘러싼 실제 사건을 읽다가, 대통령의 자리에서 매일 세 번의 결정을 내리면 어떤 기분일지 궁금해졌습니다. 그 궁금증을 AI와 함께 바이브코딩으로 만든 것이 HORMUZ입니다.</p>
+        <div class="hero-actions">
+          <a class="primary-link" href="index.html" data-i18n="dev.playNow">지금 플레이하기</a>
+          <a class="secondary-link" href="https://www.threads.com/@watercastlegames?hl=ko" target="_blank" rel="noopener noreferrer" data-i18n="dev.threadsLink">Threads에서 제작 기록 보기</a>
+        </div>
+      </div>
+      <figure class="hero-visual">
+        <img src="assets/images/title/hormuz-main-title-cinematic-president-rear-v6.webp" alt="" decoding="async">
+        <figcaption data-i18n="dev.heroCaption">HORMUZ · 대통령 상황실</figcaption>
+      </figure>
+    </section>
+
+    <section class="developer-section stack-section" aria-labelledby="stackTitle">
+      <div class="section-heading">
+        <span data-i18n="dev.stackEyebrow">HOW IT IS BUILT</span>
+        <h2 id="stackTitle" data-i18n="dev.stackTitle">브라우저 하나로 돌아가는 3D 전략 게임</h2>
+        <p data-i18n="dev.stackLead">설치도, 서버도 없습니다. 링크를 열면 바로 시작됩니다.</p>
+      </div>
+      <div class="stack-grid">
+        <article>
+          <b data-i18n="dev.stack1Tag">FRONTEND</b>
+          <h3 data-i18n="dev.stack1Title">순수 자바스크립트 · three.js</h3>
+          <p data-i18n="dev.stack1Body">프레임워크 없이 만들었습니다. 모바일 브라우저에서도 삼각형 12만 개 예산 안에서 실시간으로 돌아갑니다.</p>
+        </article>
+        <article>
+          <b data-i18n="dev.stack2Tag">REAL TERRAIN</b>
+          <h3 data-i18n="dev.stack2Title">Google 3D 실제 지형</h3>
+          <p data-i18n="dev.stack2Body">호르무즈 해협의 실제 좌표와 지형 위에서 싸웁니다. 연결이 끊기면 실제 해안선 데이터로 만든 로컬 지형으로 자동 전환됩니다.</p>
+        </article>
+        <article>
+          <b data-i18n="dev.stack3Tag">3D ASSETS</b>
+          <h3 data-i18n="dev.stack3Title">Meshy로 만든 전력 32종</h3>
+          <p data-i18n="dev.stack3Body">항공모함부터 해병 소총수까지, 이미지 한 장에서 3D 모델을 만들고 웹에서 돌아가도록 폴리곤을 줄였습니다.</p>
+        </article>
+        <article>
+          <b data-i18n="dev.stack4Tag">VIBE CODING</b>
+          <h3 data-i18n="dev.stack4Title">기획부터 검증까지 AI와 함께</h3>
+          <p data-i18n="dev.stack4Body">기획서, 코드, 이미지, 성능 검증 하네스까지 AI와 대화하며 만들었습니다. 코드를 잘 몰라도 아이디어만 있으면 만들 수 있습니다.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="developer-section project-section" aria-labelledby="projectTitle">
+      <div class="section-heading">
+        <span data-i18n="dev.aboutEyebrow">ABOUT THIS GAME</span>
+        <h2 id="projectTitle" data-i18n="dev.aboutTitle">HORMUZ · 54일의 전쟁</h2>
+      </div>
+      <div class="project-layout">
+        <div class="project-description">
+          <p data-i18n="dev.aboutBody">과거의 주요 분기를 먼저 선택해 시작 수치를 만들고, 매일 세 번의 국가안보회의 결정을 내립니다. 군사 결정을 고르면 상단 시점 RTS 전투로 넘어가 직접 부대를 지휘합니다. 전쟁은 최대 54일까지 이어지고, 협상은 12일차부터 가능합니다.</p>
+          <ul>
+            <li data-i18n="dev.feature1">과거 주요 사건 6단계 선택으로 시작 수치 결정</li>
+            <li data-i18n="dev.feature2">하루 세 번 · 군사 · 외교 · 경제와 정보</li>
+            <li data-i18n="dev.feature3">7종의 실시간 3D 전투와 5단계 적응형 난이도</li>
+            <li data-i18n="dev.feature4">예산과 의회 표결 · 대통령 강행 처리</li>
+            <li data-i18n="dev.feature5">통항 · 유가 · 지지 · 국제 · 확전에 따른 10가지 결말</li>
+          </ul>
+        </div>
+        <aside class="fiction-notice">
+          <span data-i18n="dev.noticeTag">FICTIONAL SIMULATION</span>
+          <strong data-i18n="dev.noticeTitle">가상 전략 시뮬레이션입니다</strong>
+          <p data-i18n="dev.noticeBody">실제 지명과 공개된 사건을 바탕으로 했지만, 게임 속 사건과 수치와 결정은 교육과 오락을 위한 허구입니다. 실제 인물의 음성이나 얼굴 정면을 쓰지 않으며, 민간인 피해를 게임 목표로 삼지 않습니다.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="developer-section other-games" aria-labelledby="gamesTitle">
+      <div class="section-heading">
+        <span data-i18n="dev.moreEyebrow">MORE FROM THE DEVELOPER</span>
+        <h2 id="gamesTitle" data-i18n="dev.moreTitle">개발자의 다른 게임</h2>
+        <p data-i18n="dev.moreLead">Water Castle Games가 만들고 운영하는 다른 프로젝트도 만나보세요.</p>
+      </div>
+
+      <a class="game-card" href="https://play.google.com/store/apps/details?id=com.SonFootballerTycoon.WaterCastleGames&amp;hl=ko" target="_blank" rel="noopener noreferrer">
+        <img src="assets/images/developer/son-game-icon.jpg" alt="" decoding="async" loading="lazy">
+        <span>
+          <small data-i18n="dev.game1Tag">MOBILE FOOTBALL TYCOON</small>
+          <strong data-i18n="dev.game1Title">SON 키우기 타이쿤 : 아들을 축구 월클선수로</strong>
+          <p data-i18n="dev.game1Body">아들을 훈련시키고 커리어를 성장시켜 세계적인 축구 선수로 키우는 모바일 육성 타이쿤 게임입니다.</p>
+          <b data-i18n="dev.game1Cta">Google Play에서 보기 →</b>
+        </span>
+      </a>
+
+      <a class="game-card" href="https://sidak.kr/autodev/GameCreator/crimeGame/" target="_blank" rel="noopener noreferrer">
+        <img src="assets/images/developer/crime-game-icon.webp" alt="" decoding="async" loading="lazy">
+        <span>
+          <small data-i18n="dev.game2Tag">AI MYSTERY · FREE</small>
+          <strong data-i18n="dev.game2Title">마크의 마지막 수리 · CASE 01</strong>
+          <p data-i18n="dev.game2Body">사진 속 단서를 조사하고 동료와 의견을 나누고 집사에게 질문하며 사건의 전말을 완성하는 AI 추리 게임입니다. 소스도 전체 공개했습니다.</p>
+          <b data-i18n="dev.game2Cta">브라우저에서 바로 플레이 →</b>
+        </span>
+      </a>
+
+      <a class="game-card current" href="index.html">
+        <img src="assets/images/developer/hormuz-icon.webp" alt="" decoding="async" loading="lazy">
+        <span>
+          <small data-i18n="dev.game3Tag">BROWSER 3D STRATEGY · FREE</small>
+          <strong data-i18n="dev.game3Title">HORMUZ · 대통령 상황실</strong>
+          <p data-i18n="dev.game3Body">지금 보고 있는 게임입니다. 호르무즈 해협의 실제 지형 위에서 54일의 전쟁과 정치를 지휘합니다.</p>
+          <b data-i18n="dev.game3Cta">지금 플레이하기 →</b>
+        </span>
+      </a>
+    </section>
+
+    <section class="developer-contact" aria-labelledby="contactTitle">
+      <span data-i18n="dev.contactEyebrow">DEVELOPMENT LOG &amp; CONTACT</span>
+      <h2 id="contactTitle" data-i18n="dev.contactTitle">새로운 제작 과정은 Threads에 기록합니다.</h2>
+      <p data-i18n="dev.contactBody">업데이트, 시행착오, 다음 게임에 대한 이야기를 확인할 수 있습니다.</p>
+      <a href="https://www.threads.com/@watercastlegames?hl=ko" target="_blank" rel="noopener noreferrer">@watercastlegames</a>
+    </section>
+  </main>
+
+  <footer>
+    <b>WATER CASTLE GAMES</b>
+    <p data-i18n="dev.footerLead">게임을 만들고, 만드는 과정까지 공유합니다.</p>
+    <a href="index.html" data-i18n="dev.footerCta">HORMUZ 플레이하기</a>
+  </footer>
+
+  <script type="module">
+    import {
+      loadDictionaries, initLang, applyStaticI18n, getLang, setLang, onLangChange
+    } from "./assets/js/core/i18n.js";
+
+    // 문서 제목·설명 키는 <html data-i18n-*-key> 가 지정한다.
+    const version = "37";
+    const load = async (name) => {
+      const response = await fetch(`assets/data/${name}.json?v=${version}`);
+      if (!response.ok) throw new Error(`${name}.json HTTP ${response.status}`);
+      return response.json();
+    };
+
+    const group = document.querySelector("#lang-switch");
+    try {
+      const [ko, en] = await Promise.all([load("strings.ko"), load("strings.en")]);
+      loadDictionaries({ ko, en });
+      initLang();
+      applyStaticI18n();
+
+      const paint = () => {
+        group.querySelectorAll("[data-lang]").forEach((button) => {
+          const active = button.dataset.lang === getLang();
+          button.classList.toggle("active", active);
+          button.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+      };
+      group.querySelectorAll("[data-lang]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (button.dataset.lang !== getLang()) setLang(button.dataset.lang, { persist: true });
+        });
+      });
+      onLangChange(() => { applyStaticI18n(); paint(); });
+      paint();
+    } catch (error) {
+      // 사전을 못 읽으면 본문은 HTML에 박힌 한국어로 남는다.
+      // 동작하지 않는 언어 토글만 숨기고 원인은 콘솔에 남긴다.
+      console.error("[developer] 문구 사전 로드 실패", error);
+      group?.setAttribute("hidden", "");
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,854 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HORMUZ 화면 녹화기</title>
+<style>
+  :root {
+    --bg:#04090e; --panel:#0a1620; --line:rgba(100,228,238,.22);
+    --cyan:#64e4ee; --white:#eaf7fa; --muted:#7f9aa2;
+    --red:#ff5b50; --green:#55e6a5; --amber:#ffb45e;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; padding:0 20px 70px; color:var(--white); background:var(--bg);
+    font:400 16px/1.65 "Pretendard Variable","Pretendard","Segoe UI","Malgun Gothic",sans-serif;
+  }
+  .wrap { max-width:900px; margin:0 auto; }
+  header { padding:40px 0 22px; border-bottom:1px solid var(--line); }
+  h1 { margin:0 0 8px; font-size:27px; }
+  h1 small { display:block; margin-top:7px; color:var(--muted); font-size:14px; font-weight:400; }
+  h2 { margin:30px 0 10px; font-size:17px; color:var(--cyan); }
+  p { margin:0 0 12px; }
+  .dim { color:var(--muted); font-size:14px; }
+
+  .stage {
+    display:grid; gap:14px; margin-top:22px; padding:20px;
+    border:1px solid var(--line); background:var(--panel);
+  }
+
+  .record-row { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  #record {
+    display:flex; align-items:center; gap:12px;
+    min-width:210px; min-height:62px; padding:0 26px;
+    color:#fff; font:800 19px/1 inherit; letter-spacing:.02em;
+    border:1px solid rgba(255,91,80,.55); border-radius:999px;
+    background:linear-gradient(180deg,#7d1d18,#4a100d); cursor:pointer;
+    transition:transform .12s ease, box-shadow .18s ease, background .2s ease;
+  }
+  #record:hover { box-shadow:0 0 26px rgba(255,91,80,.28); }
+  #record:active { transform:scale(.98); }
+  #record:disabled { opacity:.45; cursor:not-allowed; }
+  #record .dot {
+    width:16px; height:16px; border-radius:50%; background:#ff5b50;
+    box-shadow:0 0 14px rgba(255,91,80,.8);
+  }
+  #record.recording {
+    border-color:rgba(100,228,238,.6);
+    background:linear-gradient(180deg,#0e4c58,#04222a);
+  }
+  #record.recording .dot { animation:blink 1s steps(2,start) infinite; }
+  @keyframes blink { 50% { opacity:.15; } }
+
+  .clock { font:700 30px/1 "Segoe UI",monospace; letter-spacing:.04em; font-variant-numeric:tabular-nums; }
+  .clock small { display:block; margin-top:6px; color:var(--muted); font:400 13px/1.3 inherit; letter-spacing:0; }
+
+  .controls { display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); }
+  label.field { display:grid; gap:6px; font-size:13px; color:var(--muted); }
+  select, .btn {
+    padding:11px 13px; color:var(--white); font:inherit; font-size:15px;
+    border:1px solid var(--line); border-radius:6px; background:#03151e;
+  }
+  select:focus-visible, .btn:focus-visible { outline:2px solid var(--cyan); outline-offset:2px; }
+  .btn { cursor:pointer; text-align:center; text-decoration:none; display:block; }
+  .btn:hover { border-color:rgba(100,228,238,.6); background:#062430; }
+  .btn.primary { color:#04222a; border-color:transparent; background:var(--cyan); font-weight:800; }
+  .btn.primary:hover { background:#8df2fb; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; }
+  .row > * { flex:1 1 190px; }
+
+  .check { display:flex; align-items:center; gap:9px; font-size:15px; }
+  .check input { width:18px; height:18px; accent-color:#2aa7bd; }
+
+  .status {
+    padding:12px 15px; font-size:14.5px;
+    border-left:3px solid var(--cyan); background:rgba(100,228,238,.07);
+  }
+  .status.bad { color:#ffd9d5; border-left-color:var(--red); background:rgba(255,91,80,.08); }
+  .status.good { color:#ccfff0; border-left-color:var(--green); background:rgba(85,230,165,.08); }
+  .status.warn { color:#ffe4c2; border-left-color:var(--amber); background:rgba(255,180,94,.08); }
+
+  video {
+    display:block; width:100%; max-height:72vh; margin:0;
+    background:#000; border:1px solid rgba(100,228,238,.16);
+  }
+
+  ol, ul { margin:0 0 14px; padding-left:22px; }
+  li { margin:5px 0; }
+  code { padding:2px 6px; color:#bff2f7; background:rgba(100,228,238,.09); font-size:14px; }
+  .hidden { display:none !important; }
+  .foot { margin-top:44px; padding-top:16px; color:var(--muted); font-size:13.5px; border-top:1px solid var(--line); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>HORMUZ 화면 녹화기
+    <small>지금 이 PC 가 실제로 그리는 화면을 그대로 담는다. 설치할 것도, 올릴 것도 없다.</small>
+  </h1>
+  <p class="dim">녹화 버튼을 누르면 무엇을 담을지 고르는 창이 뜬다. 한 번 더 누르면 끝나고,
+  바로 아래에서 확인한 뒤 내려받으면 된다.</p>
+</header>
+
+<div class="stage">
+  <div class="record-row">
+    <button id="record" type="button"><span class="dot" aria-hidden="true"></span><span id="record-label">녹화 시작</span></button>
+    <div class="clock">
+      <span id="elapsed">00:00</span>
+      <small id="volume">대기 중</small>
+    </div>
+  </div>
+
+  <div id="status" class="status">준비됐다. 아래에서 화면 규격을 고르고 게임을 연 뒤 녹화를 시작하면 된다.</div>
+
+  <div class="controls">
+    <label class="field">화질
+      <select id="bitrate">
+        <option value="24000000">아주 높음 · 24 Mbps</option>
+        <option value="16000000" selected>높음 · 16 Mbps</option>
+        <option value="8000000">보통 · 8 Mbps</option>
+      </select>
+    </label>
+    <label class="field">초당 화면 수
+      <select id="fps">
+        <option value="30" selected>30 fps · 안정적</option>
+        <option value="60">60 fps · 부드럽게</option>
+      </select>
+    </label>
+    <label class="field">저장 형식
+      <select id="format">
+        <option value="auto" selected>자동 (MP4 우선)</option>
+        <option value="mp4">MP4 · H.264</option>
+        <option value="webm">WebM · VP9</option>
+      </select>
+    </label>
+    <label class="field">게임 창 크기
+      <select id="shape">
+        <option value="1920x1080" selected>가로 영상 · 1920 × 1080</option>
+        <option value="1600x900">가로 · 1600 × 900</option>
+        <option value="1280x720">가로(작게) · 1280 × 720</option>
+        <option value="1080x1920">세로 영상 · 1080 × 1920</option>
+        <option value="1080x1080">정사각 · 1080 × 1080</option>
+        <option value="430x932">폰 세로 · 430 × 932</option>
+        <option value="390x844">폰 세로(작은) · 390 × 844</option>
+        <option value="full">현재 창 그대로</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="controls">
+    <label class="field">무엇을 담을까
+      <select id="target">
+        <option value="battle" selected>전투 화면 — 실제 플레이</option>
+        <option value="reel">모델 영상 화면 — 모델 소개</option>
+        <option value="campaign">작전 화면 — 캠페인</option>
+      </select>
+    </label>
+    <label class="field" id="scenario-field">전투
+      <select id="scenario">
+        <option value="large_fleet_battle" selected>대규모 함대전 — 유닛이 가장 많다</option>
+        <option value="convoy_shield">해협 방패</option>
+        <option value="tanker_rescue">라락 구출작전</option>
+        <option value="mine_corridor">기뢰 회랑</option>
+        <option value="missile_screen">미사일 차단막</option>
+        <option value="coastal_battery">해안 포대</option>
+        <option value="pickaxe_mountain">곡괭이산</option>
+      </select>
+    </label>
+    <label class="field" id="start-field">시작 방식
+      <select id="start-mode">
+        <option value="manual" selected>첫 화면부터 — 편성 화면에서 직접 시작</option>
+        <option value="countdown">첫 화면 → 5초 뒤 자동 시작</option>
+        <option value="instant">열자마자 자동전투</option>
+      </select>
+    </label>
+    <label class="field hidden" id="reel-field">길이
+      <select id="reel-depth">
+        <option value="scroll" selected>전부 훑기 · 약 34초</option>
+        <option value="core">핵심만 · 약 55초</option>
+        <option value="all">전부 하나씩 · 약 100초</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="row">
+    <button id="open-target" class="btn primary" type="button">창 열기</button>
+    <button id="open-game" class="btn hidden" type="button">게임 창 열기</button>
+    <button id="open-battle" class="btn hidden" type="button">전투 화면 바로 열기</button>
+  </div>
+
+  <label class="check"><input id="auto-start" type="checkbox" checked>
+    모델 영상은 열자마자 재생 (조작판 숨김까지 대신 눌러 준다)</label>
+
+  <label class="check"><input id="with-audio" type="checkbox" checked> 소리도 함께 담기 (탭 공유를 고르면 게임 소리가 들어간다)</label>
+  <label class="check"><input id="safe-mode" type="checkbox"> 안정 모드 — 화면을 한 번 다시 그려서 담는다 (깨질 때 켜 보시라)</label>
+
+  <div class="row">
+    <button id="selftest" class="btn" type="button">자가 점검 (5초 녹화 후 자동 검사)</button>
+  </div>
+  <p class="dim" id="selftest-result"></p>
+</div>
+
+<section id="live" class="stage hidden">
+  <h2 style="margin:0">지금 담기는 화면</h2>
+  <p class="dim" id="live-meta">담는 중</p>
+  <video id="live-view" muted playsinline autoplay></video>
+  <p class="dim">여기가 이미 깨져 보이면 화면을 가져오는 단계의 문제다.
+  여기는 멀쩡한데 아래 결과만 깨지면 저장 단계의 문제다. 둘은 원인이 다르다.</p>
+</section>
+
+<section id="result" class="stage hidden">
+  <h2 style="margin:0">녹화 결과</h2>
+  <video id="preview" controls playsinline></video>
+  <div class="row">
+    <a id="download" class="btn primary" download>내려받기</a>
+    <button id="discard" class="btn" type="button">버리고 다시 찍기</button>
+  </div>
+  <p class="dim" id="result-meta"></p>
+</section>
+
+<h2>쓰는 순서</h2>
+<ol>
+  <li><b>게임 창 열기</b> 를 눌러 새 창을 띄운다. 위에서 고른 크기로 열린다 —
+    폰 세로를 고르면 폰과 같은 배치가 나온다.</li>
+  <li>녹화기 화면으로 돌아와 <b>녹화 시작</b> 을 누른다.</li>
+  <li>뜨는 창에서 <b>Chrome 탭</b> 을 고르고 방금 연 게임 창을 선택한다.
+    창 전체나 화면 전체를 골라도 되지만, 탭을 고르면 주변이 안 찍히고 소리도 함께 담긴다.</li>
+  <li>게임 창으로 옮겨 플레이한다. 녹화는 계속 돌아간다.</li>
+  <li>다 됐으면 녹화기 화면으로 돌아와 <b>녹화 중지</b> 를 누른다.
+    (크롬 아래쪽의 <b>공유 중지</b> 를 눌러도 똑같이 끝난다.)</li>
+</ol>
+
+<h2>알아둘 것</h2>
+<ul>
+  <li>이 기능은 <b>데스크톱 크롬·엣지</b> 에서 동작한다. 아이폰·안드로이드 브라우저는 화면 공유를 지원하지 않는다.</li>
+  <li>주소가 <code>https</code> 이거나 <code>localhost</code> 여야 브라우저가 화면 공유를 허용한다.</li>
+  <li>탭을 고르면 그 탭이 실제로 그리는 화면을 그대로 담는다. 다른 창을 위에 띄워도 녹화에는 안 들어간다.</li>
+  <li>저장 형식은 <b>H.264 MP4</b> 를 우선한다. 어디서나 열리는 조합이다.
+    브라우저가 그걸 못 하면 WebM 으로 담는다 — 크롬·편집기에서는 열리지만
+    윈도우 기본 재생기는 못 여는 경우가 있다. 결과 아래에 실제 형식이 표시된다.</li>
+  <li>녹화 결과가 안 보이면 그 아래 적힌 <b>형식·해상도·길이</b> 를 알려 달라.
+    무엇이 잘못됐는지 그걸로 찾는다.</li>
+</ul>
+
+<div class="foot">
+  D:\soccerstarWebSource\GameCreator\hormuz\record.html
+</div>
+
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const liveSection = document.querySelector("#live");
+  const liveView = document.querySelector("#live-view");
+  const liveMeta = document.querySelector("#live-meta");
+  const recordButton = document.querySelector("#record");
+  const recordLabel = document.querySelector("#record-label");
+  const status = document.querySelector("#status");
+  const elapsed = document.querySelector("#elapsed");
+  const volume = document.querySelector("#volume");
+  const result = document.querySelector("#result");
+  const preview = document.querySelector("#preview");
+  const download = document.querySelector("#download");
+  const discard = document.querySelector("#discard");
+  const resultMeta = document.querySelector("#result-meta");
+  const shapeSelect = document.querySelector("#shape");
+
+  let recorder = null;
+  let stream = null;
+  let chunks = [];
+  let startedAt = 0;
+  let ticker = 0;
+  let bytes = 0;
+  let objectUrl = "";
+  let recordedBitrate = 0;
+  let sourceStream = null;
+
+  const say = (message, tone = "") => {
+    status.textContent = message;
+    status.className = "status" + (tone ? " " + tone : "");
+  };
+
+  const two = (value) => String(value).padStart(2, "0");
+  const clock = (ms) => {
+    const total = Math.floor(ms / 1000);
+    return `${two(Math.floor(total / 60))}:${two(total % 60)}`;
+  };
+  const mega = (value) => (value / 1024 / 1024).toFixed(1) + " MB";
+
+  // 브라우저가 지원하는 것 중 가장 나은 형식을 고른다. MP4 를 지원하면 그대로 쓴다 —
+  // 변환 없이 어디든 올릴 수 있다.
+  // ★ "video/mp4" 를 그냥 요청하면 안 된다. 크롬은 그 요청에 MP4 껍데기 안에 VP9 를
+  //   넣어 돌려준다(실측: 요청 video/mp4 → 실제 video/mp4;codecs=vp9). 그 조합은
+  //   크롬에서만 열리고 윈도우 기본 재생기·편집기·업로드처에서는 대부분 못 읽는다.
+  //   코덱을 반드시 함께 지정해 H.264 를 받아낸다. 그게 안 되면 WebM 이 낫다 —
+  //   적어도 무엇인지 분명하고, 크롬·편집기에서 열린다.
+  const pickMime = (prefer = "auto") => {
+    // ★ 레벨(뒤 두 자리)까지 못박지 않는다. avc1.640028 은 Level 4.0 이라
+    //   대략 2048x1024 · 20Mbps 가 상한인데, 세로 1080x1920 을 60fps 로 담으면
+    //   그 규격을 넘긴다. 규격을 넘긴 요청은 인코더가 깨진 영상을 내놓을 수 있다.
+    //   레벨을 비워 두면 브라우저가 화면 크기에 맞는 레벨을 스스로 고른다.
+    const wanted = [
+      "video/mp4;codecs=avc1",
+      "video/mp4;codecs=avc1.640033",
+      "video/mp4;codecs=avc1.64002A",
+      "video/mp4;codecs=avc1.640028",
+      "video/webm;codecs=vp9,opus",
+      "video/webm;codecs=vp9",
+      "video/webm",
+    ];
+    const filtered = prefer === "auto"
+      ? wanted
+      : wanted.filter((type) => type.startsWith(`video/${prefer}`));
+    for (const type of filtered) {
+      if (window.MediaRecorder && MediaRecorder.isTypeSupported(type)) return type;
+    }
+    return "";
+  };
+
+  /* 안정 모드 — 받아온 화면을 캔버스에 한 번 다시 그린 뒤 그것을 담는다.
+   *
+   * 화면을 그대로 인코더에 넣으면 몇 가지가 한꺼번에 인코더를 흔든다.
+   * 담기는 크기가 홀수이거나, 녹화 도중 창 크기가 바뀌거나, 공유 대상이 바뀌면
+   * 프레임 크기가 달라지는데 그 순간 인코더가 깨진 그림을 낸다.
+   * 한 번 다시 그리면 크기가 짝수로 고정되고 도중에 바뀌지 않는다.
+   * 대신 CPU 를 조금 더 쓴다. 그래서 기본은 꺼 둔다.
+   */
+  const normalize = (source, fps) => {
+    const settings = source.getVideoTracks()[0].getSettings();
+    const width = Math.max(2, Math.round((settings.width || 1280) / 2) * 2);
+    const height = Math.max(2, Math.round((settings.height || 720) / 2) * 2);
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d", { alpha: false });
+    const feed = document.createElement("video");
+    feed.muted = true;
+    feed.playsInline = true;
+    feed.srcObject = source;
+    feed.play().catch(() => {});
+    let running = true;
+    const draw = () => {
+      if (!running) return;
+      if (feed.readyState >= 2) {
+        context.drawImage(feed, 0, 0, width, height);
+      }
+      requestAnimationFrame(draw);
+    };
+    requestAnimationFrame(draw);
+    const output = canvas.captureStream(fps);
+    for (const track of source.getAudioTracks()) output.addTrack(track);
+    output.__stopNormalize = () => {
+      running = false;
+      feed.srcObject = null;
+    };
+    output.__size = `${width}×${height}`;
+    return output;
+  };
+
+  const gameUrl = (page) => {
+    const base = location.href.replace(/\/[^/]*$/, "/");
+    return base + page;
+  };
+
+  const openWindow = (page) => {
+    const shape = shapeSelect.value;
+    if (shape === "full") {
+      // noopener 를 빼야 연 창을 만질 수 있다. 같은 사이트라 위험하지 않다.
+      return window.open(gameUrl(page), "hormuzPlay");
+    }
+    const [width, height] = shape.split("x").map(Number);
+    /* 화면보다 큰 창은 만들 수 없다. 1080p 모니터에서 1920×1080 안쪽 크기를 달라고 하면
+       주소창·테두리 몫이 모자라 반드시 작게 열린다. 열기 전에 미리 알려 준다. */
+    if (width > screen.availWidth || height > screen.availHeight - 110) {
+      say(`이 화면(${screen.availWidth} × ${screen.availHeight})에는 `
+        + `${width} × ${height} 창이 다 안 들어간다. 한 단계 작은 규격을 고르면 `
+        + "정확히 맞출 수 있다. 그대로 열면 조금 작게 열린다.", "warn");
+    }
+    // 창 테두리·주소창 두께는 브라우저마다 다르다. 짐작해서 더하지 않고,
+    // 연 뒤에 안쪽 크기를 재서 모자란 만큼 다시 늘린다.
+    // ★ 폭이 정확해야 한다. 430px 를 넘으면 폰 배치(@media max-width:850px)가
+    //   아니라 데스크톱 배치가 나와 엉뚱한 화면을 찍게 된다.
+    const opened = window.open(
+      gameUrl(page), "hormuzPlay",
+      `width=${width + 16},height=${height + 120},menubar=no,toolbar=no`);
+    if (!opened) {
+      say("팝업이 막혔다. 주소창 오른쪽의 팝업 차단을 풀고 다시 눌러 달라.", "bad");
+      return null;
+    }
+    opened.focus();
+    say(`게임 창을 여는 중… (${width} × ${height})`);
+
+    let tries = 0;
+    const fit = () => {
+      tries += 1;
+      try {
+        if (opened.closed) return;
+        const gapX = width - opened.innerWidth;
+        const gapY = height - opened.innerHeight;
+        if (Math.abs(gapX) > 1 || Math.abs(gapY) > 1) {
+          opened.resizeTo(opened.outerWidth + gapX, opened.outerHeight + gapY);
+        }
+        const now = `${opened.innerWidth} × ${opened.innerHeight}`;
+        const exact = opened.innerWidth === width && opened.innerHeight === height;
+        if (exact || tries >= 6) {
+          say(exact
+            ? `게임 창 ${now} 로 맞췄다. 이제 녹화 시작을 누르고 그 탭을 고르면 된다.`
+            : `게임 창을 ${now} 까지 맞췄다(목표 ${width} × ${height}). `
+              + "창 모서리를 끌어 조정해도 된다.",
+            exact ? "good" : "warn");
+          return;
+        }
+      } catch (error) {
+        say(`게임 창을 열었다. 크기는 창 모서리를 끌어 맞춰 달라 (목표 ${width} × ${height}).`,
+            "warn");
+        return;
+      }
+      window.setTimeout(fit, 350);
+    };
+    window.setTimeout(fit, 400);
+    return opened;
+  };
+
+  /* 무엇을 담을지 고르면 그에 맞는 주소를 연다.
+     같은 사이트에서 연 창이라 그 안을 직접 만질 수 있다 —
+     전투는 자동전투로 켜 주고, 모델 영상은 재생 + 조작판 숨김까지 대신 눌러 준다.
+     녹화 시작을 누르기 전에 화면이 이미 "찍을 상태"가 되어 있어야 손이 덜 간다. */
+  const targetSelect = document.querySelector("#target");
+  const scenarioField = document.querySelector("#scenario-field");
+  const reelField = document.querySelector("#reel-field");
+
+  const startField = document.querySelector("#start-field");
+  const syncTargetFields = () => {
+    const kind = targetSelect.value;
+    scenarioField.classList.toggle("hidden", kind !== "battle");
+    startField.classList.toggle("hidden", kind !== "battle");
+    reelField.classList.toggle("hidden", kind !== "reel");
+  };
+  targetSelect.addEventListener("change", syncTargetFields);
+  syncTargetFields();
+
+  const targetAddress = () => {
+    const kind = targetSelect.value;
+    if (kind === "reel") return "docs/hormuz-model-reel.html";
+    if (kind === "campaign") return "index.html";
+    const scenario = document.querySelector("#scenario").value;
+    return `rts-combat.html?scenario=${scenario}&lang=ko&google=0&difficulty=3`;
+  };
+
+  // 연 창이 준비될 때까지 기다렸다가 한 번만 실행한다. 준비되기 전에 부르면 아무 일도 안 일어난다.
+  const whenReady = (opened, isReady, run, label) => {
+    let waited = 0;
+    const tick = () => {
+      if (opened.closed) return;
+      try {
+        if (isReady(opened)) { run(opened); return; }
+      } catch (error) {
+        // 아직 문서가 바뀌는 중이면 접근이 막힌다. 다음 차례에 다시 본다.
+      }
+      waited += 300;
+      if (waited > 90000) {
+        say(`${label} 자동 시작이 오래 걸린다. 그 창에서 직접 시작해 달라.`, "warn");
+        return;
+      }
+      window.setTimeout(tick, 300);
+    };
+    window.setTimeout(tick, 600);
+  };
+
+  const autoStart = (opened) => {
+    const kind = targetSelect.value;
+    if (kind === "reel" && !document.querySelector("#auto-start").checked) return;
+
+    if (kind === "battle") {
+      const mode = document.querySelector("#start-mode").value;
+      /* 기본은 손대지 않는다. 편성 화면이 게임의 첫 화면이고,
+         영상도 거기서부터 시작해야 실제로 하는 것처럼 보인다. */
+      if (mode === "manual") {
+        say("전투 창을 첫 화면(편성)에서 열었다. 녹화를 먼저 시작하고, "
+          + "그 창에서 직접 진행하면 된다.", "good");
+        return;
+      }
+      whenReady(opened,
+        (win) => win.__HORMUZ_RTS__?.battle?.initialized === true,
+        (win) => {
+          if (mode === "instant") {
+            win.__HORMUZ_RTS__.start();
+            win.__HORMUZ_RTS__.setAutoBattle(true);
+            say("자동전투로 바로 시작했다. 녹화 시작을 누르고 그 창을 고르면 된다.", "good");
+            return;
+          }
+          // 녹화 버튼을 누를 시간을 벌어 준다. 첫 화면이 잠깐 담긴 뒤 전투가 시작된다.
+          let left = 5;
+          say(`첫 화면을 띄웠다. ${left}초 뒤 전투가 시작된다 — 지금 녹화를 시작하시라.`, "warn");
+          const countdown = window.setInterval(() => {
+            if (opened.closed) { window.clearInterval(countdown); return; }
+            left -= 1;
+            if (left > 0) {
+              say(`${left}초 뒤 전투 시작 — 지금 녹화를 시작하시라.`, "warn");
+              return;
+            }
+            window.clearInterval(countdown);
+            win.__HORMUZ_RTS__.start();
+            win.__HORMUZ_RTS__.setAutoBattle(true);
+            say("전투가 시작됐다.", "good");
+          }, 1000);
+        }, "전투");
+      return;
+    }
+
+    if (kind === "reel") {
+      const depth = document.querySelector("#reel-depth").value;
+      whenReady(opened,
+        (win) => Boolean(win.__REEL__) && Boolean(win.document.querySelector("#play")),
+        (win) => {
+          const shape = document.querySelector("#shape").value;
+          const [w, h] = shape === "full"
+            ? [window.innerWidth, window.innerHeight]
+            : shape.split("x").map(Number);
+          const box = win.document.querySelector("#shape");
+          if (box) {
+            box.value = h > w ? "9:16" : (w === h ? "1:1" : "16:9");
+            box.dispatchEvent(new win.Event("change"));
+          }
+          const depthBox = win.document.querySelector("#depth");
+          if (depthBox && depthBox.value !== depth) {
+            depthBox.value = depth;
+            depthBox.dispatchEvent(new win.Event("change"));
+          }
+          // 장면을 불러올 짬을 준 뒤 조작판을 숨기고 재생을 누른다.
+          win.setTimeout(() => {
+            win.document.querySelector("#hide")?.click();
+            win.document.querySelector("#play")?.click();
+            say("모델 영상이 재생 중이다. 녹화 시작을 누르고 그 창을 고르면 된다.", "good");
+          }, 1200);
+        }, "모델 영상");
+      return;
+    }
+
+    say("작전 화면을 열었다. 원하는 장면을 띄운 뒤 녹화를 시작하면 된다.", "good");
+  };
+
+  const openTarget = () => {
+    const opened = openWindow(targetAddress());
+    if (opened) autoStart(opened);
+  };
+
+  document.querySelector("#open-target").addEventListener("click", openTarget);
+  document.querySelector("#open-game")
+    .addEventListener("click", () => openWindow("index.html"));
+  document.querySelector("#open-battle")
+    .addEventListener("click", () => openWindow("rts-combat.html?scenario=convoy_shield"));
+
+  const finish = () => {
+    liveView.srcObject = null;
+    liveSection.classList.add("hidden");
+    window.clearInterval(ticker);
+    ticker = 0;
+    recordButton.classList.remove("recording");
+    recordLabel.textContent = "녹화 시작";
+    volume.textContent = "대기 중";
+    if (stream && stream.__stopNormalize) stream.__stopNormalize();
+    for (const each of [stream, sourceStream]) {
+      if (each) each.getTracks().forEach((track) => track.stop());
+    }
+    stream = null;
+    sourceStream = null;
+  };
+
+  const build = () => {
+    if (!chunks.length) {
+      say("담긴 화면이 없다. 다시 시도해 달라.", "bad");
+      return;
+    }
+    const type = recorder && recorder.mimeType ? recorder.mimeType : "video/webm";
+    const blob = new Blob(chunks, { type });
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    objectUrl = URL.createObjectURL(blob);
+
+    const extension = type.includes("mp4") ? "mp4" : "webm";
+    const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
+    preview.src = objectUrl;
+    download.href = objectUrl;
+    download.download = `hormuz-${stamp}.${extension}`;
+
+    // MediaRecorder 산출물은 컨테이너에 전체 길이가 안 적힌다. 그대로 두면
+    // 눈금이 안 잡히고 앞뒤로 못 넘겨 "깨진 영상" 처럼 보인다.
+    // 끝까지 한 번 훑어 주면 브라우저가 길이를 스스로 계산한다.
+    const settleDuration = () => {
+      if (Number.isFinite(preview.duration) && preview.duration > 0) {
+        describe();
+        return;
+      }
+      const back = () => {
+        preview.removeEventListener("timeupdate", back);
+        preview.currentTime = 0;
+        describe();
+      };
+      preview.addEventListener("timeupdate", back);
+      try { preview.currentTime = 1e101; } catch (error) { describe(); }
+    };
+
+    const describe = () => {
+      const size = preview.videoWidth
+        ? `${preview.videoWidth} × ${preview.videoHeight}` : "크기 미상";
+      const length = Number.isFinite(preview.duration) && preview.duration > 0
+        ? clock(preview.duration * 1000) : "길이 미상";
+      resultMeta.textContent =
+        `${size} · ${length} · ${mega(blob.size)} · ${type}`
+        + (recordedBitrate ? ` · ${Math.round(recordedBitrate / 1e6)}Mbps` : "");
+    };
+
+    preview.addEventListener("loadedmetadata", settleDuration, { once: true });
+    preview.addEventListener("error", () => {
+      const code = preview.error ? preview.error.code : "?";
+      say(`미리보기를 재생하지 못했다 (오류 ${code} · 형식 ${type}). `
+          + "내려받아 다른 재생기로 열어 보고, 그래도 안 되면 이 문구를 알려 달라.", "bad");
+      resultMeta.textContent = `재생 실패 · ${mega(blob.size)} · ${type}`;
+    }, { once: true });
+
+    resultMeta.textContent =
+      `${clock(Date.now() - startedAt)} · ${mega(blob.size)} · ${type}`;
+    result.classList.remove("hidden");
+    result.scrollIntoView({ behavior: "smooth", block: "start" });
+    say(`녹화 끝. ${clock(Date.now() - startedAt)} · ${mega(blob.size)} — `
+        + "아래에서 확인하고 내려받으면 된다.", "good");
+  };
+
+  const start = async () => {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+      say("이 브라우저는 화면 공유를 지원하지 않는다. 데스크톱 크롬이나 엣지에서 열어 달라.", "bad");
+      return;
+    }
+    const prefer = document.querySelector("#format").value;
+    const mime = pickMime(prefer);
+    if (!mime) {
+      say(`이 브라우저는 ${prefer === "auto" ? "화면 녹화 형식을" : prefer.toUpperCase() + " 형식을"} `
+          + "지원하지 않는다. 형식을 자동으로 두거나 크롬·엣지에서 열어 달라.", "bad");
+      return;
+    }
+
+    const fps = Number(document.querySelector("#fps").value);
+    const safeMode = document.querySelector("#safe-mode").checked;
+    const wantAudio = document.querySelector("#with-audio").checked;
+
+    try {
+      stream = await navigator.mediaDevices.getDisplayMedia({
+        video: { frameRate: { ideal: fps, max: fps } },
+        audio: wantAudio,
+        // 녹화기 자신은 고를 대상에서 빼 준다. 실수로 이 화면을 담는 일을 막는다.
+        selfBrowserSurface: "exclude",
+        surfaceSwitching: "include",
+        systemAudio: "include",
+      });
+    } catch (error) {
+      if (error && error.name === "NotAllowedError") {
+        say("화면 고르기를 취소했다. 다시 녹화 시작을 누르면 된다.", "warn");
+      } else {
+        say("화면을 가져오지 못했다: " + (error && error.message ? error.message : error), "bad");
+      }
+      return;
+    }
+
+    // 안정 모드면 원본 대신 다시 그린 화면을 담는다. 원본은 그리기 재료로 계속 쓴다.
+    sourceStream = stream;
+    if (safeMode) {
+      try {
+        stream = normalize(sourceStream, fps);
+      } catch (error) {
+        say("안정 모드를 켜지 못했다. 원본 그대로 담는다: "
+            + String(error).slice(0, 60), "warn");
+        stream = sourceStream;
+      }
+    }
+
+    chunks = [];
+    bytes = 0;
+    try {
+      // 화면이 클수록 비트레이트가 더 필요하지만, 화면에 비해 지나치게 높으면
+      // 인코더가 규격을 벗어나 오히려 깨진다. 화면 크기에 맞춰 상한을 둔다.
+      const shot = stream.getVideoTracks()[0]?.getSettings() || {};
+      const pixels = (shot.width || 1920) * (shot.height || 1080);
+      const ceiling = Math.round(pixels * (shot.frameRate || fps) * 0.11);
+      const asked = Number(document.querySelector("#bitrate").value);
+      const bitrate = Math.max(4000000, Math.min(asked, ceiling));
+      recorder = new MediaRecorder(stream, {
+        mimeType: mime,
+        videoBitsPerSecond: bitrate,
+      });
+      recordedBitrate = bitrate;
+    } catch (error) {
+      say("녹화를 시작하지 못했다: " + (error && error.message ? error.message : error), "bad");
+      finish();
+      return;
+    }
+
+    recorder.addEventListener("dataavailable", (event) => {
+      if (event.data && event.data.size) {
+        chunks.push(event.data);
+        bytes += event.data.size;
+      }
+    });
+    recorder.addEventListener("stop", () => { finish(); build(); });
+
+    // 사용자가 크롬 하단의 '공유 중지' 를 눌러도 똑같이 끝나야 한다.
+    stream.getVideoTracks().forEach((track) => {
+      track.addEventListener("ended", () => {
+        if (recorder && recorder.state === "recording") recorder.stop();
+      });
+    });
+
+    // 담기는 화면을 그대로 보여준다. 저장이 끝난 뒤에야 깨진 걸 아는 상황을 없앤다.
+    liveView.srcObject = sourceStream;
+    liveSection.classList.remove("hidden");
+
+    recorder.start(1000);
+    startedAt = Date.now();
+    result.classList.add("hidden");
+    recordButton.classList.add("recording");
+    recordLabel.textContent = "녹화 중지";
+
+    const track = stream.getVideoTracks()[0];
+    const settings = track ? track.getSettings() : {};
+    // 담기는 크기가 홀수면 H.264 인코더가 가장자리를 뭉갠다. 그때는 미리 알려 준다.
+    const odd = (settings.width % 2) || (settings.height % 2);
+    liveMeta.textContent = `${settings.width || "?"} × ${settings.height || "?"} · `
+      + `${settings.frameRate ? Math.round(settings.frameRate) : fps} fps · ${mime}`
+      + (odd ? " · ⚠ 가로·세로가 홀수다. 창 크기를 1px 조정하면 깨끗해진다." : "");
+    const sizeText = settings.width && settings.height
+      ? `${settings.width} × ${settings.height}` : "크기 확인 중";
+    say(`녹화 중 · ${safeMode ? (stream.__size || sizeText) + " (안정 모드)" : sizeText}`
+        + ` · ${settings.frameRate ? Math.round(settings.frameRate) : fps} fps · ${mime}. `
+        + "게임 창으로 옮겨 플레이하고, 끝나면 여기로 돌아와 녹화 중지를 눌러 달라.", "good");
+
+    ticker = window.setInterval(() => {
+      elapsed.textContent = clock(Date.now() - startedAt);
+      volume.textContent = bytes ? mega(bytes) + " 담김" : "담는 중";
+    }, 250);
+  };
+
+  /* 자가 점검 — 5초 담고, 그 결과를 되읽어 실제로 그림이 나오는지까지 확인한다.
+     "재생은 된다"가 아니라 "화면이 보인다"를 봐야 한다. 검은 화면도 재생은 되기 때문이다. */
+  document.querySelector("#selftest").addEventListener("click", async () => {
+    const out = document.querySelector("#selftest-result");
+    const mime = pickMime();
+    out.textContent = "점검 중… 화면 고르기 창에서 아무 화면이나 골라 달라.";
+    let probe = null;
+    try {
+      probe = await navigator.mediaDevices.getDisplayMedia({
+        video: { frameRate: { ideal: 30, max: 30 } }, audio: false,
+        selfBrowserSurface: "include",
+      });
+    } catch (error) {
+      out.textContent = "점검 취소됨 — 화면을 고르지 않았다.";
+      return;
+    }
+    const settings = probe.getVideoTracks()[0].getSettings();
+    const parts = [];
+    const rec = new MediaRecorder(probe, { mimeType: mime, videoBitsPerSecond: 8000000 });
+    rec.addEventListener("dataavailable", (event) => {
+      if (event.data && event.data.size) parts.push(event.data);
+    });
+    const done = new Promise((resolve) => rec.addEventListener("stop", resolve));
+    rec.start(1000);
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    rec.stop();
+    probe.getTracks().forEach((track) => track.stop());
+    await done;
+
+    const blob = new Blob(parts, { type: rec.mimeType });
+    const url = URL.createObjectURL(blob);
+    const probeVideo = document.createElement("video");
+    probeVideo.muted = true;
+    probeVideo.playsInline = true;
+    probeVideo.src = url;
+    const opened = await new Promise((resolve) => {
+      probeVideo.addEventListener("loadedmetadata", () => resolve("ok"), { once: true });
+      probeVideo.addEventListener("error", () => resolve("error"), { once: true });
+      setTimeout(() => resolve("timeout"), 8000);
+    });
+    let painted = "확인 못 함";
+    if (opened === "ok") {
+      try {
+        await probeVideo.play();
+        await new Promise((resolve) => setTimeout(resolve, 1200));
+        const canvas = document.createElement("canvas");
+        canvas.width = 160;
+        canvas.height = 90;
+        const context = canvas.getContext("2d");
+        context.drawImage(probeVideo, 0, 0, 160, 90);
+        const data = context.getImageData(0, 0, 160, 90).data;
+        let sum = 0;
+        let spread = 0;
+        for (let index = 0; index < data.length; index += 4) {
+          const value = (data[index] + data[index + 1] + data[index + 2]) / 3;
+          sum += value;
+          spread = Math.max(spread, value);
+        }
+        const average = sum / (data.length / 4);
+        painted = spread < 6
+          ? "검은 화면만 담겼다"
+          : `그림 확인 (평균밝기 ${Math.round(average)})`;
+      } catch (error) {
+        painted = "재생 실패: " + String(error).slice(0, 60);
+      }
+      probeVideo.pause();
+    }
+    URL.revokeObjectURL(url);
+    const odd = (settings.width % 2) || (settings.height % 2);
+    out.textContent = [
+      `담긴 크기 ${settings.width}×${settings.height}${odd ? " (홀수 ⚠)" : ""}`,
+      `${Math.round(settings.frameRate || 0)}fps`,
+      rec.mimeType,
+      `${(blob.size / 1024 / 1024).toFixed(1)}MB`,
+      `길이 ${Number.isFinite(probeVideo.duration) ? probeVideo.duration.toFixed(1) + "초" : "미상"}`,
+      `열기 ${opened}`,
+      painted,
+    ].join(" · ");
+  });
+
+  recordButton.addEventListener("click", () => {
+    if (recorder && recorder.state === "recording") {
+      recorder.stop();
+      return;
+    }
+    elapsed.textContent = "00:00";
+    start();
+  });
+
+  discard.addEventListener("click", () => {
+    result.classList.add("hidden");
+    preview.removeAttribute("src");
+    if (objectUrl) { URL.revokeObjectURL(objectUrl); objectUrl = ""; }
+    chunks = [];
+    say("버렸다. 다시 녹화 시작을 누르면 된다.");
+  });
+
+  // 브라우저가 못 하는 환경이면 미리 알려 준다. 눌러 보고 나서 알게 하지 않는다.
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+    recordButton.disabled = true;
+    say("이 브라우저에서는 화면 녹화를 쓸 수 없다. 데스크톱 크롬이나 엣지에서 열어 달라. "
+        + "(모바일 브라우저는 화면 공유 자체를 지원하지 않는다.)", "bad");
+  } else if (!window.isSecureContext) {
+    recordButton.disabled = true;
+    say("주소가 https 이거나 localhost 여야 화면 공유가 허용된다. "
+        + "지금 주소로는 쓸 수 없다.", "bad");
+  }
+})();
+</script>
+</body>
+</html>

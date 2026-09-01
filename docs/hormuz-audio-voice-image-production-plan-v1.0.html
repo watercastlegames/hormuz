@@ -1,0 +1,1195 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>HORMUZ 오디오·음성·이미지·3D 제작 계획 v1.0</title>
+  <style>
+    :root {
+      --bg: #050b10;
+      --panel: rgba(8, 24, 31, .92);
+      --panel-2: rgba(12, 34, 42, .82);
+      --line: rgba(98, 220, 229, .25);
+      --line-strong: rgba(98, 220, 229, .58);
+      --cyan: #6ee7ee;
+      --cyan-soft: #b9f7f8;
+      --amber: #ffb45d;
+      --red: #ff6c61;
+      --green: #7be5a5;
+      --text: #e7f2f3;
+      --muted: #9bb2b6;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .42);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 78% 8%, rgba(25, 102, 119, .22), transparent 34rem),
+        radial-gradient(circle at 8% 36%, rgba(154, 75, 24, .12), transparent 30rem),
+        linear-gradient(180deg, #071117 0%, #04090d 58%, #020609 100%);
+      font: 15px/1.65 "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+      letter-spacing: -.01em;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .24;
+      background-image:
+        linear-gradient(rgba(105, 228, 236, .045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(105, 228, 236, .045) 1px, transparent 1px);
+      background-size: 46px 46px;
+      mask-image: linear-gradient(to bottom, black, transparent 85%);
+    }
+
+    a { color: var(--cyan); }
+
+    code {
+      padding: .12rem .35rem;
+      border: 1px solid rgba(110, 231, 238, .14);
+      border-radius: 5px;
+      color: var(--cyan-soft);
+      background: rgba(4, 16, 21, .88);
+      font-family: "Cascadia Code", Consolas, monospace;
+      font-size: .9em;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .shell {
+      position: relative;
+      width: min(1440px, calc(100% - 34px));
+      margin: 0 auto;
+      padding: 32px 0 80px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(28px, 5vw, 64px);
+      border: 1px solid var(--line-strong);
+      border-radius: 20px;
+      background:
+        linear-gradient(112deg, rgba(6, 23, 31, .96), rgba(6, 15, 21, .74)),
+        radial-gradient(circle at 84% 30%, rgba(72, 214, 226, .3), transparent 38%);
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -12%;
+      bottom: -76%;
+      width: 48%;
+      aspect-ratio: 1;
+      border: 1px solid rgba(110, 231, 238, .2);
+      border-radius: 50%;
+      box-shadow:
+        0 0 0 40px rgba(110, 231, 238, .025),
+        0 0 0 90px rgba(110, 231, 238, .018);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 9px;
+      align-items: center;
+      margin-bottom: 14px;
+      color: var(--cyan);
+      font-weight: 800;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 28px;
+      height: 2px;
+      background: var(--cyan);
+      box-shadow: 0 0 16px var(--cyan);
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      max-width: 930px;
+      margin-bottom: 18px;
+      font-size: clamp(31px, 5vw, 64px);
+      line-height: 1.08;
+      letter-spacing: -.045em;
+    }
+
+    .hero-lead {
+      max-width: 880px;
+      margin-bottom: 28px;
+      color: #bfd0d3;
+      font-size: clamp(16px, 2vw, 20px);
+    }
+
+    .status-row, .kpi-grid, .card-grid, .voice-grid, .gate-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .status-row {
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    }
+
+    .status {
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(2, 12, 17, .72);
+    }
+
+    .status span {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .status strong {
+      color: var(--cyan-soft);
+      font-size: 16px;
+    }
+
+    .notice {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-top: 22px;
+      padding: 14px 16px;
+      border-left: 3px solid var(--amber);
+      color: #f3dbc1;
+      background: rgba(111, 64, 15, .16);
+    }
+
+    .toc {
+      position: sticky;
+      z-index: 20;
+      top: 0;
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      margin: 18px 0 28px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(3, 12, 17, .92);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, .25);
+      scrollbar-width: thin;
+    }
+
+    .toc a {
+      flex: 0 0 auto;
+      padding: 8px 11px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      color: #b4c8cb;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .toc a:hover {
+      border-color: var(--line);
+      color: var(--cyan-soft);
+      background: rgba(22, 78, 88, .22);
+    }
+
+    section {
+      scroll-margin-top: 74px;
+      margin-top: 28px;
+      padding: clamp(22px, 4vw, 38px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, var(--panel), rgba(5, 15, 20, .94));
+      box-shadow: 0 18px 50px rgba(0, 0, 0, .22);
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 70px 1fr;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 24px;
+    }
+
+    .section-no {
+      color: rgba(110, 231, 238, .7);
+      font: 800 28px/1 "Cascadia Code", Consolas, monospace;
+    }
+
+    h2 {
+      margin-bottom: 6px;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1.2;
+      letter-spacing: -.03em;
+    }
+
+    h3 {
+      margin-bottom: 10px;
+      color: var(--cyan-soft);
+      font-size: 18px;
+    }
+
+    .section-intro, .muted { color: var(--muted); }
+
+    .kpi-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .kpi, .card, .voice-card, .gate {
+      border: 1px solid rgba(110, 231, 238, .18);
+      border-radius: 11px;
+      background: var(--panel-2);
+    }
+
+    .kpi { padding: 18px; }
+
+    .kpi strong {
+      display: block;
+      color: var(--cyan-soft);
+      font-size: 30px;
+      line-height: 1.1;
+    }
+
+    .kpi span {
+      display: block;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .card-grid {
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    }
+
+    .card { padding: 20px; }
+
+    .provider {
+      display: flex;
+      gap: 9px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .provider i {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: 50%;
+      color: var(--cyan);
+      font-style: normal;
+      font-weight: 900;
+    }
+
+    .tag {
+      display: inline-block;
+      margin: 4px 4px 0 0;
+      padding: 3px 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #b8cdd0;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .tag.ok { border-color: rgba(123, 229, 165, .4); color: var(--green); }
+    .tag.warn { border-color: rgba(255, 180, 93, .4); color: var(--amber); }
+    .tag.no { border-color: rgba(255, 108, 97, .4); color: var(--red); }
+
+    .timeline {
+      display: grid;
+      gap: 0;
+      counter-reset: phase;
+    }
+
+    .phase {
+      position: relative;
+      display: grid;
+      grid-template-columns: 160px 1fr 180px;
+      gap: 20px;
+      padding: 22px 0;
+      border-top: 1px solid rgba(110, 231, 238, .13);
+    }
+
+    .phase:first-child { border-top: 0; }
+
+    .phase-label {
+      color: var(--cyan);
+      font-weight: 900;
+    }
+
+    .phase-label small {
+      display: block;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .deliverable {
+      align-self: start;
+      padding: 9px 11px;
+      border: 1px solid rgba(123, 229, 165, .28);
+      border-radius: 7px;
+      color: #b9eccc;
+      background: rgba(25, 89, 52, .13);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid rgba(110, 231, 238, .16);
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 820px;
+      background: rgba(3, 15, 20, .52);
+    }
+
+    th, td {
+      padding: 12px 13px;
+      border-bottom: 1px solid rgba(110, 231, 238, .11);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      color: var(--cyan-soft);
+      background: #0c252d;
+      font-size: 12px;
+      letter-spacing: .04em;
+    }
+
+    td { color: #ccdadc; }
+    tr:last-child td { border-bottom: 0; }
+    tbody tr:hover { background: rgba(68, 183, 194, .06); }
+
+    .num {
+      color: var(--cyan);
+      font-family: "Cascadia Code", Consolas, monospace;
+      font-weight: 800;
+    }
+
+    .voice-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      margin-bottom: 18px;
+    }
+
+    .voice-card {
+      overflow: hidden;
+      padding: 18px;
+      border-top: 3px solid var(--cyan);
+    }
+
+    .voice-id {
+      color: var(--cyan);
+      font: 800 12px/1 "Cascadia Code", Consolas, monospace;
+    }
+
+    .voice-card h3 { margin-top: 10px; }
+
+    .voice-card ul, .check-list, .compact-list {
+      margin: 10px 0 0;
+      padding-left: 18px;
+    }
+
+    .voice-card li, .check-list li, .compact-list li { margin: 5px 0; }
+
+    .ko {
+      color: #edf7f8;
+      font-weight: 750;
+    }
+
+    .en {
+      color: #93bbc1;
+      font-size: 13px;
+    }
+
+    .event-chip {
+      display: inline-flex;
+      padding: 3px 7px;
+      border: 1px solid rgba(255, 180, 93, .28);
+      border-radius: 5px;
+      color: var(--amber);
+      background: rgba(111, 64, 15, .12);
+      font: 700 11px/1.4 "Cascadia Code", Consolas, monospace;
+    }
+
+    .image-stage {
+      display: grid;
+      grid-template-columns: 54px 180px 1fr 220px;
+      gap: 16px;
+      align-items: start;
+      padding: 18px 0;
+      border-top: 1px solid rgba(110, 231, 238, .12);
+    }
+
+    .image-stage:first-of-type { border-top: 0; }
+
+    .image-stage .step {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: 50%;
+      color: var(--cyan);
+      font-weight: 900;
+    }
+
+    .image-stage strong { color: var(--cyan-soft); }
+
+    .asset-count {
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: #c8dcdf;
+      background: rgba(3, 15, 20, .58);
+      font-size: 13px;
+    }
+
+    pre {
+      overflow-x: auto;
+      margin: 0;
+      padding: 18px;
+      border: 1px solid rgba(110, 231, 238, .18);
+      border-radius: 10px;
+      color: #bce7e9;
+      background: #031015;
+      font: 13px/1.65 "Cascadia Code", Consolas, monospace;
+    }
+
+    .gate-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .gate {
+      padding: 18px;
+      border-top: 3px solid var(--amber);
+    }
+
+    .gate b {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--amber);
+      font-size: 12px;
+    }
+
+    .rule-box {
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid rgba(255, 108, 97, .28);
+      border-radius: 10px;
+      background: rgba(103, 25, 22, .15);
+    }
+
+    .rule-box strong { color: #ffb5ae; }
+
+    footer {
+      padding: 34px 8px 0;
+      color: #718d92;
+      text-align: center;
+      font-size: 12px;
+    }
+
+    @media (max-width: 1040px) {
+      .status-row, .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .card-grid, .gate-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .voice-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .phase { grid-template-columns: 130px 1fr; }
+      .deliverable { grid-column: 2; }
+      .image-stage { grid-template-columns: 46px 140px 1fr; }
+      .asset-count { grid-column: 3; }
+    }
+
+    @media (max-width: 680px) {
+      body { font-size: 15px; }
+      .shell { width: min(100% - 18px, 1440px); padding-top: 10px; }
+      .hero, section { padding: 20px 17px; border-radius: 12px; }
+      .status-row, .kpi-grid, .card-grid, .voice-grid, .gate-grid { grid-template-columns: 1fr; }
+      .section-head { grid-template-columns: 45px 1fr; }
+      .section-no { font-size: 22px; }
+      .phase { grid-template-columns: 1fr; gap: 8px; }
+      .deliverable { grid-column: 1; }
+      .image-stage { grid-template-columns: 42px 1fr; }
+      .image-stage > div:nth-child(3), .asset-count { grid-column: 2; }
+      .toc { margin-inline: -2px; }
+    }
+
+    @media print {
+      body { color: #142126; background: white; }
+      body::before, .toc { display: none; }
+      .shell { width: 100%; padding: 0; }
+      .hero, section, .card, .kpi, .voice-card, .gate {
+        break-inside: avoid;
+        color: #142126;
+        background: white;
+        box-shadow: none;
+      }
+      .hero, section { border-color: #91a8ad; }
+      p, td, .muted, .section-intro, .en { color: #40565b; }
+      h1, h2, h3, strong, .ko { color: #102126; }
+      a, .section-no, .phase-label, .voice-id { color: #006d78; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div class="eyebrow">HORMUZ · Production Plan v1.0</div>
+      <h1>오디오·음성·이미지·3D 제작 및 게임 적용 계획</h1>
+      <p class="hero-lead">
+        무기별 효과음, 전투 단계별 배경음악, 5인 교신 음성, 작전 이미지와 Meshy 3D 유닛까지 하나의 제작 파이프라인으로 묶는다.
+        실제 API 호출은 후보·비용·라이선스 승인 뒤 진행하고, 본 문서는 제작 순서와 품질 기준의 정본으로 사용한다.
+      </p>
+      <div class="status-row">
+        <div class="status"><span>Sound effects</span><strong>ElevenLabs · 77개 목표</strong></div>
+        <div class="status"><span>Background music</span><strong>Suno · 6트랙</strong></div>
+        <div class="status"><span>Radio voices</span><strong>Supertone · 5인 40클립</strong></div>
+        <div class="status"><span>Images · 3D</span><strong>시안 3 + 본편 15 · 3D 9종 완료</strong></div>
+      </div>
+      <div class="notice">
+        <strong>현재 상태</strong>
+        <span>계획만 확정한다. ElevenLabs·Suno·Supertone·이미지 생성 API 호출과 크레딧 사용은 아직 0이다.</span>
+      </div>
+    </header>
+
+    <nav class="toc" aria-label="문서 목차">
+      <a href="#summary">핵심 결정</a>
+      <a href="#providers">API 구성</a>
+      <a href="#references">기존 적용 근거</a>
+      <a href="#phases">제작 단계</a>
+      <a href="#sfx">효과음</a>
+      <a href="#bgm">배경음악</a>
+      <a href="#voices">5인 멘트</a>
+      <a href="#events">10개 상황</a>
+      <a href="#images">이미지 생성</a>
+      <a href="#integration">게임 적용</a>
+      <a href="#qa">승인·검수</a>
+    </nav>
+
+    <section id="summary">
+      <div class="section-head">
+        <div class="section-no">01</div>
+        <div>
+          <h2>핵심 결정</h2>
+          <p class="section-intro">“10개 정도의 전체 멘트”와 “5명×4개” 요구를 충돌 없이 운영하는 기준이다.</p>
+        </div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi"><strong>10</strong><span>재생 상황 종류</span></div>
+        <div class="kpi"><strong>20</strong><span>언어별 실제 대사<br>5인×4개</span></div>
+        <div class="kpi"><strong>40</strong><span>한·영 음성 파일</span></div>
+        <div class="kpi"><strong>77</strong><span>효과음 최종 목표</span></div>
+        <div class="kpi"><strong>6</strong><span>BGM·결과 스팅어</span></div>
+      </div>
+      <ul class="check-list">
+        <li>한 전투 안에서는 한국어 또는 영어 한 언어만 재생한다. 두 언어를 동시에 섞지 않는다.</li>
+        <li>같은 상황에서도 역할별 대사를 섞어 사용해 반복감을 낮춘다.</li>
+        <li>동일 음성은 45초 동안 재사용하지 않고, 전체 음성 사이에는 최소 2.8초 간격을 둔다.</li>
+        <li>무기 소리는 플랫폼·거리·실내외 관점에 따라 별도 파일을 사용한다.</li>
+        <li>실제 무장 종류는 공개자료를 따르되, 소리와 피해량은 게임용 표현이며 “실측 살상력”으로 표기하지 않는다.</li>
+      </ul>
+    </section>
+
+    <section id="providers">
+      <div class="section-head">
+        <div class="section-no">02</div>
+        <div>
+          <h2>API 및 제작 도구 구성</h2>
+          <p class="section-intro">클라이언트 HTML에 키를 넣지 않고 로컬 생성 도구 또는 서버 작업기에서만 호출한다.</p>
+        </div>
+      </div>
+      <div class="card-grid">
+        <article class="card">
+          <div class="provider"><i>E</i><h3>ElevenLabs</h3></div>
+          <p>무기·엔진·피격·UI 효과음 생성. 공식 <code>POST /v1/sound-generation</code>으로 후보를 먼저 스테이징한다.</p>
+          <span class="tag ok">공식 API 확인</span>
+          <span class="tag">v2 · MP3/WAV</span>
+          <span class="tag">0.5~30초</span>
+        </article>
+        <article class="card">
+          <div class="provider"><i>S</i><h3>Suno</h3></div>
+          <p>보컬 없는 작전 BGM과 결과 스팅어 제작. 공식 API 접근권이 확인되면 REST API, 아니면 공식 플랫폼에서 수동 내보내기한다.</p>
+          <span class="tag ok">공식 플랫폼 확인</span>
+          <span class="tag warn">비공식 중계 API 금지</span>
+        </article>
+        <article class="card">
+          <div class="provider"><i>V</i><h3>Supertone</h3></div>
+          <p>5인 한국어·영어 무전 음성. <code>POST /v1/text-to-speech/{voice_id}</code> 사용.</p>
+          <span class="tag ok">한·영 검색 가능</span>
+          <span class="tag">MP3 스테이징</span>
+          <span class="tag">API 키 인증</span>
+        </article>
+        <article class="card">
+          <div class="provider"><i>3D</i><h3>Meshy 6</h3></div>
+          <p>승인된 단일 객체 기준 이미지를 GLB로 전환한다. 원본 4K·약 4만 폴리 후 웹용 2K와 LOD로 최적화한다.</p>
+          <span class="tag ok">호르무즈 9종 완료</span>
+          <span class="tag">image-to-3D</span>
+          <span class="tag warn">추가 생성 전 비용 승인</span>
+        </article>
+        <article class="card">
+          <div class="provider"><i>I</i><h3>Image generation</h3></div>
+          <p>인물 5명, 10개 상황, 신규 3D 유닛용 단일 객체 기준 이미지. 스타일 승인 뒤 텍스트 없이 생성한다.</p>
+          <span class="tag warn">시안 승인 필요</span>
+          <span class="tag">초상 5장</span>
+          <span class="tag">상황 10장</span>
+        </article>
+      </div>
+      <div class="rule-box">
+        <strong>효과음 폴백</strong>
+        <p>
+          AI 효과음이 총기·함포의 질감이나 거리감을 제대로 만들지 못하면 Freesound의 실제 녹음 중
+          CC0 또는 CC-BY만 후보로 제시한다. NonCommercial 음원은 상업 게임에 사용하지 않으며,
+          CC-BY는 <code>ATTRIBUTION.txt</code>에 기록한다.
+        </p>
+      </div>
+    </section>
+
+    <section id="references">
+      <div class="section-head">
+        <div class="section-no">03</div>
+        <div>
+          <h2>기존 프로젝트에서 확인한 실제 적용 방식</h2>
+          <p class="section-intro"><code>catAgentGame</code>, <code>crimeGame</code>, 두 프로젝트가 가리키는 실제 생성·검수 스크립트를 읽기 전용으로 확인했다. 아래 방식은 추정이 아니라 로컬 작업 기록에 있는 패턴이다.</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>분야</th>
+              <th>기존 프로젝트에서 검증된 방식</th>
+              <th>호르무즈 적용 결정</th>
+              <th>읽기 전용 참고 파일</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>효과음</td>
+              <td>완성 폴더에 바로 덮지 않고 별도 후보 폴더에서 생성한다. <code>ELEVENLABS_API_KEY</code>, <code>eleven_text_to_sound_v2</code>, 길이·루프·프롬프트 영향값을 항목별로 기록하고 JSON 매니페스트를 남긴다.</td>
+              <td>77개 최종본을 한 번에 만들지 않는다. 핵심 8종을 항목당 2~3후보로 만든 뒤 승인된 프롬프트만 확대한다.</td>
+              <td><code>D:\UnityProjects\testSimulation\SonFootballerTycoon\Docs\generate_elevenlabs_sfx_20260727.ps1</code></td>
+            </tr>
+            <tr>
+              <td>배경음악</td>
+              <td><code>catAgentGame</code>은 Suno 후보곡을 복사해 Web Audio에 연결했다. 로컬의 Suno 후처리 도구는 공식 서비스에서 받은 WAV를 원본 백업한 뒤 무음 탐지, 길이 자르기, 5ms 페이드인·25ms 페이드아웃, 처리 CSV 생성을 수행한다. 로컬에는 공식 Suno API 호출 예제가 없다.</td>
+              <td>공식 계정의 API 권한·엔드포인트가 확인되면 API를 사용한다. 확인 전에는 공식 플랫폼에서 수동 내보내기하고 같은 후처리·원본 보존 절차를 적용한다.</td>
+              <td><code>D:\soccerstarWebSource\GameCreator\catAgentGame\app\world-audio.ts</code><br><code>D:\UnityProjects\testSimulation\SonFootballerTycoon\Tools\audio\PrepareSunoSfx.ps1</code></td>
+            </tr>
+            <tr>
+              <td>무전 멘트</td>
+              <td>음색 목록과 최종 선택 JSON을 먼저 고정한다. 성별·지원 모델·지원 감정 스타일을 검사한 뒤 Supertone TTS를 호출하며, 오류 시 지수형 재시도, 요청 간 간격, 스테이징 폴더, 크레딧·SHA-256·생성 결과 매니페스트를 남긴다.</td>
+              <td>5명×역할별 후보 3개를 먼저 오디션한다. 확정된 <code>voice_id</code>만 한·영 40개 최종 클립 생성에 사용하고 승인 전에는 본편 폴더에 복사하지 않는다.</td>
+              <td><code>D:\UnityProjects\testSimulation\SonFootballerTycoon\Tools\audio\GenerateFinalStoryCharacterVoicesSupertone.ps1</code></td>
+            </tr>
+            <tr>
+              <td>이미지</td>
+              <td><code>crimeGame</code>은 GPT 이미지 생성 후 게임용 후처리를 거쳤고, 실제 인물로 오인될 수 있는 얼굴 대신 새 가상 인물을 권장한다. <code>catAgentGame</code>도 문구·버튼을 이미지에 굽지 않고 HTML로 분리했다.</td>
+              <td>스타일 비교 3장 → 가상 무전 인물 5장 → 작전 상황 10장 순서로 생성한다. 문구·버튼·선택 원·아이콘은 CSS/SVG/HTML로 유지한다.</td>
+              <td><code>D:\soccerstarWebSource\GameCreator\crimeGame\docs\project\ASSET_NOTICE.md</code><br><code>D:\soccerstarWebSource\GameCreator\catAgentGame\docs\agent-office-implementation-plan.html</code></td>
+            </tr>
+            <tr>
+              <td>3D 유닛</td>
+              <td>단일 객체 기준 이미지 → Meshy 6 <code>image-to-3D</code> → 원본 GLB·미리보기·작업 JSON 저장 → 4K 텍스처를 웹용 2K로 최적화 → Three.js 로드 순서다. 생성 키는 환경변수에 두고 완료까지 폴링한다.</td>
+              <td>현재 항모·구축함·전투기·헬기·USV·고속정·유조선·항만 크레인·연안 TEL의 고유 9종이 완료되어 재사용한다. 새 임무에 없는 유닛만 기준 이미지 승인 후 추가 생성한다.</td>
+              <td><code>D:\soccerstarWebSource\GameCreator\catAgentGame\scripts\generate-meshy-smart-topology-test.mjs</code><br><code>D:\soccerstarWebSource\GameCreator\hormuz\docs\hormuz-production-inventory.md</code></td>
+            </tr>
+            <tr>
+              <td>게임 재생</td>
+              <td>하나의 <code>AudioContext</code>에 마스터·환경·음악·작업음·단발음을 연결한다. 첫 클릭·키 입력 뒤 해제하고, 상태가 바뀔 때만 단발음을 재생하며, 숨겨진 탭에서는 일시정지한다.</td>
+              <td><code>AudioManager</code> 하나가 SFX·VOICE·BGM·UI 버스를 관리한다. 3D 위치음향, 음성 덕킹, 쿨다운, 동시재생 상한, 화면 비활성 정지를 같은 곳에서 처리한다.</td>
+              <td><code>D:\soccerstarWebSource\GameCreator\catAgentGame\app\world-audio.ts</code><br><code>D:\soccerstarWebSource\GameCreator\catAgentGame\docs\agent-handoff-20260727.md</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="rule-box">
+        <strong>현재 판단</strong>
+        <p>효과음·음성·이미지는 아직 생성하지 않았고 크레딧 사용은 0이다. 3D는 이미 승인·생성된 고유 9종을 우선 재사용한다. 따라서 다음 유료 실행은 “오디오 핵심 8종 후보”이며, 신규 Meshy 호출은 새 임무의 자산 누락이 확인될 때만 별도 승인한다.</p>
+      </div>
+    </section>
+
+    <section id="phases">
+      <div class="section-head">
+        <div class="section-no">04</div>
+        <div>
+          <h2>전체 제작 순서</h2>
+          <p class="section-intro">이미지는 맨 마지막 장식이 아니라, 음성 인물과 사운드 톤을 고정하는 첫 승인 단계부터 사용한다.</p>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="phase">
+          <div class="phase-label">STEP A<small>스타일 승인</small></div>
+          <div>
+            <h3>이미지 시안 3종으로 시청각 방향 고정</h3>
+            <p>시네마틱·현실적 다큐·고대비 전술 UI의 비교 보드를 만든다. 인물 복장, 색온도, 무전 UI, 폭발 밀도를 여기서 결정한다.</p>
+          </div>
+          <div class="deliverable">3개 비교 보드<br>승인 1회</div>
+        </div>
+        <div class="phase">
+          <div class="phase-label">STEP B<small>대본·큐시트</small></div>
+          <div>
+            <h3>10개 상황과 20개 대사 확정</h3>
+            <p>5인×4개 한국어 문장을 먼저 확정하고 영어는 짧은 전술 표현으로 현지화한다. 파일명과 재생 이벤트를 동시에 고정한다.</p>
+          </div>
+          <div class="deliverable">대사 20×2<br>이벤트 10개</div>
+        </div>
+        <div class="phase">
+          <div class="phase-label">STEP C<small>음성 오디션</small></div>
+          <div>
+            <h3>Supertone 5인 음색 후보 선정</h3>
+            <p>각 역할당 3개 목소리를 검색해 한·영 샘플을 듣고 1개씩 고른다. 같은 인물이 두 언어에서 지나치게 달라지면 언어별 voice_id를 분리한다.</p>
+          </div>
+          <div class="deliverable">후보 15명<br>최종 5명</div>
+        </div>
+        <div class="phase">
+          <div class="phase-label">STEP D<small>효과음 생성</small></div>
+          <div>
+            <h3>무기별 핵심 효과음부터 소량 생성</h3>
+            <p>함포·미사일·GAU-21·M240D·로터·폭발을 우선 생성한다. 각 항목은 후보 2~3개를 듣고 선택한 뒤 나머지 변형을 만든다.</p>
+          </div>
+          <div class="deliverable">P0 36개<br>최종 77개</div>
+        </div>
+        <div class="phase">
+          <div class="phase-label">STEP E<small>BGM 제작</small></div>
+          <div>
+            <h3>Suno에서 무보컬 4루프+2스팅어 제작</h3>
+            <p>브리핑·배치·저강도·고강도 트랙은 서로 조성이 자연스럽게 이어지도록 같은 음악 어휘를 사용한다.</p>
+          </div>
+          <div class="deliverable">루프 4개<br>결과 2개</div>
+        </div>
+        <div class="phase">
+          <div class="phase-label">STEP F<small>본편 이미지</small></div>
+          <div>
+            <h3>본편 15장과 신규 3D 기준 이미지를 분리 제작</h3>
+            <p>초상 5장과 상황 10장은 화면용으로 만든다. 새 임무에 기존 3D 9종으로 해결할 수 없는 유닛이 있을 때만, 같은 단계에서 단일 객체 기준 이미지를 별도 생성한다.</p>
+          </div>
+          <div class="deliverable">본편 15장<br>3D 기준 N장</div>
+        </div>
+        <div class="phase">
+          <div class="phase-label">STEP G<small>Meshy·최적화</small></div>
+          <div>
+            <h3>기존 9종 재사용, 누락 유닛만 Meshy 생성</h3>
+            <p>승인된 기준 이미지를 Meshy 6에 넣고 작업 JSON·원본 GLB·4K 텍스처를 보존한다. 웹용 2K·LOD를 만든 뒤 축 방향, 스케일, 회전 부품과 발사 소켓을 코드에서 검수한다.</p>
+          </div>
+          <div class="deliverable">추가 생성<br>누락분만</div>
+        </div>
+        <div class="phase">
+          <div class="phase-label">STEP H<small>게임 통합</small></div>
+          <div>
+            <h3>AudioManager·무전 큐·3D 위치음향 연결</h3>
+            <p>브라우저 첫 사용자 입력에서 오디오를 해제하고, 사운드 버스·동시재생 제한·음성 덕킹·언어 전환을 적용한다.</p>
+          </div>
+          <div class="deliverable">PC·모바일<br>통합 검증</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sfx">
+      <div class="section-head">
+        <div class="section-no">05</div>
+        <div>
+          <h2>무기·환경 효과음 목록</h2>
+          <p class="section-intro">같은 소리를 반복 재생하지 않고 2~6개 변형 중 무작위 선택한다. 총 목표 77개.</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>그룹</th>
+              <th>효과음</th>
+              <th>변형 수</th>
+              <th>재생 시점</th>
+              <th>ElevenLabs 프롬프트 핵심어</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>환경·기동</td><td>해상 바람·파도, 무전 잡음, 전투기 엔진, 구축함 항해, 헬기 로터, 고속정 엔진</td><td class="num">14</td><td>전투 중 루프·카메라 거리 변화</td><td>open sea ambience, military radio static, naval engine, rotor loop</td></tr>
+            <tr><td>F/A-18E</td><td>파일런 분리, 미사일 점화, 고속 통과음, 대함 명중</td><td class="num">12</td><td>미사일 발사·비행·피격</td><td>air-launched anti-ship missile, hard ignition, sea-skimming pass</td></tr>
+            <tr><td>구축함</td><td>포탑 구동, Mk 45 근·중·원거리 발사, 포탄 통과, 금속·수면 명중</td><td class="num">11</td><td>조준 시작·함포 발사·착탄</td><td>five-inch naval gun blast, deck recoil, distant report, shell flyby</td></tr>
+            <tr><td>MH-60R</td><td>GAU-21 짧은·중간 점사, M240D 경량 점사, APKWS·Hellfire 발사</td><td class="num">13</td><td>거리별 자동 무장 전환</td><td>door-mounted .50 caliber burst, 7.62 machine gun, helicopter rocket launch</td></tr>
+            <tr><td>적·피격</td><td>적 기관총, 도탄, 선체 금속 충격, 소·중·대 폭발, 수면 물기둥</td><td class="num">16</td><td>적 사격·피해 단계·격파</td><td>fast attack craft gunfire, steel ricochet, naval hull impact, water plume</td></tr>
+            <tr><td>UI·보상</td><td>선택, 명령 확인, 경보, 목표 갱신, 성공·실패 신호</td><td class="num">11</td><td>클릭·명령·결과 화면</td><td>clean tactical interface click, sonar confirmation, restrained warning</td></tr>
+          </tbody>
+          <tfoot>
+            <tr><th colspan="2">총계</th><th class="num">77</th><th colspan="2">후보 검수 후 최종 채택 수</th></tr>
+          </tfoot>
+        </table>
+      </div>
+      <ul class="compact-list">
+        <li>GAU-21은 0.15~0.45초 점사 4종, M240D는 더 가볍고 빠른 0.18~0.5초 점사 3종으로 구분한다.</li>
+        <li>함포와 미사일은 발사음·비행음·명중음을 하나로 합치지 않고 각각 생성한다.</li>
+        <li>연사 화기는 동시 재생을 제한하고 피치 ±3%, 음량 ±1.5dB 범위에서 미세 변형한다.</li>
+        <li>폭발은 거리별 저역과 잔향이 달라야 하며, 화면 밖 폭발은 고역을 줄여 재생한다.</li>
+      </ul>
+      <div class="rule-box">
+        <strong>ElevenLabs 실제 생성 규칙</strong>
+        <p><code>ELEVENLABS_API_KEY</code>는 사용자 환경변수에서 읽는다. 요청마다 파일명, 그룹, 영어 프롬프트, 길이, <code>loop</code>, 모델, 출력 형식을 JSON에 남긴다. 기존 검증값인 <code>eleven_text_to_sound_v2</code>, <code>prompt_influence 0.75</code>, <code>mp3_44100_128</code>을 첫 후보의 출발값으로 사용하되, 본편 복사는 청음 승인 뒤에만 한다.</p>
+      </div>
+    </section>
+
+    <section id="bgm">
+      <div class="section-head">
+        <div class="section-no">06</div>
+        <div>
+          <h2>Suno 배경음악 큐시트</h2>
+          <p class="section-intro">보컬·구호·가사는 사용하지 않는다. 음악이 무전 음성과 무기음을 덮지 않게 중역을 비운다.</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>트랙</th><th>길이</th><th>톤·템포</th><th>진입·종료 조건</th></tr></thead>
+          <tbody>
+            <tr><td><code>bgm_briefing</code></td><td>작전 브리핑</td><td>120초 루프</td><td>72 BPM, 낮은 드론, 절제된 금속 타악</td><td>편성 화면 진입 → 전투 시작 시 1.5초 크로스페이드</td></tr>
+            <tr><td><code>bgm_deployment</code></td><td>초기 배치</td><td>120초 루프</td><td>84 BPM, 긴장 상승, 저음 펄스</td><td>전투 시작 → 최초 교전 또는 적 접근</td></tr>
+            <tr><td><code>bgm_combat_low</code></td><td>저강도 교전</td><td>150초 루프</td><td>96 BPM, 전술적 리듬, 억제된 브라스</td><td>적 생존 50% 초과·아군 피해 낮음</td></tr>
+            <tr><td><code>bgm_combat_high</code></td><td>고강도 교전</td><td>150초 루프</td><td>112 BPM, 강한 저역 타악, 긴장 스트링</td><td>유조선 피격·아군 HP 50% 이하·적 근접</td></tr>
+            <tr><td><code>bgm_victory</code></td><td>임무 성공</td><td>12~18초</td><td>짧고 절제된 상승 종지</td><td>승리 판정 즉시, 이후 무음 또는 브리핑 잔향</td></tr>
+            <tr><td><code>bgm_defeat</code></td><td>임무 실패</td><td>12~18초</td><td>낮은 타격과 하강 종지</td><td>실패 판정 즉시, 과도한 비극 표현 금지</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="notice">
+        <strong>Suno 주의</strong>
+        <span>공식 Suno Platform 계정에서 API 접근권·게임 상업 이용 조건을 먼저 확인한다. 로그인 전에는 세부 엔드포인트를 추정해 코드에 넣지 않으며 비공식 API 중계 서비스도 사용하지 않는다.</span>
+      </div>
+      <div class="rule-box">
+        <strong>Suno 생성·반입 순서</strong>
+        <p>트랙별 프롬프트로 후보 2개를 만든다 → 공식 플랫폼 원본을 <code>staging/suno</code>에 보존한다 → 무음 구간과 루프 경계를 점검한다 → 짧은 페이드와 목표 길이를 적용한다 → 처리 결과 CSV와 채택 이유를 남긴다 → 승인된 6개만 <code>masters/bgm</code>으로 이동한다. API 권한이 확인되어도 이 검수·백업 순서는 바꾸지 않는다.</p>
+      </div>
+    </section>
+
+    <section id="voices">
+      <div class="section-head">
+        <div class="section-no">07</div>
+        <div>
+          <h2>음성 등장인 5명</h2>
+          <p class="section-intro">각 인물 4개 대사, 한국어·영어 병렬 제작. 총 20개 문장·40개 음성 파일.</p>
+        </div>
+      </div>
+      <div class="voice-grid">
+        <article class="voice-card">
+          <span class="voice-id">VOICE 01</span>
+          <h3>작전 지휘관</h3>
+          <ul>
+            <li>중년 여성 또는 남성</li>
+            <li>낮고 침착함</li>
+            <li>과장 없는 지휘 어조</li>
+          </ul>
+        </article>
+        <article class="voice-card">
+          <span class="voice-id">VOICE 02</span>
+          <h3>전투기 조종사</h3>
+          <ul>
+            <li>젊은 성인</li>
+            <li>짧고 빠른 호흡</li>
+            <li>긴박하지만 명료함</li>
+          </ul>
+        </article>
+        <article class="voice-card">
+          <span class="voice-id">VOICE 03</span>
+          <h3>구축함 전투정보실</h3>
+          <ul>
+            <li>중년 남성 또는 여성</li>
+            <li>단단하고 절제된 톤</li>
+            <li>함교 무전 질감</li>
+          </ul>
+        </article>
+        <article class="voice-card">
+          <span class="voice-id">VOICE 04</span>
+          <h3>헬기 조종사·사수</h3>
+          <ul>
+            <li>젊은 성인</li>
+            <li>현장감 있는 반응</li>
+            <li>로터 환경에서도 선명함</li>
+          </ul>
+        </article>
+        <article class="voice-card">
+          <span class="voice-id">VOICE 05</span>
+          <h3>관제·정보 장교</h3>
+          <ul>
+            <li>성별 중복 피하기</li>
+            <li>정확하고 차분함</li>
+            <li>경보 시 속도만 상승</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>인물</th><th>상황</th><th>한국어</th><th>English</th><th>권장 길이</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="4">01 지휘관</td><td><span class="event-chip">battle.start</span></td><td class="ko">전투 개시. 호송대를 지켜라.</td><td class="en">Weapons free. Protect the convoy.</td><td>1.8초</td></tr>
+            <tr><td><span class="event-chip">deployment</span></td><td class="ko">전력 투입을 승인한다.</td><td class="en">Deployment approved.</td><td>1.3초</td></tr>
+            <tr><td><span class="event-chip">regroup</span></td><td class="ko">대형을 유지하라.</td><td class="en">Hold formation.</td><td>1.1초</td></tr>
+            <tr><td><span class="event-chip">mission.end</span></td><td class="ko">작전 종료. 전원 복귀하라.</td><td class="en">Mission complete. Return to base.</td><td>1.8초</td></tr>
+
+            <tr><td rowspan="4">02 전투기</td><td><span class="event-chip">target.locked</span></td><td class="ko">목표 포착. 공격한다.</td><td class="en">Target locked. Engaging.</td><td>1.4초</td></tr>
+            <tr><td><span class="event-chip">weapon.fired</span></td><td class="ko">미사일 발사.</td><td class="en">Missile away.</td><td>.9초</td></tr>
+            <tr><td><span class="event-chip">target.hit</span></td><td class="ko">명중 확인.</td><td class="en">Direct hit.</td><td>.9초</td></tr>
+            <tr><td><span class="event-chip">regroup</span></td><td class="ko">재공격 진입.</td><td class="en">Coming around.</td><td>1.1초</td></tr>
+
+            <tr><td rowspan="4">03 구축함</td><td><span class="event-chip">target.locked</span></td><td class="ko">함포 사격 준비.</td><td class="en">Main gun ready.</td><td>1.1초</td></tr>
+            <tr><td><span class="event-chip">weapon.fired</span></td><td class="ko">사격 개시.</td><td class="en">Commence fire.</td><td>1초</td></tr>
+            <tr><td><span class="event-chip">ally.hit</span></td><td class="ko">피격. 피해 통제.</td><td class="en">We're hit. Damage control.</td><td>1.4초</td></tr>
+            <tr><td><span class="event-chip">target.destroyed</span></td><td class="ko">표적 격파.</td><td class="en">Target destroyed.</td><td>1초</td></tr>
+
+            <tr><td rowspan="4">04 헬기</td><td><span class="event-chip">contact.detected</span></td><td class="ko">고속정 확인.</td><td class="en">Fast boat spotted.</td><td>1초</td></tr>
+            <tr><td><span class="event-chip">weapon.fired</span></td><td class="ko">기관총 사격.</td><td class="en">Guns hot.</td><td>.9초</td></tr>
+            <tr><td><span class="event-chip">weapon.fired</span></td><td class="ko">로켓 발사.</td><td class="en">Rocket away.</td><td>.9초</td></tr>
+            <tr><td><span class="event-chip">regroup</span></td><td class="ko">탄약 부족. 이탈한다.</td><td class="en">Low ammo. Breaking off.</td><td>1.4초</td></tr>
+
+            <tr><td rowspan="4">05 관제</td><td><span class="event-chip">contact.detected</span></td><td class="ko">적이 접근한다.</td><td class="en">Hostiles inbound.</td><td>1초</td></tr>
+            <tr><td><span class="event-chip">convoy.threat</span></td><td class="ko">유조선 피격 위험.</td><td class="en">Convoy under threat.</td><td>1.2초</td></tr>
+            <tr><td><span class="event-chip">support</span></td><td class="ko">지원 요청 접수.</td><td class="en">Support request received.</td><td>1.3초</td></tr>
+            <tr><td><span class="event-chip">mission.end</span></td><td class="ko">항로 확보.</td><td class="en">Shipping lane secure.</td><td>1.1초</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="rule-box">
+        <strong>Supertone 실제 생성 규칙</strong>
+        <p><code>SUPERTONE_API_KEY</code>는 환경변수에서 읽고, 먼저 언어·성별·연령·지원 모델·감정 스타일로 후보 음색을 검색한다. 선택 JSON에서 5명의 <code>voice_id</code>가 확정된 뒤 <code>sona_speech_2</code>로 스테이징 생성한다. 실패 요청은 짧은 간격 뒤 지수형 재시도하며, 파일마다 인물·언어·대사·스타일·설정·크레딧을 매니페스트에 남긴다.</p>
+      </div>
+    </section>
+
+    <section id="events">
+      <div class="section-head">
+        <div class="section-no">08</div>
+        <div>
+          <h2>10개 재생 상황과 섞어 쓰는 규칙</h2>
+          <p class="section-intro">20개 대사를 10개 이벤트 풀에 배치해 같은 장면에서도 다른 인물이 반응하게 한다.</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>이벤트</th><th>주요 인물</th><th>발생 조건</th><th>재생 규칙</th></tr></thead>
+          <tbody>
+            <tr><td class="num">01</td><td>작전 브리핑</td><td>지휘관·관제</td><td>편성 화면 최초 진입</td><td>세션당 1회</td></tr>
+            <tr><td class="num">02</td><td>전투 시작</td><td>지휘관</td><td>시작 버튼 직후</td><td>BGM 전환보다 0.2초 먼저</td></tr>
+            <tr><td class="num">03</td><td>적 접촉</td><td>관제·헬기</td><td>적이 시야 안에 최초 진입</td><td>역할 중 1명 무작위</td></tr>
+            <tr><td class="num">04</td><td>공격 준비·표적 고정</td><td>전투기·구축함</td><td>우클릭 공격 명령</td><td>선택 유닛 종류에 맞춤</td></tr>
+            <tr><td class="num">05</td><td>무기 발사</td><td>전투기·구축함·헬기</td><td>최초 발사 또는 긴 재장전 후 발사</td><td>모든 발사마다 말하지 않음</td></tr>
+            <tr><td class="num">06</td><td>명중·격파</td><td>전투기·구축함</td><td>첫 명중·적 부대 격파</td><td>명중과 격파 중 상위 이벤트 우선</td></tr>
+            <tr><td class="num">07</td><td>아군 피격</td><td>구축함·지휘관</td><td>아군 HP 70%·40% 경계 통과</td><td>같은 유닛당 단계별 1회</td></tr>
+            <tr><td class="num">08</td><td>호송대 위기</td><td>관제</td><td>적이 유조선 사거리 진입·유조선 피격</td><td>최우선 경보, 다른 일반 음성 중단</td></tr>
+            <tr><td class="num">09</td><td>재진입·이탈</td><td>전투기·헬기·지휘관</td><td>재공격 선회·탄약 부족·후퇴</td><td>같은 클립 45초 잠금</td></tr>
+            <tr><td class="num">10</td><td>임무 종료</td><td>지휘관·관제</td><td>승리 또는 실패</td><td>결과 BGM 스팅어와 동기화</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="check-list">
+        <li>음성 큐는 최대 1개만 대기하며, 1.5초가 지나 상황이 끝난 대사는 폐기한다.</li>
+        <li>호송대 위기와 임무 종료는 일반 대사보다 높은 우선순위로 즉시 재생한다.</li>
+        <li>전투기 4대가 동시에 발사해도 “미사일 발사” 음성은 한 번만 재생한다.</li>
+        <li>무전 시작·종료에 40~90ms 짧은 스퀠치 효과를 별도로 붙인다.</li>
+      </ul>
+    </section>
+
+    <section id="images">
+      <div class="section-head">
+        <div class="section-no">09</div>
+        <div>
+          <h2>이미지 생성 투입 단계</h2>
+          <p class="section-intro">실시간 3D 화면을 가리는 장식이 아니라, 인물 식별과 임무 전환을 명확하게 하는 데만 사용한다.</p>
+        </div>
+      </div>
+
+      <div class="image-stage">
+        <div class="step">A</div>
+        <div><strong>오디오 제작 전</strong><br><span class="muted">스타일 잠금</span></div>
+        <div>
+          <h3>비교 시안 3장</h3>
+          <p>시네마틱·현실 다큐·고대비 전술 UI를 한 장씩 만든다. 인물 복장, 야간 색감, 무전 화면 형태를 승인받은 뒤 음성 톤과 효과음 프롬프트를 고정한다.</p>
+        </div>
+        <div class="asset-count">임시 시안 3장<br>본편 미포함</div>
+      </div>
+
+      <div class="image-stage">
+        <div class="step">B</div>
+        <div><strong>음성 5인 선정 직후</strong><br><span class="muted">인물 고정</span></div>
+        <div>
+          <h3>무전 인물 초상 5장</h3>
+          <p>지휘관·전투기·구축함·헬기·관제 인물을 각각 생성한다. 실제 인물과 닮지 않은 가상 인물이며, 같은 얼굴을 한국어·영어에서 공용한다.</p>
+        </div>
+        <div class="asset-count">1024×1024 원본 5장<br>WebP 파생 5장</div>
+      </div>
+
+      <div class="image-stage">
+        <div class="step">C</div>
+        <div><strong>임무 유닛 목록 확정 후</strong><br><span class="muted">3D 입력 준비</span></div>
+        <div>
+          <h3>신규 3D 유닛 기준 이미지</h3>
+          <p>기존 고유 9종에 없는 객체만 한 종류당 한 장 생성한다. 중립 연회색 배경, 단일 객체, 전신 3/4 시점, 바닥 그림자·글자·워터마크 없음, 정확한 전방 방향을 고정한다. 승인된 기준 이미지만 Meshy에 넣는다.</p>
+        </div>
+        <div class="asset-count">현재 추가 0장<br>누락 객체당 1장</div>
+      </div>
+
+      <div class="image-stage">
+        <div class="step">D</div>
+        <div><strong>SFX 1차 승인 후</strong><br><span class="muted">상황 매칭</span></div>
+        <div>
+          <h3>10개 작전 상황 이미지</h3>
+          <p>브리핑, 접촉, 표적 고정, 무기 발사, 명중, 피격, 호송대 위기, 재진입, 성공, 실패를 각각 한 장씩 만든다. 효과음과 이미지가 같은 사건을 표현하는지 함께 검수한다.</p>
+        </div>
+        <div class="asset-count">16:9 이미지 10장<br>텍스트 없이 생성</div>
+      </div>
+
+      <div class="image-stage">
+        <div class="step">E</div>
+        <div><strong>게임 통합 단계</strong><br><span class="muted">파생·최적화</span></div>
+        <div>
+          <h3>용도별 자르기와 압축</h3>
+          <p>인물 초상은 96px·64px·48px로 파생하고, 상황 이미지는 데스크톱 1600×900과 모바일 세로 크롭을 만든다. 언어 문구는 이미지에 굽지 않고 HTML로 올린다.</p>
+        </div>
+        <div class="asset-count">새 생성 없음<br>기존 15장 파생</div>
+      </div>
+
+      <div class="rule-box">
+        <strong>이미지 생성 금지 영역</strong>
+        <p>버튼, 상태 아이콘, 선택 원, 체력 바, 레이더 기호, 한글·영문 문구는 이미지로 생성하지 않는다. CSS 또는 SVG로 유지해야 선명도·접근성·언어 전환을 보장할 수 있다.</p>
+      </div>
+
+      <div class="rule-box">
+        <strong>Meshy 기준 이미지와 화면용 이미지는 다른 자산이다</strong>
+        <p>화면용 작전 이미지는 분위기와 서사를 보여주지만, Meshy 기준 이미지는 모델 형태를 정확히 전달해야 한다. 한 이미지에 함대·배경·폭발·여러 객체를 함께 넣지 않는다. 현재 호르무즈의 기준 이미지·원본 GLB·웹 GLB·작업 ID는 <code>D:\soccerstarWebSource\GameCreator\hormuz\assets\meshy-references\</code>, <code>D:\soccerstarWebSource\GameCreator\hormuz\assets\meshy-source\</code>, <code>D:\soccerstarWebSource\GameCreator\hormuz\assets\models\</code>에 분리되어 있다.</p>
+      </div>
+    </section>
+
+    <section id="integration">
+      <div class="section-head">
+        <div class="section-no">10</div>
+        <div>
+          <h2>파일 구조와 게임 적용</h2>
+          <p class="section-intro">원본·웹 최적화본·메타데이터를 분리해 재생 코드와 생성 이력을 추적한다.</p>
+        </div>
+      </div>
+      <pre>assets/audio/
+├─ staging/                  # 승인 전 API 후보·생성 매니페스트
+│  ├─ elevenlabs/
+│  ├─ supertone/
+│  └─ suno/
+├─ masters/
+│  ├─ sfx/                 # WAV 48 kHz 원본
+│  ├─ voice/ko/            # Supertone 한국어 원본
+│  ├─ voice/en/            # Supertone 영어 원본
+│  └─ bgm/                 # Suno 원본
+├─ web/
+│  ├─ sfx/                 # 짧은 효과음: MP3 + 필요 시 Opus
+│  ├─ voice/ko/            # 모노 Opus/MP3
+│  ├─ voice/en/
+│  └─ bgm/                 # 스테레오 루프
+├─ audio-manifest.json     # 이벤트 → 후보 파일·음량·쿨다운
+└─ ATTRIBUTION.txt         # 외부 CC-BY 폴백 사용 시
+
+assets/images/radio/
+├─ portraits/              # 5인 초상 WebP
+└─ mission-cues/           # 10개 상황 이미지 WebP
+
+assets/meshy-references/   # 신규 3D용 승인 기준 이미지
+assets/meshy-source/       # Meshy 원본 GLB·4K 텍스처
+assets/models/             # 웹용 2K GLB·LOD·작업 JSON
+
+assets/js/
+├─ audio-manager.js        # 버스·풀·언어·덕킹
+└─ audio-manager.bundle.js</pre>
+
+      <div class="card-grid" style="margin-top:16px">
+        <article class="card"><h3>SFX 버스</h3><p>무기·폭발·엔진. 3D 위치음향과 거리 감쇠 적용.</p></article>
+        <article class="card"><h3>VOICE 버스</h3><p>무전 음성. 재생 중 BGM을 약 6dB 낮추고 효과음 고역을 살짝 줄임.</p></article>
+        <article class="card"><h3>BGM 버스</h3><p>상황별 1.5~2초 크로스페이드. 전투 강도에 따라 저·고강도 전환.</p></article>
+        <article class="card"><h3>UI 버스</h3><p>선택·명령·경보. 다른 버스와 분리해 사용자가 별도 조절 가능.</p></article>
+      </div>
+
+      <ul class="check-list">
+        <li>생성 도구는 반드시 후보 폴더와 JSON 매니페스트를 먼저 만들고, 승인 스크립트만 본편 폴더로 복사한다.</li>
+        <li>브라우저 정책에 맞춰 “전투 시작” 클릭에서 AudioContext를 해제한다.</li>
+        <li>무기·폭발은 <code>THREE.PositionalAudio</code> 또는 동일 거리 감쇠 로직을 사용한다.</li>
+        <li>모바일은 동시 효과음을 16개, 데스크톱은 28개 이하로 제한한다.</li>
+        <li>오디오 파일은 첫 화면에서 전부 받지 않고 브리핑·전투·결과 묶음으로 지연 로딩한다.</li>
+        <li>기본 설정에 전체 음량·음악·효과음·음성·UI 5개 슬라이더와 음소거를 제공한다.</li>
+      </ul>
+    </section>
+
+    <section id="qa">
+      <div class="section-head">
+        <div class="section-no">11</div>
+        <div>
+          <h2>승인 게이트와 품질 검수</h2>
+          <p class="section-intro">생성량을 한 번에 늘리지 않고 네 번의 짧은 승인으로 비용과 재작업을 통제한다.</p>
+        </div>
+      </div>
+      <div class="gate-grid">
+        <article class="gate"><b>승인 1 · 스타일</b><h3>이미지 비교 3종</h3><p>인물·색감·전술 UI와 신규 3D 기준 이미지 방향을 선택한다.</p></article>
+        <article class="gate"><b>승인 2 · 음색</b><h3>5인 오디션</h3><p>역할당 3개 후보를 듣고 voice_id를 확정한다.</p></article>
+        <article class="gate"><b>승인 3 · 핵심 소리</b><h3>무기 8종 A/B</h3><p>함포·미사일·GAU-21·폭발과 BGM 대표 후보를 고른다.</p></article>
+        <article class="gate"><b>승인 4 · 통합</b><h3>실전 3분 플레이</h3><p>음량·반복·대사 타이밍·3D 방향·모바일 성능을 최종 확인한다.</p></article>
+      </div>
+
+      <div class="table-wrap" style="margin-top:18px">
+        <table>
+          <thead><tr><th>검수 항목</th><th>통과 기준</th><th>실패 시 조치</th></tr></thead>
+          <tbody>
+            <tr><td>음성 명료도</td><td>함포·로터 동시 재생에서도 대사가 한 번에 들림</td><td>음성 덕킹·EQ·무전 필터 조정</td></tr>
+            <tr><td>반복감</td><td>3분 전투에서 같은 효과음 연속 2회 없음</td><td>후보 수·쿨다운·피치 변형 확대</td></tr>
+            <tr><td>무기 구분</td><td>화면을 보지 않아도 함포·기관총·미사일을 구분</td><td>발사 어택·저역·잔향 재설계</td></tr>
+            <tr><td>BGM 루프</td><td>경계 지점 클릭·박자 끊김 없음</td><td>루프 지점 재편집 또는 크로스페이드</td></tr>
+            <tr><td>언어 전환</td><td>새 전투 시작 시 모든 음성이 선택 언어로 통일</td><td>manifest 키·프리로드 캐시 수정</td></tr>
+            <tr><td>모바일 성능</td><td>사운드 활성화 전후 프레임 저하 체감 없음</td><td>동시재생·디코딩 포맷·프리로드 축소</td></tr>
+            <tr><td>이미지 가독성</td><td>무전 초상과 문구가 430px 화면에서도 겹치지 않음</td><td>크롭·레이아웃·표시시간 조정</td></tr>
+            <tr><td>라이선스</td><td>API 상업 이용 조건·외부 출처 기록 완료</td><td>자산 교체 전까지 본편 포함 금지</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="rule-box">
+        <strong>API 실행 전 필수 확인</strong>
+        <p>
+          <code>ELEVENLABS_API_KEY</code>, <code>SUNO_API_KEY</code>, <code>SUPERTONE_API_KEY</code>, <code>MESHY_API_KEY</code>는
+          저장소와 브라우저 코드에 넣지 않는다. 계정별 남은 크레딧·예상 생성량·상업 이용 조건을 확인해 승인받은 뒤에만 신규 생성을 시작한다.
+        </p>
+      </div>
+
+      <h3 style="margin-top:24px">공식 문서</h3>
+      <ul class="compact-list">
+        <li><a href="https://elevenlabs.io/docs/api-reference/text-to-sound-effects/convert">ElevenLabs Sound Effects API</a></li>
+        <li><a href="https://platform.suno.com/">Suno API Platform</a></li>
+        <li><a href="https://docs.supertoneapi.com/en/docs/quickstart">Supertone API Quickstart</a></li>
+        <li><a href="https://docs.supertoneapi.com/en/api-reference/endpoints/search-voices">Supertone Voice Search</a></li>
+      </ul>
+    </section>
+
+    <footer>
+      HORMUZ 오디오·음성·이미지·3D 제작 계획 v1.0 · 2026-07-28 · 신규 API 호출 전 승인용 문서
+    </footer>
+  </main>
+</body>
+</html>

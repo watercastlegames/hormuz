@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+  <meta name="theme-color" content="#02090e">
+  <meta name="description" content="A 3D command battle game across the Persian Gulf, the Gulf of Oman and the southern Iran theater">
+  <title>HORMUZ — 중동 전구 지휘 전투</title>
+  <link rel="stylesheet" href="assets/css/rts-combat.css?v=68">
+</head>
+<body>
+  <main id="rts-game" class="rts-shell">
+    <div id="ground-shadows" class="ground-shadows" aria-hidden="true"></div>
+    <div id="rts-google-map-host" class="rts-google-map-host" data-i18n-attr="aria-label:ariaGoogleHost"></div>
+    <canvas id="rts-canvas" data-i18n-attr="aria-label:ariaCanvas"></canvas>
+    <div class="atmosphere" aria-hidden="true"></div>
+    <div class="scanlines" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div id="selection-box" class="selection-box" hidden></div>
+    <div id="world-labels" class="world-labels" aria-hidden="true"></div>
+
+    <header class="battle-header">
+      <div class="brand-block">
+        <button id="brand-home" type="button" data-i18n-attr="aria-label:brandHome">HORMUZ</button>
+        <span id="battle-title"></span>
+        <small id="battle-region"></small>
+      </div>
+      <section class="objective-block" aria-live="polite">
+        <span id="operation-name"></span>
+        <strong id="objective-text"></strong>
+        <div class="objective-progress"><i id="objective-fill"></i></div>
+      </section>
+      <div class="battle-clock">
+        <span id="battle-status"></span>
+        <strong id="battle-time">04:00</strong>
+      </div>
+    </header>
+
+    <aside class="force-panel">
+      <div class="panel-title"><span id="ally-label"></span><b id="ally-count">0</b></div>
+      <div id="ally-list" class="force-list"></div>
+      <div class="panel-title enemy-title"><span id="enemy-label"></span><b id="enemy-count">0</b></div>
+      <div id="enemy-summary" class="force-summary"></div>
+      <div class="panel-title civilian-title"><span id="civilian-label"></span><b id="civilian-count">0</b></div>
+    </aside>
+
+    <aside class="intel-panel">
+      <canvas id="radar-canvas" width="260" height="170" data-i18n-attr="aria-label:ariaRadar"></canvas>
+      <div class="radar-legend">
+        <span><i class="ally-dot"></i><b id="radar-ally-label"></b></span>
+        <span><i class="enemy-dot"></i><b id="radar-enemy-label"></b></span>
+        <span><i class="civilian-dot"></i><b id="radar-convoy-label"></b></span>
+      </div>
+      <div id="battle-log" class="battle-log" aria-live="polite"></div>
+    </aside>
+
+    <section class="selection-panel">
+      <span id="selected-label"></span>
+      <div id="selection-summary"></div>
+    </section>
+
+    <nav class="command-bar" data-i18n-attr="aria-label:ariaCommandBar">
+      <button type="button" data-command="selectAll"><span>01</span><b id="cmd-select-all"></b><small>F1</small></button>
+      <button type="button" data-command="attackMove"><span>02</span><b id="cmd-attack-move"></b><small>A</small></button>
+      <button type="button" data-command="hold"><span>03</span><b id="cmd-hold"></b><small>H</small></button>
+      <button type="button" data-command="stop"><span>04</span><b id="cmd-stop"></b><small>S</small></button>
+      <button type="button" data-command="retreat"><span>05</span><b id="cmd-retreat"></b><small>R</small></button>
+      <button type="button" data-command="pause" class="pause-command"><span>06</span><b id="cmd-pause"></b><small>SPACE</small></button>
+      <button type="button" data-command="autoBattle" class="auto-command" aria-pressed="false"><span>07</span><b id="cmd-auto-battle"></b><small>B</small></button>
+    </nav>
+
+    <div id="command-hint" class="command-hint"></div>
+    <div id="terrain-provider" class="terrain-provider" data-state="loading" data-i18n="terrainConnecting"></div>
+
+    <aside id="mission-cue" class="mission-cue" aria-hidden="true" aria-live="polite">
+      <img id="mission-cue-image" alt="" decoding="async">
+      <div>
+        <span id="mission-cue-kicker"></span>
+        <strong id="mission-cue-title"></strong>
+      </div>
+    </aside>
+
+    <section id="briefing-layer" class="briefing-layer">
+      <div class="briefing-card">
+        <span id="brief-location" class="brief-kicker"></span>
+        <nav id="battle-scale-switch" class="battle-scale-switch" data-i18n-attr="aria-label:ariaBattleScale">
+          <a id="standard-battle-link" href="#"></a>
+          <a id="large-battle-link" href="#"></a>
+        </nav>
+        <strong id="battle-scale-badge" class="battle-scale-badge" hidden></strong>
+        <h1 id="brief-title"></h1>
+        <p id="brief-subtitle" class="brief-lead"></p>
+        <figure class="briefing-visual">
+          <img
+            id="brief-image"
+            src="assets/images/radio/mission-cues/01-briefing-v1.webp"
+            alt=""
+            decoding="async"
+            fetchpriority="high"
+          >
+        </figure>
+        <div class="brief-grid">
+          <div><span id="brief-objective-label"></span><strong id="brief-objective"></strong></div>
+          <div><span id="brief-friendly-label"></span><strong id="brief-friendly-force"></strong></div>
+          <div><span id="brief-threat-label"></span><strong id="brief-threat-value"></strong></div>
+          <div><span id="brief-protected-label"></span><strong id="brief-protected-value"></strong></div>
+        </div>
+        <section class="fleet-builder" aria-labelledby="fleet-title">
+          <header>
+            <span id="fleet-title"></span>
+            <strong><span id="fleet-budget-label"></span> <b id="fleet-budget-used">0</b>/<i id="fleet-budget-cap">0</i><span id="fleet-budget-unit"></span></strong>
+          </header>
+          <div class="fleet-options">
+            <article data-fleet-type="destroyer">
+              <img class="fleet-icon" src="assets/images/ui/war-icons/fleet-destroyer.webp" alt="" loading="lazy" decoding="async">
+              <div><span id="fleet-destroyer-name"></span><small id="fleet-destroyer-cost"></small></div>
+              <div class="fleet-stepper">
+                <button type="button" data-fleet-step="-1" data-i18n-attr="aria-label:ariaFleetMinus">−</button>
+                <output id="fleet-destroyer-count">1</output>
+                <button type="button" data-fleet-step="1" data-i18n-attr="aria-label:ariaFleetPlus">+</button>
+              </div>
+            </article>
+            <article data-fleet-type="fighter">
+              <img class="fleet-icon" src="assets/images/ui/war-icons/fleet-fighter.webp" alt="" loading="lazy" decoding="async">
+              <div><span id="fleet-fighter-name"></span><small id="fleet-fighter-cost"></small></div>
+              <div class="fleet-stepper">
+                <button type="button" data-fleet-step="-1" data-i18n-attr="aria-label:ariaFleetMinus">−</button>
+                <output id="fleet-fighter-count">2</output>
+                <button type="button" data-fleet-step="1" data-i18n-attr="aria-label:ariaFleetPlus">+</button>
+              </div>
+            </article>
+            <article data-fleet-type="helicopter">
+              <img class="fleet-icon" src="assets/images/ui/war-icons/fleet-helicopter.webp" alt="" loading="lazy" decoding="async">
+              <div><span id="fleet-helicopter-name"></span><small id="fleet-helicopter-cost"></small></div>
+              <div class="fleet-stepper">
+                <button type="button" data-fleet-step="-1" data-i18n-attr="aria-label:ariaFleetMinus">−</button>
+                <output id="fleet-helicopter-count">1</output>
+                <button type="button" data-fleet-step="1" data-i18n-attr="aria-label:ariaFleetPlus">+</button>
+              </div>
+            </article>
+            <article data-fleet-type="carrier">
+              <img class="fleet-icon" src="assets/images/ui/war-icons/fleet-carrier.webp" alt="" loading="lazy" decoding="async">
+              <div><span id="fleet-carrier-name"></span><small id="fleet-carrier-cost"></small></div>
+              <div class="fleet-stepper">
+                <button type="button" data-fleet-step="-1" data-i18n-attr="aria-label:ariaFleetMinus">−</button>
+                <output id="fleet-carrier-count">0</output>
+                <button type="button" data-fleet-step="1" data-i18n-attr="aria-label:ariaFleetPlus">+</button>
+              </div>
+            </article>
+            <article data-fleet-type="usv">
+              <img class="fleet-icon" src="assets/images/ui/war-icons/fleet-usv.webp" alt="" loading="lazy" decoding="async">
+              <div><span id="fleet-usv-name"></span><small id="fleet-usv-cost"></small></div>
+              <div class="fleet-stepper">
+                <button type="button" data-fleet-step="-1" data-i18n-attr="aria-label:ariaFleetMinus">−</button>
+                <output id="fleet-usv-count">0</output>
+                <button type="button" data-fleet-step="1" data-i18n-attr="aria-label:ariaFleetPlus">+</button>
+              </div>
+            </article>
+            <article data-fleet-type="bomber">
+              <img class="fleet-icon" src="assets/images/ui/war-icons/fleet-bomber.webp" alt="" loading="lazy" decoding="async">
+              <div><span id="fleet-bomber-name"></span><small id="fleet-bomber-cost"></small></div>
+              <div class="fleet-stepper">
+                <button type="button" data-fleet-step="-1" data-i18n-attr="aria-label:ariaFleetMinus">−</button>
+                <output id="fleet-bomber-count">0</output>
+                <button type="button" data-fleet-step="1" data-i18n-attr="aria-label:ariaFleetPlus">+</button>
+              </div>
+            </article>
+            <article data-fleet-type="marine">
+              <img class="fleet-icon" src="assets/images/ui/war-icons/fleet-marine.webp" alt="" loading="lazy" decoding="async">
+              <div><span id="fleet-marine-name"></span><small id="fleet-marine-cost"></small></div>
+              <div class="fleet-stepper">
+                <button type="button" data-fleet-step="-1" data-i18n-attr="aria-label:ariaFleetMinus">−</button>
+                <output id="fleet-marine-count">0</output>
+                <button type="button" data-fleet-step="1" data-i18n-attr="aria-label:ariaFleetPlus">+</button>
+              </div>
+            </article>
+          </div>
+          <p id="fleet-message" aria-live="polite"></p>
+          <div class="budget-politics">
+            <span id="budget-politics-status"></span>
+            <button id="request-congress-budget" type="button"></button>
+          </div>
+        </section>
+        <div class="control-card">
+          <strong id="control-title"></strong>
+          <p id="brief-controls"></p>
+          <small id="brief-mobile-controls"></small>
+        </div>
+        <p id="fact-notice" class="fact-notice"></p>
+        <button id="start-battle" class="start-button" type="button"></button>
+      </div>
+    </section>
+
+    <section id="loading-layer" class="loading-layer">
+      <div class="loading-radar"><i></i></div>
+      <strong id="loading-text"></strong>
+    </section>
+
+    <section id="congress-layer" class="congress-layer" hidden aria-live="polite">
+      <div id="congress-card" class="congress-card"></div>
+    </section>
+
+    <section id="result-layer" class="result-layer" hidden>
+      <div class="result-card">
+        <img id="result-image" class="result-image" alt="" decoding="async">
+        <span id="result-status"></span>
+        <h2 id="result-title"></h2>
+        <p id="result-text"></p>
+        <div class="result-stats">
+          <div><span id="result-enemy-label"></span><strong id="result-enemy"></strong></div>
+          <div><span id="result-civilian-label"></span><strong id="result-civilian"></strong></div>
+          <div><span id="result-ally-label"></span><strong id="result-ally"></strong></div>
+        </div>
+        <div class="result-actions">
+          <button id="retry-battle" class="start-button" type="button"></button>
+          <button id="result-continue" class="result-secondary-button" type="button" hidden></button>
+        </div>
+      </div>
+    </section>
+
+    <div id="fatal-error" class="fatal-error" hidden></div>
+  </main>
+  <script src="net/google-maps-config.js?v=2"></script>
+  <script src="assets/js/rts-combat.bundle.js?v=138"></script>
+</body>
+</html>

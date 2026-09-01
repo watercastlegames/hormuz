@@ -1,0 +1,171 @@
+{
+  "_note": "모델 팩의 정본 목록. 미리보기 문서·뷰어·배포 묶음이 모두 이 파일 하나를 읽는다. 내용이 어긋나지 않게 하려는 것이다.",
+  "_release": "release 는 배포용 파일 이름이다. 실제 장비 이름을 일반적인 이름으로 바꾼다. 형태는 그대로고 이름만 바뀐다.",
+  "families": [
+    {
+      "family": "구축함",
+      "release": "naval_destroyer",
+      "purpose": "함대 주력. 함포·미사일 발사 위치가 잡혀 있다",
+      "members": [
+        { "name": "arleigh-burke-destroyer-meshy6-web-v1", "variant": "원본", "release": "naval_destroyer_high", "note": "" },
+        { "name": "arleigh-burke-destroyer-meshy6-web-squad-v1", "variant": "분대용", "release": "naval_destroyer_squad", "note": "" },
+        { "name": "arleigh-burke-destroyer-remesh-3k-web-v106", "variant": "경량", "release": "naval_destroyer_low", "note": "" }
+      ]
+    },
+    {
+      "family": "항공모함",
+      "release": "aircraft_carrier",
+      "purpose": "함대 중심. 갑판에 함재기를 올릴 수 있다",
+      "members": [
+        { "name": "nimitz-carrier-meshy-textured-detail-v4", "variant": "원본", "release": "aircraft_carrier_high", "note": "" },
+        { "name": "nimitz-carrier-meshy6-web-strategic-v1", "variant": "대규모전용", "release": "aircraft_carrier_squad", "note": "" },
+        { "name": "nimitz-carrier-meshy-ultra-v2", "variant": "초경량", "release": "aircraft_carrier_far", "note": "원거리 전용" }
+      ]
+    },
+    {
+      "family": "전투기",
+      "release": "carrier_fighter_jet",
+      "purpose": "함재 전투기. 편대장·요기 두 벌",
+      "members": [
+        { "name": "fa-18e-super-hornet-meshy6-web-squad-v1", "variant": "편대장", "release": "carrier_fighter_jet_lead", "note": "" },
+        { "name": "fa-18e-super-hornet-meshy6-web-wingman-v1", "variant": "요기", "release": "carrier_fighter_jet_wing", "note": "" },
+        { "name": "fa-18e-super-hornet-remesh-2k-web-v106", "variant": "경량", "release": "carrier_fighter_jet_low", "note": "" }
+      ]
+    },
+    {
+      "family": "해상작전 헬기",
+      "release": "naval_helicopter",
+      "purpose": "회전날개가 따로 있어 돌릴 수 있다",
+      "members": [
+        { "name": "mh-60r-seahawk-meshy6-web-lod3-v1", "variant": "원본", "release": "naval_helicopter_high", "note": "" },
+        { "name": "mh-60r-seahawk-meshy6-web-wingman-v1", "variant": "요기", "release": "naval_helicopter_wing", "note": "" },
+        { "name": "mh-60r-seahawk-meshy-ultra-v2", "variant": "초경량", "release": "naval_helicopter_far", "note": "원거리 전용" }
+      ]
+    },
+    {
+      "family": "스텔스 폭격기",
+      "release": "stealth_bomber",
+      "purpose": "고고도 타격기",
+      "members": [
+        { "name": "b2-spirit-meshy-t2-web-v1", "variant": "원본", "release": "stealth_bomber_high", "note": "" },
+        { "name": "b2-spirit-remesh-2p5k-web-v106", "variant": "경량", "release": "stealth_bomber_low", "note": "" }
+      ]
+    },
+    {
+      "family": "유조선",
+      "release": "oil_tanker",
+      "purpose": "민간 대형 유조선. 호송·인질 목표물로 쓴다",
+      "members": [
+        { "name": "vlcc-tanker-meshy6-web-strategic-v2", "variant": "원본", "release": "oil_tanker_high", "note": "" },
+        { "name": "vlcc-tanker-remesh-3p5k-web-v106", "variant": "경량", "release": "oil_tanker_low", "note": "" }
+      ]
+    },
+    {
+      "family": "고속정",
+      "release": "fast_attack_boat",
+      "purpose": "소형 쾌속정. 떼로 몰려오는 적 역할",
+      "members": [
+        { "name": "irgc-fast-attack-craft-meshy6-web-strategic-v1", "variant": "원본", "release": "fast_attack_boat_high", "note": "" },
+        { "name": "irgc-fast-attack-craft-meshy6-web-strategic-v4", "variant": "다른 판본", "release": "fast_attack_boat_alt", "note": "" },
+        { "name": "irgc-fast-attack-craft-meshy-ultra-v2", "variant": "초경량", "release": "fast_attack_boat_far", "note": "원거리 전용" }
+      ]
+    },
+    {
+      "family": "무인 소해정",
+      "release": "mine_hunter_usv",
+      "purpose": "무인 수상정. 기뢰 제거용",
+      "members": [
+        { "name": "mcm-usv-remesh-3k-web-v106", "variant": "경량", "release": "mine_hunter_usv", "note": "" }
+      ]
+    },
+    {
+      "family": "미사일 발사차량",
+      "release": "missile_launch_vehicle",
+      "purpose": "8륜 차량 + 발사관. 지상 목표물",
+      "members": [
+        { "name": "coastal-defense-tel-meshy6-web-strategic-v1", "variant": "원본", "release": "missile_launch_vehicle_high", "note": "" },
+        { "name": "coastal-defense-tel-meshy6-web-strategic-v2", "variant": "다른 판본", "release": "missile_launch_vehicle_alt", "note": "" },
+        { "name": "coastal-defense-tel-meshy-ultra-v2", "variant": "초경량", "release": "missile_launch_vehicle_far", "note": "원거리 전용" }
+      ]
+    },
+    {
+      "family": "항만 크레인",
+      "release": "port_gantry_crane",
+      "purpose": "항구 배경물. 이 팩에서 가장 무겁다",
+      "members": [
+        { "name": "port-gantry-crane-meshy6-web-strategic-v1", "variant": "원본", "release": "port_gantry_crane", "note": "" }
+      ]
+    },
+    {
+      "family": "보병 A",
+      "release": "ground_soldier_a",
+      "purpose": "뼈대가 들어 있어 걷고 쏘는 동작이 붙는다",
+      "motion": [["soldier-a-walk", "걷는 중"], ["soldier-a-combat", "사격하며 전진"]],
+      "members": [
+        { "name": "us-marine-rifleman-meshy-rigged-web-v1", "variant": "기본자세", "release": "ground_soldier_a_base", "note": "" },
+        { "name": "us-marine-rifleman-meshy-combat-web-v1", "variant": "전투자세", "release": "ground_soldier_a_combat", "note": "" },
+        { "name": "us-marine-rifleman-meshy-walk-armature-web-v1", "variant": "보행 동작", "release": "ground_soldier_a_walk_anim", "note": "뼈대만" }
+      ]
+    },
+    {
+      "family": "보병 B",
+      "release": "ground_soldier_b",
+      "purpose": "장비가 다른 두 번째 보병. 구성은 A 와 같다",
+      "motion": [["soldier-b-walk", "걷는 중"], ["soldier-b-combat", "사격하며 전진"]],
+      "members": [
+        { "name": "irgc-ground-combatant-meshy-rigged-web-v1", "variant": "기본자세", "release": "ground_soldier_b_base", "note": "" },
+        { "name": "irgc-ground-combatant-meshy-combat-web-v1", "variant": "전투자세", "release": "ground_soldier_b_combat", "note": "" },
+        { "name": "irgc-ground-combatant-meshy-walk-armature-web-v1", "variant": "보행 동작", "release": "ground_soldier_b_walk_anim", "note": "뼈대만" }
+      ]
+    },
+    {
+      "family": "소총 2종",
+      "release": "rifle_a / rifle_b",
+      "purpose": "보병 손에 붙이는 소품",
+      "members": [
+        { "name": "m27-rifle-meshy-t2-web-v1", "variant": "소총 A", "release": "rifle_a", "note": "" },
+        { "name": "ak-rifle-meshy-t2-web-v1", "variant": "소총 B", "release": "rifle_b", "note": "" }
+      ]
+    },
+    {
+      "family": "해상 기뢰",
+      "release": "naval_mine",
+      "purpose": "물 위에 뜬 기뢰. 뿔까지 살아 있다",
+      "members": [
+        { "name": "naval-mine-meshy-web-v1", "variant": "원본", "release": "naval_mine", "note": "" }
+      ]
+    },
+    {
+      "family": "지하 진입부",
+      "release": "bunker_entrance",
+      "purpose": "산속 시설 입구. 폭격 목표물",
+      "members": [
+        { "name": "bunker-entrance-meshy-web-v1", "variant": "원본", "release": "bunker_entrance", "note": "" }
+      ]
+    }
+  ],
+  "clips": {
+    "us-marine-rifleman-meshy-rigged-web-v1": [
+      ["걷기", "us-marine-rifleman-meshy-walk-armature-web-v1"],
+      ["사격", "us-marine-rifleman-meshy-combat-web-v1"]
+    ],
+    "us-marine-rifleman-meshy-combat-web-v1": [
+      ["사격", "us-marine-rifleman-meshy-combat-web-v1"]
+    ],
+    "irgc-ground-combatant-meshy-rigged-web-v1": [
+      ["걷기", "irgc-ground-combatant-meshy-walk-armature-web-v1"],
+      ["사격", "irgc-ground-combatant-meshy-combat-web-v1"]
+    ],
+    "irgc-ground-combatant-meshy-combat-web-v1": [
+      ["사격", "irgc-ground-combatant-meshy-combat-web-v1"]
+    ]
+  },
+  "thirdParty": {
+    "name": "kaykit-character-animations-v1.2",
+    "title": "캐릭터 동작 모음",
+    "origin": "KayKit (외부 배포 자산)",
+    "detail": "걷기·달리기 등 30가지 동작이 들어 있는 동작 전용 파일이다.",
+    "action": "재배포 조건이 따로 있다. 팩에서 빼거나 원 배포처와 조건을 밝혀야 한다.",
+    "includeInPack": false
+  }
+}

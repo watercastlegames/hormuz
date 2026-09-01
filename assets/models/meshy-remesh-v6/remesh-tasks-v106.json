@@ -1,0 +1,105 @@
+{
+  "version": 106,
+  "createdAt": "2026-07-29",
+  "purpose": "HORMUZ large-battle always-textured low-poly WebGL instances",
+  "approvedCredits": 25,
+  "consumedCredits": 25,
+  "generation": {
+    "tool": "Meshy remesh",
+    "topology": "triangle",
+    "targetFormats": [
+      "glb"
+    ],
+    "originAt": "bottom"
+  },
+  "webOptimization": {
+    "tool": "@gltf-transform/cli 4.4.2",
+    "geometryCompression": "EXT_meshopt_compression",
+    "textureFormat": "EXT_texture_webp",
+    "maxTextureSize": 1024,
+    "textureMaps": [
+      "baseColor",
+      "normal"
+    ]
+  },
+  "assets": [
+    {
+      "id": "arleigh-burke-destroyer",
+      "inputTaskId": "019fa2c9-ddc7-7d95-8aa4-0478159f20bf",
+      "remeshTaskId": "019fadb5-17f7-731e-809e-639c55d7cbf6",
+      "targetPolycount": 3000,
+      "actualTriangles": 3057,
+      "credits": 5,
+      "sourceGlb": "assets/meshy-source/remesh-v106/arleigh-burke-destroyer-remesh-3k-v106.glb",
+      "sourceTextures": [
+        "assets/meshy-source/remesh-v106/arleigh-burke-destroyer-remesh-3k-v106_base_color.png",
+        "assets/meshy-source/remesh-v106/arleigh-burke-destroyer-remesh-3k-v106_normal.png"
+      ],
+      "webGlb": "assets/models/meshy-remesh-v6/arleigh-burke-destroyer-remesh-3k-web-v106.glb",
+      "googleMapsGlb": "assets/models/meshy-remesh-v6/arleigh-burke-destroyer-remesh-3k-google-v34.glb",
+      "googleMapsGlbProfile": {
+        "triangles": 3057,
+        "bytes": 733540,
+        "textureFormat": "image/jpeg",
+        "maxTextureSize": 1024,
+        "extensionsUsed": []
+      }
+    },
+    {
+      "id": "vlcc-tanker",
+      "inputTaskId": "019fa32d-d0d7-7cce-826f-b230299ba125",
+      "remeshTaskId": "019fadb5-191a-7344-919b-1d6914113359",
+      "targetPolycount": 3500,
+      "actualTriangles": 3605,
+      "credits": 5,
+      "sourceGlb": "assets/meshy-source/remesh-v106/vlcc-tanker-remesh-3p5k-v106.glb",
+      "sourceTextures": [
+        "assets/meshy-source/remesh-v106/vlcc-tanker-remesh-3p5k-v106_base_color.png",
+        "assets/meshy-source/remesh-v106/vlcc-tanker-remesh-3p5k-v106_normal.png"
+      ],
+      "webGlb": "assets/models/meshy-remesh-v6/vlcc-tanker-remesh-3p5k-web-v106.glb"
+    },
+    {
+      "id": "fa-18e-super-hornet",
+      "inputTaskId": "019fa3d8-8e5a-73c2-bb29-88456f1f7863",
+      "remeshTaskId": "019fadb5-1a3c-7591-9e38-3c7ddb0b3d13",
+      "targetPolycount": 2000,
+      "actualTriangles": 1877,
+      "credits": 5,
+      "sourceGlb": "assets/meshy-source/remesh-v106/fa-18e-super-hornet-remesh-2k-v106.glb",
+      "sourceTextures": [
+        "assets/meshy-source/remesh-v106/fa-18e-super-hornet-remesh-2k-v106_base_color.png",
+        "assets/meshy-source/remesh-v106/fa-18e-super-hornet-remesh-2k-v106_normal.png"
+      ],
+      "webGlb": "assets/models/meshy-remesh-v6/fa-18e-super-hornet-remesh-2k-web-v106.glb"
+    },
+    {
+      "id": "mcm-usv",
+      "inputTaskId": "019fa3d8-e217-73ce-9066-e8e122683fc7",
+      "remeshTaskId": "019fadb5-1b5f-7592-8050-1956c37d56e3",
+      "targetPolycount": 3000,
+      "actualTriangles": 2973,
+      "credits": 5,
+      "sourceGlb": "assets/meshy-source/remesh-v106/mcm-usv-remesh-3k-v106.glb",
+      "sourceTextures": [
+        "assets/meshy-source/remesh-v106/mcm-usv-remesh-3k-v106_base_color.png",
+        "assets/meshy-source/remesh-v106/mcm-usv-remesh-3k-v106_normal.png"
+      ],
+      "webGlb": "assets/models/meshy-remesh-v6/mcm-usv-remesh-3k-web-v106.glb"
+    },
+    {
+      "id": "b2-spirit",
+      "inputTaskId": "019fab23-34d0-7be5-bd17-5dbef34a3c6b",
+      "remeshTaskId": "019fadb5-1c5a-7345-a51f-7f05a6329be4",
+      "targetPolycount": 2500,
+      "actualTriangles": 2448,
+      "credits": 5,
+      "sourceGlb": "assets/meshy-source/remesh-v106/b2-spirit-remesh-2p5k-v106.glb",
+      "sourceTextures": [
+        "assets/meshy-source/remesh-v106/b2-spirit-remesh-2p5k-v106_base_color.png",
+        "assets/meshy-source/remesh-v106/b2-spirit-remesh-2p5k-v106_normal.png"
+      ],
+      "webGlb": "assets/models/meshy-remesh-v6/b2-spirit-remesh-2p5k-web-v106.glb"
+    }
+  ]
+}

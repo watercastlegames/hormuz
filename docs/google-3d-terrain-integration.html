@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>HORMUZ 구글 3D 지도 연동 실행안</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #071116;
+      --panel: #0d2028;
+      --line: #285463;
+      --text: #e8f2f3;
+      --muted: #a9c0c5;
+      --cyan: #69d8e5;
+      --amber: #f0b46a;
+      --green: #7bd9a1;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 82% 2%, rgba(62,133,145,.22), transparent 35rem),
+        linear-gradient(145deg, #071116, #0a171d 52%, #071015);
+      color: var(--text);
+      font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+      font-size: 18px;
+      line-height: 1.7;
+    }
+    main { width: min(1120px, calc(100% - 40px)); margin: 0 auto; padding: 56px 0 90px; }
+    h1 { margin: 0 0 12px; font-size: clamp(34px, 5vw, 58px); letter-spacing: -.04em; }
+    h2 { margin: 46px 0 16px; color: var(--cyan); font-size: 28px; }
+    h3 { margin: 26px 0 10px; font-size: 21px; }
+    p { margin: 10px 0; }
+    a { color: var(--cyan); }
+    code {
+      padding: 2px 7px;
+      border: 1px solid rgba(105,216,229,.2);
+      border-radius: 6px;
+      background: #071419;
+      color: #c9f5f8;
+      font-family: Consolas, monospace;
+      font-size: .92em;
+    }
+    pre {
+      overflow: auto;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #061015;
+      color: #d9f5f6;
+      font-size: 16px;
+      line-height: 1.55;
+    }
+    .lead { max-width: 860px; color: #d2e5e8; font-size: 21px; }
+    .status {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 30px 0;
+    }
+    .card {
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: linear-gradient(155deg, rgba(18,47,58,.92), rgba(8,23,29,.92));
+    }
+    .card strong { display: block; margin-bottom: 7px; color: var(--cyan); font-size: 20px; }
+    .good { color: var(--green); }
+    .warn { color: var(--amber); }
+    table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 12px; }
+    th, td { padding: 15px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: #102932; color: #dff8fa; }
+    td { background: rgba(10,29,36,.82); }
+    ol, ul { padding-left: 25px; }
+    li + li { margin-top: 8px; }
+    .decision {
+      padding: 22px;
+      border-left: 5px solid var(--cyan);
+      border-radius: 8px;
+      background: rgba(25,69,80,.42);
+    }
+    @media (max-width: 760px) {
+      body { font-size: 17px; }
+      main { width: min(100% - 24px, 1120px); padding-top: 28px; }
+      .status { grid-template-columns: 1fr; }
+      table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <p class="good">연동 가능 · API 키 입력 전 준비 문서</p>
+  <h1>HORMUZ 구글 3D 지도 연동 실행안</h1>
+  <p class="lead">실제 해안선·위성 지형 위에서 현재 Three.js 전함, 전투기, 선택 링, 미사일과 폭발 효과를 계속 쓰려면 <strong>Maps JavaScript API의 WebGL Overlay View</strong>를 기본 방식으로 채택한다.</p>
+
+  <section class="status">
+    <div class="card"><strong>현재</strong>Natural Earth 해안선과 로컬 Three.js 지형 메시</div>
+    <div class="card"><strong>1차 목표</strong>구글 벡터 3D 지형과 현재 전투 객체의 동일 WebGL 합성</div>
+    <div class="card"><strong>안전장치</strong>키·할당량·지원 오류 시 현재 로컬 지형으로 자동 복귀</div>
+  </section>
+
+  <div class="decision">
+    <strong>결론:</strong> 구글 3D 지도를 단순 배경 이미지로 쓰지 않는다. 구글 지도와 게임 객체가 같은 카메라·깊이값을 쓰게 만들어 지형 뒤 가림, 실제 위경도 배치, 확대·회전을 일치시킨다.
+  </div>
+
+  <h2>1. 방식 비교</h2>
+  <table>
+    <thead><tr><th>방식</th><th>장점</th><th>한계</th><th>채택</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Maps JavaScript API + WebGL Overlay View</td>
+        <td>현재 Three.js GLB·선택·전투 효과 유지, 위경도 좌표 변환, 지도 건물과 깊이 가림</td>
+        <td>카메라·입력·렌더 루프를 구글 지도 기준으로 이관해야 함</td>
+        <td class="good">본 전투 권장</td>
+      </tr>
+      <tr>
+        <td>3D Maps + Model3DElement</td>
+        <td>실사형 3D 지형과 GLB 배치가 간단함</td>
+        <td>현재 파티클·미사일·다중 선택 시스템을 그대로 옮기기 어려움</td>
+        <td>브리핑·결과 화면 후보</td>
+      </tr>
+      <tr>
+        <td>Map Tiles API Photorealistic 3D Tiles</td>
+        <td>3D Tiles 렌더러에서 매우 자유로운 합성 가능</td>
+        <td>별도 렌더러·저작권 표시·비용·용량 부담이 큼</td>
+        <td class="warn">2차 검토</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>2. 사장님이 발급할 값 2개</h2>
+  <ol>
+    <li>Google Cloud에서 결제를 연결하고 <strong>Maps JavaScript API</strong>를 활성화한다.</li>
+    <li>JavaScript용 <strong>Map ID</strong>를 만들고 벡터 지도, 기울기·회전을 활성화한다.</li>
+    <li>브라우저용 <strong>API 키</strong>를 만들고 HTTP 리퍼러와 Maps JavaScript API로 제한한다.</li>
+  </ol>
+  <table>
+    <thead><tr><th>필요 값</th><th>예시</th><th>용도</th></tr></thead>
+    <tbody>
+      <tr><td>API key</td><td><code>AIza...</code></td><td>Maps JavaScript API 로드</td></tr>
+      <tr><td>Map ID</td><td><code>12자리 이상 영숫자</code></td><td>벡터 3D 지도·스타일·기울기 설정</td></tr>
+    </tbody>
+  </table>
+
+  <h3>키 제한값</h3>
+  <pre>웹사이트 제한(HTTP 리퍼러)
+http://127.0.0.1:8080/*
+http://localhost:8080/*
+https://sidak.kr/autodev/GameCreator/hormuz/*
+
+API 제한
+Maps JavaScript API</pre>
+  <p class="warn">브라우저용 지도 키는 HTML에서 보이는 값이다. 숨기는 대신 위 리퍼러·API 제한과 일일 할당량으로 보호해야 한다.</p>
+
+  <h2>3. 키 입력 파일</h2>
+  <p><code>net/google-maps-config.example.js</code>를 <code>net/google-maps-config.js</code>로 복사한 뒤 다음 두 값만 채운다.</p>
+  <pre>window.HORMUZ_GOOGLE_MAPS_CONFIG = Object.freeze({
+  enabled: true,
+  apiKey: "발급한 API 키",
+  mapId: "발급한 Map ID",
+  language: "ko",
+  region: "KR",
+  provider: "webgl-overlay",
+  fallbackProvider: "local-three"
+});</pre>
+
+  <h2>4. 개발 적용 순서</h2>
+  <ol>
+    <li><strong>G0 범위 검증:</strong> 호르무즈, 바레인-카타르, 오만만, 부셰르 4개 전장에서 3D·위성 품질과 지형 제공 범위를 캡처한다.</li>
+    <li><strong>G1 지도 공급자 분리:</strong> 현재 로컬 지도와 Google 지도 모드를 동일 인터페이스로 묶고 실패 시 로컬 모드로 자동 복귀시킨다.</li>
+    <li><strong>G2 좌표 정본화:</strong> 유닛·미사일·카메라의 정본 좌표를 위도·경도·고도로 바꾸고 <code>fromLatLngAltitude()</code>로 Three.js 행렬을 만든다.</li>
+    <li><strong>G3 전투 합성:</strong> 구축함·전투기·헬기·TEL, 선택 링, 항적, 미사일, 폭발을 WebGL Overlay View에 올린다.</li>
+    <li><strong>G4 입력 이관:</strong> 드래그 다중 선택, 좌클릭 선택 해제, 우클릭 이동·공격, 40% 확대 제한을 지도 카메라와 충돌 없이 연결한다.</li>
+    <li><strong>G5 검증:</strong> PC·모바일, 4개 전장, 55fps 목표, 지도 저작권 표시, 키 오류·할당량 초과 폴백을 확인한다.</li>
+  </ol>
+
+  <h2>5. 중요한 기술 판단</h2>
+  <ul>
+    <li>Google 공식 범위 문서는 3D 자연 지형을 전 세계에 제공한다고 안내하지만, 건물·나무 같은 3D 표면 데이터는 별도 지원 지역에 한정한다. 따라서 호르무즈 산악·해안 고도는 기대할 수 있어도 도시 실사 밀도는 API 키로 직접 확인해야 한다.</li>
+    <li>구글 3D 지형은 화면 품질과 좌표 기준을 제공하지만, 게임용 해안 충돌 폴리곤을 직접 제공하지 않는다. 구축함의 육지 관통 방지는 현재 고해상도 해안 마스크를 계속 사용한다.</li>
+    <li>지도에 보이는 해안선과 충돌선의 오차는 G0에서 캡처 비교 후 해안 데이터를 고해상도로 교체해 줄인다.</li>
+    <li>구글 로고와 지도 데이터 출처 표시는 제거하거나 HUD로 가리면 안 된다.</li>
+    <li>지도 로드 실패가 전투 실패가 되지 않도록 로컬 Three.js 지형을 항상 남긴다.</li>
+    <li>API 키가 준비되기 전에는 실제 3D 지도 품질·호르무즈 지역 커버리지를 확정했다고 보고하지 않는다.</li>
+  </ul>
+
+  <h2>6. 공식 문서</h2>
+  <ul>
+    <li><a href="https://developers.google.com/maps/documentation/javascript/webgl/webgl-overlay-view">WebGL Overlay View</a></li>
+    <li><a href="https://developers.google.com/maps/documentation/javascript/3d/models">3D Maps의 GLB 모델</a></li>
+    <li><a href="https://developers.google.com/maps/documentation/javascript/3d/coverage">Photorealistic 3D Maps 제공 범위</a></li>
+    <li><a href="https://developers.google.com/maps/documentation/tile/3d-tiles">Photorealistic 3D Tiles</a></li>
+    <li><a href="https://developers.google.com/maps/documentation/tile/policies">Map Tiles API 저작권 표시 정책</a></li>
+    <li><a href="https://developers.google.com/maps/billing-and-pricing/pricing">Google Maps Platform 가격표</a></li>
+  </ul>
+</main>
+</body>
+</html>

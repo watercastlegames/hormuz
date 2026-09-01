@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>호르무즈 — 화면 구성서 v1.0</title>
+<!--ARTIFACT-BEGIN-->
+<style>
+:root{
+  --ground:#EDF1F3; --surface:#FFFFFF; --surface-2:#E3E9ED; --line:#C6D2DA;
+  --text:#16283A; --muted:#5B7286; --buoy:#B96A12; --shoal:#1F6A70; --alarm:#B03A30; --good:#2F6D4F;
+  --measure:78ch;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --ground:#0A1926; --surface:#0F2233; --surface-2:#152C40; --line:#20405A;
+    --text:#DCE7EF; --muted:#8FA9BC; --buoy:#E8A24A; --shoal:#4FA8AF; --alarm:#E0665A; --good:#6BBF92; }
+}
+:root[data-theme="dark"]{ --ground:#0A1926; --surface:#0F2233; --surface-2:#152C40; --line:#20405A;
+  --text:#DCE7EF; --muted:#8FA9BC; --buoy:#E8A24A; --shoal:#4FA8AF; --alarm:#E0665A; --good:#6BBF92; }
+:root[data-theme="light"]{ --ground:#EDF1F3; --surface:#FFFFFF; --surface-2:#E3E9ED; --line:#C6D2DA;
+  --text:#16283A; --muted:#5B7286; --buoy:#B96A12; --shoal:#1F6A70; --alarm:#B03A30; --good:#2F6D4F; }
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--text);
+  font-family:"Pretendard","Malgun Gothic","맑은 고딕","Apple SD Gothic Neo",system-ui,sans-serif;
+  font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--measure);margin:0 auto;padding:0 20px 120px}
+h1,h2,h3,h4{font-family:Bahnschrift,"DIN Alternate","Franklin Gothic Medium","Pretendard",system-ui,sans-serif;text-wrap:balance;font-weight:600;letter-spacing:.01em}
+.mono,code,td.num,.chip{font-family:"Cascadia Mono",Consolas,"D2Coding",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+
+.cover{padding:52px 0 34px;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:Bahnschrift,system-ui,sans-serif;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--buoy);margin:0 0 14px}
+.cover h1{font-size:clamp(32px,7vw,52px);line-height:1.08;margin:0 0 8px}
+.logline{font-size:18px;line-height:1.65;margin:0 0 20px;max-width:60ch}
+.logline b{color:var(--buoy)}
+.meta{display:flex;flex-wrap:wrap;gap:8px 10px}
+.tag{font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;font-size:12px;padding:4px 10px;border:1px solid var(--line);border-radius:2px;color:var(--muted);background:var(--surface)}
+
+section{padding:50px 0 4px;border-top:1px solid var(--line);scroll-margin-top:20px}
+section.first{border-top:none;padding-top:34px}
+.sec-no{font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;font-size:12px;color:var(--buoy);letter-spacing:.14em;display:block;margin-bottom:6px}
+section>h2{font-size:clamp(22px,5vw,29px);line-height:1.2;margin:0 0 12px}
+.oneline{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:10px 15px;margin:0 0 22px;font-size:15px;color:var(--muted)}
+.oneline b{color:var(--buoy)}
+h3{font-size:19px;margin:30px 0 10px}
+p{margin:0 0 16px}
+ul,ol{margin:0 0 16px;padding-left:22px}
+li{margin:0 0 7px}
+strong{font-weight:600}
+a{color:var(--shoal);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--buoy);outline-offset:2px}
+
+.note{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--buoy);padding:15px 17px;margin:0 0 20px;border-radius:0 3px 3px 0}
+.note.warn{border-left-color:var(--alarm)}
+.note.calm{border-left-color:var(--shoal)}
+.note p:last-child{margin-bottom:0}
+.note .lab{display:block;font-family:Bahnschrift,system-ui,sans-serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--buoy);margin-bottom:6px}
+.note.warn .lab{color:var(--alarm)}
+.note.calm .lab{color:var(--shoal)}
+
+.scroll{overflow-x:auto;margin:0 0 22px;border:1px solid var(--line);border-radius:3px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:580px;font-size:14px}
+caption{text-align:left;padding:11px 14px;background:var(--surface-2);border-bottom:1px solid var(--line);font-family:Bahnschrift,system-ui,sans-serif;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+th,td{padding:9px 13px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.55}
+th{font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--surface-2);white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+td.num,th.num{font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;white-space:nowrap}
+.up{color:var(--good);font-weight:600}
+.dn{color:var(--alarm);font-weight:600}
+.p1{color:var(--good);font-weight:700}
+.p2{color:var(--muted);font-weight:600}
+
+.chart{position:relative;margin:24px 0 8px;border:1px solid var(--line);background:var(--surface);border-radius:3px;overflow:hidden}
+.chart canvas{display:block;width:100%;height:auto}
+.chart figcaption{font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;font-size:11px;letter-spacing:.05em;color:var(--muted);padding:8px 12px;border-top:1px solid var(--line);background:var(--surface-2);line-height:1.6}
+
+/* ── 메인 화면 목업 ── */
+.screen{position:relative;border:2px solid var(--line);border-radius:8px;overflow:hidden;margin:0 0 10px;background:#0a1420}
+.screen canvas{display:block;width:100%;height:auto}
+.scan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.12) 0 1px,transparent 1px 4px)}
+.vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,transparent 60%,rgba(4,10,18,.55))}
+.hud{position:absolute;font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;color:#cfe4ee;pointer-events:none}
+.hud.tl{top:10px;left:12px;font-size:12px;line-height:1.6}
+.hud.tl b{color:#e8a24a;font-size:14px;letter-spacing:.06em}
+.hud.tl .act{display:inline-block;margin-left:8px;padding:1px 7px;border:1px solid #e8a24a;border-radius:2px;color:#e8a24a;font-size:10px}
+.hud.tr{top:10px;right:12px;display:flex;gap:5px}
+.hud .dial{background:rgba(8,20,32,.72);border:1px solid rgba(143,169,188,.35);border-radius:2px;padding:3px 8px;font-size:10px;text-align:center;line-height:1.5}
+.hud .dial b{display:block;font-size:12px;color:#e8a24a}
+.hud .dial.ok b{color:#6bbf92}
+.hud .dial.bad b{color:#e0665a}
+.chyron{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;background:rgba(6,14,24,.86);border-top:1px solid rgba(232,162,74,.5);font-family:"Cascadia Mono",Consolas,monospace}
+.chyron .brk{flex:none;background:#b03a30;color:#fff;font-weight:700;font-size:11px;padding:6px 10px;letter-spacing:.12em}
+.chyron .txt{white-space:nowrap;overflow:hidden;font-size:12px;color:#cfe4ee;padding:6px 12px}
+.decide{position:absolute;left:50%;bottom:46px;transform:translateX(-50%);width:min(420px,86%);background:rgba(8,18,30,.9);border:1px solid #e8a24a;border-radius:6px;padding:12px 14px;backdrop-filter:blur(2px)}
+.decide .q{font-size:13.5px;font-weight:600;color:#eef6fa;line-height:1.5}
+.decide .tm{height:3px;background:rgba(143,169,188,.3);border-radius:2px;margin:8px 0;overflow:hidden}
+.decide .tm i{display:block;height:100%;width:58%;background:#e0665a}
+.decide .bs{display:grid;gap:5px}
+.decide .b{font-size:12.5px;padding:7px 10px;border:1px solid rgba(143,169,188,.4);border-radius:4px;color:#cfe4ee;background:rgba(15,34,51,.7)}
+.decide .b em{font-style:normal;color:#8fa9bc;font-size:11px}
+.decide .b.hot{border-color:#e0665a;color:#ffb3aa}
+.cam{position:absolute;right:12px;bottom:46px;font-family:"Cascadia Mono",Consolas,monospace;font-size:10px;color:#8fa9bc;border:1px solid rgba(143,169,188,.35);border-radius:2px;padding:3px 8px;background:rgba(8,20,32,.7)}
+.screen-cap{font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;font-size:11px;color:var(--muted);margin:0 0 24px;line-height:1.7}
+
+/* 존 해설 */
+.zones{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin:0 0 22px}
+.zone{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:12px 14px;font-size:14px}
+.zone b{display:block;color:var(--buoy);margin-bottom:4px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;font-family:Bahnschrift,system-ui,sans-serif}
+.zone p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.6}
+
+/* 레이어 스택 */
+.stack{display:grid;gap:6px;margin:0 0 22px;counter-reset:ly}
+.stack li{list-style:none;display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:11px 14px;margin:0}
+.stack li::before{counter-increment:ly;content:"L" counter(ly);font-family:"Cascadia Mono",Consolas,monospace;font-size:12px;color:var(--shoal);font-weight:700;padding-top:2px}
+.stack b{font-size:14.5px}
+.stack em{font-style:normal;color:var(--muted);font-size:13.5px;display:block;line-height:1.6}
+
+/* 보조화면 미니 */
+.subs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:0 0 22px}
+.sub{border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface)}
+.sub .scr{height:120px;background:linear-gradient(180deg,#0a1420,#152C40);position:relative;font-family:"Cascadia Mono",Consolas,monospace}
+.sub .scr span{position:absolute;inset:0;display:grid;place-items:center;color:#8fa9bc;font-size:11px;letter-spacing:.1em;text-align:center;line-height:1.8;padding:0 10px}
+.sub .scr span b{color:#e8a24a}
+.sub .cap{padding:9px 12px;font-size:13px;line-height:1.55}
+.sub .cap b{font-size:13.5px}
+.sub .cap small{color:var(--muted);display:block;margin-top:2px;line-height:1.5}
+
+footer{padding:40px 0 0;border-top:1px solid var(--line);margin-top:52px;color:var(--muted);font-size:13px}
+footer p{margin:0 0 6px}
+
+@media (max-width:600px){
+  body{font-size:15px}
+  .wrap{padding:0 16px 90px}
+  table{min-width:520px}
+  .decide{bottom:40px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<!--ARTIFACT-BODY-->
+<div class="wrap">
+
+<header class="cover">
+  <p class="eyebrow">HORMUZ · Screen &amp; Scene Design · v1.0 · 2026-07-27</p>
+  <h1>화면 구성서 — 자동으로 흐르는 전장, 손끝의 결정</h1>
+  <p class="logline"><b>3D 전장이 화면의 전부다.</b> 전쟁은 방송처럼 자동으로 흘러가고, 플레이어는 떠오르는 <b>선택 버튼</b>으로만 개입한다. 전장은 호르무즈 해협의 <b>실제 지도</b> 위에 세운다 — 케심섬, 무산담 반도, 반다르아바스, 그리고 폭 2해리의 실제 통항 레인까지.</p>
+  <div class="meta">
+    <span class="tag">기획서 v0.5의 동반 문서</span>
+    <span class="tag">실좌표 검증 30개 지점</span>
+    <span class="tag">중급 폰 60fps 예산 내</span>
+  </div>
+</header>
+
+<!-- 01 -->
+<section id="c01" class="first">
+  <span class="sec-no">SECTION 01</span>
+  <h2>인터랙션 모델 — 자동 진행 전쟁 방송</h2>
+  <p class="oneline">한 줄 요약 — <b>"보고 있으면 전쟁이 흐르고, 버튼이 뜨면 내가 대통령이 된다."</b> 카드 손패·AP 관리는 화면에서 제거(내부 데이터로만 유지), 입력은 선택 버튼과 가벼운 미니게임뿐.</p>
+
+  <div class="scroll">
+    <table>
+      <caption>화면에 존재하는 입력 — 이게 전부다</caption>
+      <thead><tr><th>입력</th><th>언제</th><th>형태</th></tr></thead>
+      <tbody>
+        <tr><td><strong>아침 방침 버튼</strong></td><td>매일 1회</td><td>상황이 큐레이션한 <strong>3택 버튼</strong> (내부적으로 카드 34장 중 추천 3장). 15초 무입력 시 참모 권고안 자동 진행</td></tr>
+        <tr><td><strong>긴급 대응 버튼</strong></td><td>이란의 수 발생 시</td><td>10초 타이머 + 2~3택. 함대 이동("항모를 병목 안으로")도 버튼으로 처리</td></tr>
+        <tr><td><strong>개입 미니게임</strong></td><td>위기 순간 (선택)</td><td>요격 탭 · 소해 드래그 · B-2 릴리즈 탭. 항상 자동 해결 토글 표시</td></tr>
+        <tr><td>카메라</td><td>상시 (선택)</td><td>기본 자동 연출. 두 손가락 드래그로 자유 시점, 5초 무입력 시 자동 복귀</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <span class="lab">왜 이 모델인가 (홍보용 최적화)</span>
+    <p>링크를 누른 사람이 <strong>아무것도 안 해도 30초간 화려한 전쟁이 흐른다</strong> — 이탈 장벽 0. 첫 선택 버튼이 뜨는 순간 관전자가 플레이어로 전환된다. 조작을 배울 필요가 없으므로 SNS 유입 트래픽에 최적. 스크린샷·화면녹화 어느 순간을 잘라도 그림이 된다.</p>
+  </div>
+</section>
+
+<!-- 02 -->
+<section id="c02">
+  <span class="sec-no">SECTION 02</span>
+  <h2>화면 흐름 — 7개 화면</h2>
+  <p class="oneline">한 줄 요약 — 전부 <b>같은 3D 씬 위</b>에서 오버레이만 갈아끼운다. 화면 전환 로딩 없음.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th class="num">#</th><th>화면</th><th>내용</th><th>3D 씬 상태</th></tr></thead>
+      <tbody>
+        <tr><td class="num">S0</td><td>타이틀</td><td>로고 + "시작" + 언어 토글(한/영)</td><td>해협 야경 자동 순항 (데모 루프)</td></tr>
+        <tr><td class="num">S1</td><td>전사 뉴스릴 (15초)</td><td>2018~2024 헤드라인 몽타주</td><td>연표 지점으로 카메라 점프컷</td></tr>
+        <tr><td class="num">S2</td><td>재연 결정 ①~⑤</td><td>실화 브리핑 + 선택 → "실제 역사" 공개</td><td>야간 씬 · 해당 작전 연출 재생</td></tr>
+        <tr><td class="num">S3</td><td><strong>본편 메인</strong> (아래 목업)</td><td>자동 진행 + 방침/대응 버튼</td><td>황혼 씬 · 풀 시뮬레이션</td></tr>
+        <tr><td class="num">S4</td><td>개입 오버레이</td><td>요격/소해/B-2 미니게임</td><td>위기 지점 줌인 + 슬로모션 0.5배속</td></tr>
+        <tr><td class="num">S5</td><td>협상 테이블</td><td>4조항 슬라이더 + 성립 게이지</td><td>채도 하강 + 도하/무스카트 상공 부감</td></tr>
+        <tr><td class="num">S6</td><td>엔딩 · 공유</td><td>엔딩 카드 + 1080×1350 저장</td><td>결말 무드의 정지 씬 (배경)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 03 -->
+<section id="c03">
+  <span class="sec-no">SECTION 03</span>
+  <h2>본편 메인 화면 (S3) — 목업</h2>
+  <p class="oneline">한 줄 요약 — 3D가 100%를 차지하고, HUD는 <b>가장자리 4곳</b>에만 붙는다. 뉴스 방송의 문법(속보 자막·시계·티커)을 그대로 빌린다.</p>
+
+  <div class="screen">
+    <canvas id="battleView" width="1240" height="560" role="img" aria-label="본편 메인 화면 목업: 황혼의 호르무즈 해협 3D 전장 위에 날짜, 지표, 속보 자막, 선택 버튼이 오버레이된 화면."></canvas>
+    <div class="scan"></div>
+    <div class="vig"></div>
+    <div class="hud tl"><b>DAY 6 · 8.02</b><span class="act">ACT II 재개전</span><br>미합중국 대통령 상황실</div>
+    <div class="hud tr">
+      <div class="dial">통항<b>34%</b></div>
+      <div class="dial bad">유가<b>$96</b></div>
+      <div class="dial">지지<b>47</b></div>
+      <div class="dial">국제<b>52</b></div>
+      <div class="dial bad">탄약<b>38</b></div>
+      <div class="dial bad">확전<b>4</b></div>
+    </div>
+    <div class="decide">
+      <div class="q">IRGC 고속정 6척, 유조선 호송대 500m까지 접근 — 교전 수칙을 정하십시오</div>
+      <div class="tm"><i></i></div>
+      <div class="bs">
+        <div class="b">경고사격 <em>— 확전 유지 · 60% 확률로 물러남</em></div>
+        <div class="b">회피 기동 <em>— 안전 · 통항 −4</em></div>
+        <div class="b hot">격침 허가 <em>— 위협 제거 · 확전 +1</em></div>
+      </div>
+    </div>
+    <div class="cam">AUTO CAM · 두 손가락으로 자유 시점</div>
+    <div class="chyron"><span class="brk">속보</span><span class="txt">브렌트유 배럴당 96달러 돌파 ··· 오만 외무부 "중재 채널은 열려 있다" ··· 제5함대, 호송대 E-2 ···</span></div>
+  </div>
+  <p class="screen-cap">황혼 고정 라이팅(걸프의 매직아워) · CSS 스캔라인+비네트는 3D 밖에서 합성(GPU 비용 0) · 결정 패널이 떠도 전장은 계속 움직인다 — 슬로모션 0.5배속.</p>
+
+  <h3>HUD 존 규칙</h3>
+  <div class="zones">
+    <div class="zone"><b>좌상 — 시간·국면</b><p>날짜 카운터와 막(ACT) 표시. 막 전환 때만 전체 화면 타이틀이 3초 덮는다.</p></div>
+    <div class="zone"><b>우상 — 계기판 6</b><p>미니 다이얼 6개. 위험 수치는 적색 발광+맥동. 탭하면 상세 툴팁.</p></div>
+    <div class="zone"><b>중하 — 결정 패널</b><p>방침(아침)·긴급 대응(불시) 공용. 타이머 바 내장. 버튼에 결과 요약 병기 — 기억력 테스트 금지.</p></div>
+    <div class="zone"><b>최하단 — 속보 티커</b><p>세계의 반응(유가·동맹·여론)이 자막으로 흐른다. 정보이자 분위기 장치. 결정 결과도 여기서 복창된다.</p></div>
+  </div>
+
+  <h3>모바일 세로 재배치</h3>
+  <ul>
+    <li>3D 뷰포트는 세로 화면에서도 풀블리드 — 카메라 FOV만 세로용으로 넓힌다(55→68).</li>
+    <li>계기판 6개는 우상단 2열 그리드(가로가 좁으므로), 결정 패널은 하단 시트 형태로 상승.</li>
+    <li>티커는 유지(높이 28px). 세이프 에어리어(노치) 회피는 CSS <span class="mono">env(safe-area-inset-*)</span>.</li>
+  </ul>
+</section>
+
+<!-- 04 -->
+<section id="c04">
+  <span class="sec-no">SECTION 04</span>
+  <h2>3D 전장 — 실제 지도 그대로</h2>
+  <p class="oneline">한 줄 요약 — 씬 경계는 <b>동경 54.9~57.0° × 북위 25.0~27.3° (약 208×255km)</b>. 웹검색으로 좌표 30개 지점을 검증했고, 해안선은 실 GIS 데이터를 빌드 타임에 변환해 넣는다.</p>
+
+  <figure class="chart">
+    <canvas id="realMap" width="1050" height="1287" role="img" aria-label="호르무즈 해협 실지도 기반 전장 시안. 이란 해안, 케심섬, 무산담 반도, 통항분리대, 기뢰 위험구역, 미 항모전단 위치가 표시된 지도."></canvas>
+    <figcaption>전장 시안 — 검증 좌표 기반 개념도 (실 해안선은 GIS 데이터로 대체). 청록=미군 · 호박=이란 · 적색=위험구역 · 점선=실제 IMO 통항분리대(레인 폭 2해리, 오만 영해 내). 지도 밖 전략 표적은 가장자리 화살표로.</figcaption>
+  </figure>
+
+  <h3>씬에 들어가는 실제 지리 (검증 완료)</h3>
+  <div class="scroll">
+    <table>
+      <caption>핵심 지점 — 전체 30개 중 게임에 쓰는 것</caption>
+      <thead><tr><th>지점</th><th class="num">좌표</th><th>게임에서의 역할</th></tr></thead>
+      <tbody>
+        <tr><td>반다르아바스 항·해군기지</td><td class="num">27.19N 56.28E</td><td>이란 남부함대 본거지. 대함미사일 벨트의 중심 — 사거리 부채꼴 표시</td></tr>
+        <tr><td>케심(Qeshm)섬 — 길이 135km</td><td class="num">26.77N 55.77E</td><td>씬 중앙의 랜드마크. 지하 "미사일 도시" 보도 반영 — 발사 이벤트 출점</td></tr>
+        <tr><td>호르무즈섬 · 라라크섬 · 헹감섬</td><td class="num">27.07/26.85/26.65N</td><td>이란 전초기지 3개 — 라라크는 최협부 기준점</td></tr>
+        <tr><td>무산담 반도 · 쿰자르 곶 (오만)</td><td class="num">26.38N 56.41E</td><td>남쪽 관문. 피오르 지형이 씬의 조형적 하이라이트</td></tr>
+        <tr><td>해협 최협부 — 21해리(39km)</td><td class="num">라라크~무산담</td><td>병목 배치 구역. 게임의 무대 중심</td></tr>
+        <tr><td>IMO 통항분리대 (TSS)</td><td class="num">폭 2해리 ×2 + 버퍼 2해리</td><td>유조선이 실제로 다니는 길 — <strong>오만 영해 쪽</strong>으로 그린다 (실구조)</td></tr>
+        <tr><td>그레이트 쿠오인(As Salamah)섬</td><td class="num">26.50N 56.51E</td><td>걸프 진입 전통 웨이포인트 — TSS 진입점 표지</td></tr>
+        <tr><td>아부무사 · 대툰브 · 소툰브</td><td class="num">25.87/26.25/26.23N</td><td>이란 실효지배 분쟁 도서 — 고속정·기뢰 거점, 특수부대 카드의 표적</td></tr>
+        <tr><td>카사브 (오만) · 반다르렝게 (이란)</td><td class="num">26.18N / 26.56N</td><td>연안 도시 불빛 + 오만 중재 채널의 시각 앵커</td></tr>
+        <tr><td>두바이 · 샤르자 · 라스알카이마</td><td class="num">25.20~25.79N</td><td>UAE 해안 불빛 라인 — "지켜야 할 세계 경제"의 시각화</td></tr>
+        <tr><td>푸자이라 (UAE 동해안)</td><td class="num">25.13N 56.33E</td><td>우회 송유관 종점 — 경제 카드 연출 지점</td></tr>
+        <tr><td>클라렌스 해협 (케심~본토 수로)</td><td class="num">26.85N 55.9E</td><td>IRGC 고속정 스웜의 출몰 수로 (실제 활동 구역)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note calm">
+    <span class="lab">지도 밖 전략 표적 — 엣지 비콘</span>
+    <p>바레인 5함대(서쪽 약 260km) · 알우데이드(서쪽) · 이스파한/나탄즈/포르도(북쪽 약 300km+) · 자스크(동쪽 150km) · 후티/바브엘만데브(남서 원거리)는 씬에 넣지 않는다. 대신 <strong>화면 가장자리에 방향 화살표+거리 비콘</strong>으로 표시하고, 관련 이벤트(B-2 폭격, 기지 피격) 때 카메라가 가장자리로 팬 하면 미니 인서트 씬이 3초 재생된다. 씬을 좁게 유지해야 화려함의 밀도가 산다.</p>
+  </div>
+
+  <h3>실 해안선 데이터 파이프라인 (빌드 타임 1회)</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th class="num">#</th><th>단계</th><th>도구·산출물</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td>해안선 원본 확보 — Natural Earth 10m 또는 OSM coastline에서 씬 경계로 클리핑</td><td>GeoJSON (이란 해안·케심·무산담/UAE·도서 7개)</td></tr>
+        <tr><td class="num">2</td><td>단순화 — mapshaper로 5~8% 단순화 (로우폴리 미감과 성능을 동시에)</td><td>폴리곤당 정점 80~300개</td></tr>
+        <tr><td class="num">3</td><td>투영·정규화 — 등장방형 투영, 위도 26.15° 보정(경도 1°=99km), 씬 단위 km</td><td><span class="mono">data/coastline.json</span></td></tr>
+        <tr><td class="num">4</td><td>three.js 로드 — Shape → ExtrudeGeometry(높이 1.5km 과장) + 정점 노이즈로 벼랑 질감</td><td>육지 메시 3그룹 + 도서 7</td></tr>
+        <tr><td class="num">5</td><td>수기 데이터 — TSS 레인·도시 불빛·기지·최협부 라벨은 이 문서의 검증 좌표를 하드코딩</td><td><span class="mono">data/geo_features.json</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>런타임 외부 요청 0 — 전부 저장소에 동봉. 라이선스는 Natural Earth(퍼블릭 도메인) 또는 OSM(ODbL, 출처 표기)로 README에 명기한다.</p>
+</section>
+
+<!-- 05 -->
+<section id="c05">
+  <span class="sec-no">SECTION 05</span>
+  <h2>전장 꾸미기 — 화려함의 레시피</h2>
+  <p class="oneline">한 줄 요약 — 화려함은 물량이 아니라 <b>발광의 규율</b>에서 나온다. 어두운 황혼 바다 위에서 빛나는 것만 빛나게 — 8개 레이어로 조립한다.</p>
+
+  <ol class="stack">
+    <li><b>하늘 — 걸프의 매직아워</b><em>그라데이션 돔 (남색 → 지평선 호박). 본편은 황혼 고정, 재연 챕터는 야간. 조명 셋업 1벌로 최대 효과.</em></li>
+    <li><b>바다 — 단일 패스 셰이더</b><em>64×64 플레인 1장에 버텍스 웨이브+프레넬+홀로그램 그리드+스캔 글로우를 <strong>한 프래그먼트에서 합성</strong>. 반투명 레이어를 겹치지 않는다(모바일 오버드로 함정 — 검증됨).</em></li>
+    <li><b>육지 — 로우폴리 실지형</b><em>실 해안선 압출 + 무산담 피오르는 정점 노이즈로 벼랑 표현. 무광 다크, 능선만 림 라이트 — 바다의 빛을 돋보이게 하는 어둠 담당.</em></li>
+    <li><b>차트 라인 — 전술 정보의 미학</b><em>TSS 점선 레인, 영해선, 등심선, 사거리 부채꼴, 배치 구역 링. 해도(海圖) 그래픽 자체가 장식이 된다.</em></li>
+    <li><b>도시 불빛 — 살아있는 세계</b><em>반다르아바스·두바이·카사브 등 8개 클러스터, emissive 점 무리 + 은은한 명멸. 전쟁 중에도 세계는 켜져 있다.</em></li>
+    <li><b>유닛 + 글로우 — 화려함의 본체</b><em>실루엣 로우폴리 위에 <strong>가산합성 글로우 스프라이트</strong>(모바일 블룸의 표준 대체 — 검증됨). 아군 청록·이란 호박·민간 백색. 유닛 아래엔 블롭 셰도우(그림자맵 대신 — 검증됨).</em></li>
+    <li><b>궤적·파티클 — 순간의 드라마</b><em>미사일은 커스텀 리본 쿼드(페이드 통제)+발광 헤드, 요격 성공 시 백색 섬광 링. 폭발·연기·웨이크는 공용 파티클 풀 (동시 총 4,000개 상한 — 검증됨).</em></li>
+    <li><b>화면 밖 마감 — CSS 합성</b><em>스캔라인·비네트·막(ACT) 색온도 틴트는 전부 CSS 오버레이 — WebGL 비용 0 (검증됨). 확전 상승 순간의 적색 플래시도 CSS.</em></li>
+  </ol>
+
+  <h3>카메라 — 방송 연출 6패턴</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>패턴</th><th>언제</th><th>움직임</th></tr></thead>
+      <tbody>
+        <tr><td>순항 궤도</td><td>평시 (기본)</td><td>해협을 25~35° 부감으로 느리게 도는 크레인 샷. 유조선 흐름을 따라간다</td></tr>
+        <tr><td>이벤트 줌</td><td>이란의 수 발생</td><td>1.2초 이징으로 사건 좌표 줌인 + 살짝 낮은 앵글 (긴박감)</td></tr>
+        <tr><td>슬로 푸시인</td><td>결정 패널 표시 중</td><td>0.5배속 슬로모션 + 천천히 밀어들어감 — 고민의 시간</td></tr>
+        <tr><td>발사 추적</td><td>미사일·B-2 연출</td><td>발사체 후방 3/4 추적 샷 → 임팩트 직전 측면 컷</td></tr>
+        <tr><td>엣지 팬</td><td>지도 밖 이벤트</td><td>가장자리 비콘 방향으로 팬 + 미니 인서트 3초</td></tr>
+        <tr><td>피날레 부감</td><td>막 전환·엔딩</td><td>고고도 수직 부감으로 전장 전체 — 스크린샷 유도 샷</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 06 -->
+<section id="c06">
+  <span class="sec-no">SECTION 06</span>
+  <h2>3D 오브젝트 확정 목록</h2>
+  <p class="oneline">한 줄 요약 — 고유 모델 <b>16종</b> + 환경 메시 <b>10벌</b> + 공용 이펙트 <b>10벌</b>. 최악 동시 표시 <b>약 4.6만 삼각형</b> — 예산(12만)의 40%로 여유 확보.</p>
+
+  <div class="scroll">
+    <table>
+      <caption>A. 환경 — 10벌</caption>
+      <thead><tr><th>오브젝트</th><th class="num">수량</th><th class="num">폴리 예산</th><th>비주얼 처리</th><th class="num">우선</th></tr></thead>
+      <tbody>
+        <tr><td>바다 플레인 (단일 패스 셰이더)</td><td class="num">1</td><td class="num">8,192</td><td>웨이브+프레넬+그리드 합성</td><td class="num p1">1차</td></tr>
+        <tr><td>이란 본토 해안 메시</td><td class="num">1</td><td class="num">3,000</td><td>실지형 압출 + 림 라이트</td><td class="num p1">1차</td></tr>
+        <tr><td>무산담+UAE 해안 메시</td><td class="num">1</td><td class="num">2,500</td><td>피오르 정점 노이즈</td><td class="num p1">1차</td></tr>
+        <tr><td>케심섬 메시</td><td class="num">1</td><td class="num">800</td><td>동단에 도시 불빛 연결</td><td class="num p1">1차</td></tr>
+        <tr><td>소도서 (호르무즈·라라크·헹감·아부무사·대/소툰브·쿠오인)</td><td class="num">7</td><td class="num">120×7</td><td>이란 전초는 호박 마커 병설</td><td class="num p1">1차</td></tr>
+        <tr><td>TSS 레인 라인 (입항·출항+버퍼)</td><td class="num">3</td><td class="num">라인</td><td>점선 셰이더, 통항률 따라 명도</td><td class="num p1">1차</td></tr>
+        <tr><td>구역 오버레이 (기뢰 위험·배치 존·사거리 부채꼴)</td><td class="num">6</td><td class="num">데칼</td><td>해칭/링, 상황부 표시</td><td class="num p1">1차</td></tr>
+        <tr><td>도시 불빛 클러스터</td><td class="num">8</td><td class="num">점 스프라이트</td><td>emissive 명멸</td><td class="num p1">1차</td></tr>
+        <tr><td>하늘 그라데이션 돔</td><td class="num">1</td><td class="num">200</td><td>황혼/야간 2프리셋</td><td class="num p1">1차</td></tr>
+        <tr><td>엣지 비콘 (지도 밖 표적 화살)</td><td class="num">5</td><td class="num">HUD</td><td>바레인·알우데이드·핵시설·자스크·후티</td><td class="num p2">후속</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="scroll">
+    <table>
+      <caption>B. 미군 유닛 — 모델 9종</caption>
+      <thead><tr><th>유닛 (실물)</th><th class="num">동시 최대</th><th class="num">폴리/기</th><th>비주얼 포인트</th><th class="num">우선</th></tr></thead>
+      <tbody>
+        <tr><td>항모 CVN (니미츠급)</td><td class="num">1</td><td class="num">800</td><td>비행갑판 스트로브 + 호위 링 이펙트</td><td class="num p1">1차</td></tr>
+        <tr><td>이지스 구축함 DDG (알레이버크급)</td><td class="num">4</td><td class="num">600</td><td>요격 시 VLS 섬광</td><td class="num p1">1차</td></tr>
+        <tr><td>LCS 소해함</td><td class="num">2</td><td class="num">500</td><td>소해 시 스캔 부채꼴</td><td class="num p1">1차</td></tr>
+        <tr><td>공격 잠수함 SSN (버지니아급)</td><td class="num">1</td><td class="num">400</td><td>반투명 + 점선 궤적 (은닉 표현)</td><td class="num p1">1차</td></tr>
+        <tr><td>F/A-18 편대 마커 (3기 묶음)</td><td class="num">3편대</td><td class="num">350</td><td>항적운 리본</td><td class="num p1">1차</td></tr>
+        <tr><td>B-2 폭격기</td><td class="num">1</td><td class="num">300</td><td>전익 실루엣 + 투하 연출 전용</td><td class="num p1">1차</td></tr>
+        <tr><td>초계기 P-8A/MQ-9 (공용 모델)</td><td class="num">2</td><td class="num">300</td><td>스캔 스윕 원뿔</td><td class="num p1">1차</td></tr>
+        <tr><td>MH-60R 헬기</td><td class="num">2</td><td class="num">350</td><td>로터 디스크 블러 원판</td><td class="num p2">후속</td></tr>
+        <tr><td>무인소해정 USV</td><td class="num">3</td><td class="num">150</td><td>소해 미니게임의 조작 대상</td><td class="num p1">1차</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="scroll">
+    <table>
+      <caption>C. 이란 유닛 — 모델 6종 (인스턴싱)</caption>
+      <thead><tr><th>유닛 (실물)</th><th class="num">동시 최대</th><th class="num">폴리/기</th><th>비주얼 포인트</th><th class="num">우선</th></tr></thead>
+      <tbody>
+        <tr><td>IRGC 고속정 (InstancedMesh)</td><td class="num">40</td><td class="num">150</td><td>V자 웨이크 + 스웜 군집 기동</td><td class="num p1">1차</td></tr>
+        <tr><td>연안 미사일 포대 TEL</td><td class="num">6</td><td class="num">300</td><td>사거리 부채꼴 + 발사 섬광</td><td class="num p1">1차</td></tr>
+        <tr><td>기뢰 (InstancedMesh)</td><td class="num">60</td><td class="num">60</td><td>수면하 반투명 + EM-52는 적색 명멸</td><td class="num p1">1차</td></tr>
+        <tr><td>가디르급 잠수정</td><td class="num">2</td><td class="num">250</td><td>반투명 + 어뢰 항적</td><td class="num p2">후속</td></tr>
+        <tr><td>샤헤드-136 드론 (InstancedMesh)</td><td class="num">20</td><td class="num">120</td><td>점선 진입 궤적 — 파상공세의 공포</td><td class="num p1">1차</td></tr>
+        <tr><td>미사일 발사체 (공용, 풀링)</td><td class="num">12</td><td class="num">80</td><td>리본 궤적 + 발광 헤드 (탄도/순항/대함 공용)</td><td class="num p1">1차</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="scroll">
+    <table>
+      <caption>D. 민간 + E. 공용 이펙트</caption>
+      <thead><tr><th>오브젝트</th><th class="num">수량</th><th>처리</th><th class="num">우선</th></tr></thead>
+      <tbody>
+        <tr><td>유조선 (InstancedMesh) — 통항률의 시각화</td><td class="num">12</td><td>250폴리/척 · TSS 레인 따라 항행, 개수=통항률</td><td class="num p1">1차</td></tr>
+        <tr><td>글로우 스프라이트 아틀라스 (전 유닛 공용)</td><td class="num">텍스처 1장</td><td>가산합성 — 모바일 블룸 대체 표준</td><td class="num p1">1차</td></tr>
+        <tr><td>미사일 리본 궤적 풀</td><td class="num">12</td><td>커스텀 쿼드 스트립 (Line2보다 가볍고 페이드 자유)</td><td class="num p1">1차</td></tr>
+        <tr><td>파티클 풀 (폭발·연기·물기둥·웨이크)</td><td class="num">1풀 ≤4,000</td><td>THREE.Points 단일 버퍼 재사용</td><td class="num p1">1차</td></tr>
+        <tr><td>요격 섬광 링</td><td class="num">8</td><td>확장 링 + 백색 플래시</td><td class="num p1">1차</td></tr>
+        <tr><td>레이더 스윕 부채꼴</td><td class="num">2</td><td>회전 그라데이션 섹터</td><td class="num p2">후속</td></tr>
+        <tr><td>봉쇄 배리어 벽</td><td class="num">1</td><td>반투명 적색 평면 — '절박' 전용 연출</td><td class="num p2">후속</td></tr>
+        <tr><td>블롭 셰도우 (전 유닛)</td><td class="num">인스턴스</td><td>원형 그라데이션 데칼 — 그림자맵 대체</td><td class="num p1">1차</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note calm">
+    <span class="lab">예산 검산 (최악 동시 표시)</span>
+    <p>환경 ~1.5만 + 인스턴스 함대(고속정 6,000 · 기뢰 3,600 · 유조선 3,000 · 샤헤드 2,400) + 개별 유닛 ~8,000 + 이펙트 ~5,000 = <strong>약 4.6만 삼각형, 드로콜 ~45회</strong>. 검증된 중급 폰 예산(삼각형 12만 · 드로콜 90)의 절반 이하 — 화려함을 더 얹을 여유가 남는다. 원거리 인스턴스는 100폴리 LOD로 스왑.</p>
+  </div>
+</section>
+
+<!-- 07 -->
+<section id="c07">
+  <span class="sec-no">SECTION 07</span>
+  <h2>성능 가드레일 — 검증된 판정표</h2>
+  <p class="oneline">한 줄 요약 — "중급 안드로이드에서 60fps" 기준으로 기법별 가부를 웹검색 교차검증했다. <b>이 표가 구현 시 헌법이다.</b></p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>기법</th><th class="num">판정</th><th>규칙</th></tr></thead>
+      <tbody>
+        <tr><td>가산합성 글로우 스프라이트</td><td class="num up">권장</td><td>블룸 대체 표준. 겹치는 알파 레이어 최대 2장</td></tr>
+        <tr><td>InstancedMesh (고속정·기뢰·유조선·샤헤드)</td><td class="num up">권장</td><td>구역별 분할로 컬링 보정, 이동분만 매트릭스 갱신</td></tr>
+        <tr><td>단일 패스 물 셰이더 (64×64)</td><td class="num up">권장</td><td>프래그먼트 로직 최소화 — 필레이트가 병목</td></tr>
+        <tr><td>CSS 스캔라인·비네트·색 틴트</td><td class="num up">권장</td><td>WebGL 밖 처리, <span class="mono">pointer-events:none</span></td></tr>
+        <tr><td>블롭 셰도우</td><td class="num up">권장</td><td>그라데이션 데칼 — 비용 ≈ 0</td></tr>
+        <tr><td>UnrealBloomPass</td><td class="num">조건부</td><td>고사양 감지 시에만 하프해상도 selective로 ON — 기본 OFF</td></tr>
+        <tr><td>커스텀 리본 궤적 (Line2 대신)</td><td class="num">조건부</td><td>동시 50개 미만이면 Line2도 가능하나 리본이 페이드 통제 우위</td></tr>
+        <tr><td>파티클 풀</td><td class="num">조건부</td><td>동시 총 4,000개 상한, 단일 Points 버퍼 재사용</td></tr>
+        <tr><td>반투명 다층 겹치기</td><td class="num dn">비권장</td><td>홀로그램 효과는 한 셰이더에서 합성 — 레이어 스택 금지</td></tr>
+        <tr><td>동적 그림자맵</td><td class="num dn">비권장</td><td>블롭 셰도우로 대체. 미감도 홀로그램에 안 맞음</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <ul>
+    <li><span class="mono">renderer.setPixelRatio(Math.min(devicePixelRatio, 2))</span> 필수 — 고해상도 폰 필레이트 폭탄 방지.</li>
+    <li>동적 라이트 2~4개(키+보조), 발광은 전부 emissive/스프라이트로. 그림자 캐스터 0.</li>
+    <li>5~10분 플레이 시 GPU 스로틀링 감안 — 첫 벤치보다 20% 여유를 남긴다. 프레임 드랍 감지 시 파티클 상한·글로우 수 자동 하향(3단계 품질 사다리).</li>
+  </ul>
+</section>
+
+<!-- 08 -->
+<section id="c08">
+  <span class="sec-no">SECTION 08</span>
+  <h2>보조 화면 — 같은 씬, 다른 옷</h2>
+  <p class="oneline">한 줄 요약 — 모든 보조 화면은 3D 씬 위 오버레이. 별도 배경 리소스 0.</p>
+  <div class="subs">
+    <div class="sub">
+      <div class="scr"><span><b>HORMUZ</b><br>호르무즈<br><br>[ 시작 ]&nbsp;&nbsp;한 / EN</span></div>
+      <div class="cap"><b>S0 타이틀</b><small>야경 데모 루프 위에 로고. 8초마다 다른 명장면으로 컷 전환 — 방치해도 광고가 된다</small></div>
+    </div>
+    <div class="sub">
+      <div class="scr"><span>2018.5.8<br><b>"미국은 핵합의에서 탈퇴한다"</b><br>─ 헤드라인 몽타주 15초</span></div>
+      <div class="cap"><b>S1 전사 뉴스릴</b><small>연표 지점 점프컷 + 타자기 자막. 스킵 가능</small></div>
+    </div>
+    <div class="sub">
+      <div class="scr"><span>2025.6.21 · 결정 ②<br><b>B-2 폭격을 승인하시겠습니까</b><br>[승인] [연기] [최후통첩]</span></div>
+      <div class="cap"><b>S2 재연 결정</b><small>야간 씬. 선택 후 "실제 역사" 스탬프가 찍힌다</small></div>
+    </div>
+    <div class="sub">
+      <div class="scr"><span>이슬라마바드 2.0<br><b>통항 ── 핵 ── 제재 ── 억류</b><br>성립 게이지 68 / 74</span></div>
+      <div class="cap"><b>S5 협상 테이블</b><small>채도 하강한 씬 위 4조항 슬라이더 + 게이지</small></div>
+    </div>
+    <div class="sub">
+      <div class="scr"><span><b>당신의 전쟁은<br>8월 9일에 끝났다</b><br>호르무즈 협정 · A · 중재자<br>[ 이미지 저장 ] [ 다시 ]</span></div>
+      <div class="cap"><b>S6 엔딩·공유</b><small>1080×1350 카드 생성. 배경은 결말 무드의 정지 씬</small></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p><strong>호르무즈 (HORMUZ)</strong> · 화면 구성서 v1.0 · 2026-07-27 · 기획서 v0.5의 동반 문서</p>
+  <p>좌표는 공개 자료로 검증한 실제 지리이며(오차 반올림 수준), 군사시설 위치는 언론 보도 기반 근사치다. 게임 연출용이며 실제 군사 정보가 아니다.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var C = {};
+  function readTokens(){
+    var cs = getComputedStyle(document.documentElement);
+    ['line','muted','buoy','shoal','text','alarm','good','surface'].forEach(function(k){
+      C[k] = cs.getPropertyValue('--'+k).trim();
+    });
+  }
+
+  /* ══ 1. 실지도 전장 시안 ══ */
+  var mv = document.getElementById('realMap');
+  var LON0=54.9, LON1=57.0, LAT0=25.0, LAT1=27.3;
+  function X(lon){ return (lon-LON0)/(LON1-LON0)*1050; }
+  function Y(lat){ return (LAT1-lat)/(LAT1-LAT0)*1287; }
+
+  var iranCoast=[[54.9,26.72],[55.05,26.68],[55.35,26.76],[55.65,26.88],[55.95,26.96],[56.10,27.05],[56.20,27.12],[56.28,27.19],[56.42,27.16],[56.58,27.10],[56.78,27.08],[57.0,27.13]];
+  var qeshm=[[55.28,26.60],[55.50,26.72],[55.75,26.82],[56.00,26.90],[56.17,26.94],[56.28,26.95],[56.23,26.85],[56.04,26.79],[55.80,26.69],[55.55,26.59],[55.36,26.52]];
+  var arabia=[[54.9,25.02],[55.10,25.09],[55.27,25.20],[55.40,25.36],[55.57,25.52],[55.75,25.65],[55.94,25.79],[56.00,25.92],[56.04,26.06],[56.10,26.14],[56.16,26.20],[56.25,26.18],[56.30,26.28],[56.41,26.38],[56.44,26.28],[56.39,26.12],[56.36,25.92],[56.31,25.72],[56.30,25.55],[56.33,25.30],[56.33,25.13],[56.42,25.0]];
+  var tssIn=[[56.98,26.12],[56.78,26.32],[56.58,26.50],[56.36,26.62],[56.05,26.57],[55.60,26.49],[55.15,26.42],[54.92,26.38]];
+
+  function plotPoly(ctx, pts, close, fill){
+    ctx.beginPath();
+    pts.forEach(function(p,i){ i? ctx.lineTo(X(p[0]),Y(p[1])) : ctx.moveTo(X(p[0]),Y(p[1])); });
+    if(close) ctx.closePath();
+    if(fill){ ctx.fill(); }
+    ctx.stroke();
+  }
+
+  function drawMap(){
+    if(!mv) return;
+    var ctx = mv.getContext('2d'), W=mv.width, H=mv.height;
+    ctx.clearRect(0,0,W,H);
+
+    /* 경위선 격자 */
+    ctx.strokeStyle=C.line; ctx.lineWidth=1; ctx.globalAlpha=.6;
+    ctx.font='11px Consolas, monospace'; ctx.fillStyle=C.muted;
+    for(var lon=55; lon<=57; lon+=0.5){
+      ctx.beginPath(); ctx.moveTo(X(lon),0); ctx.lineTo(X(lon),H); ctx.stroke();
+      if(lon%1===0) ctx.fillText(lon+'°E', X(lon)+4, 16);
+    }
+    for(var lat=25; lat<=27.25; lat+=0.5){
+      ctx.beginPath(); ctx.moveTo(0,Y(lat)); ctx.lineTo(W,Y(lat)); ctx.stroke();
+      if(lat%1===0) ctx.fillText(lat+'°N', 6, Y(lat)-5);
+    }
+    ctx.globalAlpha=1;
+
+    /* 육지 */
+    ctx.lineWidth=2; ctx.strokeStyle=C.text;
+    var landFill = C.surface;
+    ctx.globalAlpha=.9;
+    /* 이란 본토 (상단 폐합) */
+    ctx.fillStyle=landFill;
+    ctx.beginPath();
+    iranCoast.forEach(function(p,i){ i? ctx.lineTo(X(p[0]),Y(p[1])) : ctx.moveTo(X(p[0]),Y(p[1])); });
+    ctx.lineTo(W,0); ctx.lineTo(0,0); ctx.closePath(); ctx.fill(); ctx.stroke();
+    /* 아라비아 반도 (하단 폐합) */
+    ctx.beginPath();
+    arabia.forEach(function(p,i){ i? ctx.lineTo(X(p[0]),Y(p[1])) : ctx.moveTo(X(p[0]),Y(p[1])); });
+    ctx.lineTo(X(56.42),H); ctx.lineTo(0,H); ctx.closePath(); ctx.fill(); ctx.stroke();
+    /* 케심섬 */
+    plotPoly(ctx, qeshm, true, true);
+    ctx.globalAlpha=1;
+
+    /* 소도서 */
+    function isle(lon,lat,r,label,dx,dy){
+      ctx.fillStyle=landFill; ctx.strokeStyle=C.text; ctx.lineWidth=1.6;
+      ctx.beginPath(); ctx.arc(X(lon),Y(lat),r,0,Math.PI*2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle=C.muted; ctx.font='600 12px "Malgun Gothic", sans-serif';
+      ctx.fillText(label, X(lon)+(dx||10), Y(lat)+(dy||4));
+    }
+    isle(56.46,27.07,8,'호르무즈',10,-2);
+    isle(56.3556,26.8533,8,'라라크',11,10);
+    isle(55.8789,26.6486,6,'헹감',-46,14);
+    isle(55.033,25.867,7,'아부무사',10,4);
+    isle(55.267,26.25,6,'대툰브',9,-4);
+    isle(55.133,26.233,5,'소툰브',-58,12);
+    isle(56.5117,26.5044,4,'쿠오인',8,4);
+
+    /* TSS 레인 (입항/출항) */
+    ctx.strokeStyle=C.buoy; ctx.lineWidth=2; ctx.setLineDash([9,7]); ctx.globalAlpha=.85;
+    plotPoly(ctx, tssIn, false, false);
+    var tssOut = tssIn.map(function(p){ return [p[0]-0.02, p[1]-0.075]; });
+    plotPoly(ctx, tssOut, false, false);
+    ctx.setLineDash([]); ctx.globalAlpha=1;
+    ctx.fillStyle=C.buoy; ctx.font='600 12px Consolas, monospace';
+    ctx.fillText('TSS 입항 레인 (2nm)', X(55.62)-40, Y(26.49)-10);
+    ctx.fillText('TSS 출항 레인 (2nm)', X(55.60)-40, Y(26.40)+22);
+
+    /* 기뢰 위험구역 */
+    ctx.save();
+    ctx.translate(X(56.24),Y(26.66)); ctx.rotate(-0.18);
+    ctx.beginPath(); ctx.ellipse(0,0,118,52,0,0,Math.PI*2); ctx.clip();
+    ctx.strokeStyle=C.alarm; ctx.globalAlpha=.45; ctx.lineWidth=1.4;
+    for(var i=-6;i<8;i++){ ctx.beginPath(); ctx.moveTo(-140+i*26,70); ctx.lineTo(-60+i*26,-70); ctx.stroke(); }
+    ctx.restore();
+    ctx.strokeStyle=C.alarm; ctx.globalAlpha=.85; ctx.lineWidth=1.6;
+    ctx.save(); ctx.translate(X(56.24),Y(26.66)); ctx.rotate(-0.18);
+    ctx.beginPath(); ctx.ellipse(0,0,118,52,0,0,Math.PI*2); ctx.stroke(); ctx.restore();
+    ctx.fillStyle=C.alarm; ctx.font='700 12px Consolas, monospace';
+    ctx.fillText('MINEFIELD 기뢰 위험구역', X(56.02), Y(26.76)-6);
+    ctx.globalAlpha=1;
+
+    /* 최협부 측선 */
+    ctx.strokeStyle=C.muted; ctx.lineWidth=1.2; ctx.setLineDash([3,4]);
+    ctx.beginPath(); ctx.moveTo(X(56.3556),Y(26.80)); ctx.lineTo(X(56.41),Y(26.42)); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=C.muted; ctx.font='11px Consolas, monospace';
+    ctx.fillText('최협부 21nm', X(56.42), Y(26.62));
+
+    /* 이란 미사일 사거리 부채꼴 */
+    ctx.strokeStyle=C.buoy; ctx.globalAlpha=.5; ctx.lineWidth=1.4;
+    ctx.beginPath(); ctx.moveTo(X(56.20),Y(27.10));
+    ctx.arc(X(56.20),Y(27.10), 190, Math.PI*0.25, Math.PI*0.75); ctx.closePath(); ctx.stroke();
+    ctx.globalAlpha=1;
+
+    /* 도시·기지 마커 */
+    function port(lon,lat,label,color,dx,dy){
+      ctx.fillStyle=color;
+      ctx.fillRect(X(lon)-4,Y(lat)-4,8,8);
+      ctx.font='600 12.5px "Malgun Gothic", sans-serif';
+      ctx.fillText(label, X(lon)+(dx||9), Y(lat)+(dy||5));
+    }
+    port(56.2808,27.1865,'반다르아바스 (이란 남부함대)', C.buoy, 10, -4);
+    port(54.8807,26.5579,'반다르렝게', C.muted, 8, -6);
+    port(56.2478,26.1786,'카사브 (오만)', C.muted, -104, 4);
+    port(55.2708,25.2048,'두바이', C.muted, 9, 5);
+    port(55.9432,25.7895,'라스알카이마', C.muted, -114, 5);
+    port(56.3265,25.1288,'푸자이라 (우회 송유 종점)', C.shoal, -180, 16);
+    /* 케심 미사일 도시 */
+    ctx.fillStyle=C.alarm;
+    ctx.beginPath(); ctx.moveTo(X(55.85),Y(26.80)-7); ctx.lineTo(X(55.85)+6,Y(26.80)+4); ctx.lineTo(X(55.85)-6,Y(26.80)+4); ctx.closePath(); ctx.fill();
+    ctx.font='11.5px "Malgun Gothic", sans-serif';
+    ctx.fillText('케심 지하 미사일 기지(보도)', X(55.85)-70, Y(26.80)+22);
+
+    /* 미군 CSG (오만만측) */
+    var cx=X(56.72), cy=Y(26.02);
+    ctx.strokeStyle=C.shoal; ctx.globalAlpha=.5;
+    ctx.beginPath(); ctx.arc(cx,cy,30,0,Math.PI*2); ctx.stroke(); ctx.globalAlpha=1;
+    ctx.fillStyle=C.shoal;
+    [[0,0,9],[26,12,5],[-24,14,5],[4,-26,5]].forEach(function(u){
+      ctx.beginPath(); ctx.moveTo(cx+u[0],cy+u[1]-u[2]); ctx.lineTo(cx+u[0]+u[2]*.8,cy+u[1]+u[2]); ctx.lineTo(cx+u[0]-u[2]*.8,cy+u[1]+u[2]); ctx.closePath(); ctx.fill();
+    });
+    ctx.font='700 12.5px Consolas, monospace';
+    ctx.fillText('CSG 항모전단 (배치 예시)', cx-70, cy+52);
+
+    /* IRGC 스웜 (클라렌스 해협) */
+    ctx.fillStyle=C.buoy;
+    [[55.92,26.88],[55.97,26.90],[56.02,26.87],[55.95,26.84],[56.06,26.90]].forEach(function(p,i){
+      ctx.globalAlpha=.55+(i%3)*.15;
+      ctx.beginPath(); ctx.arc(X(p[0]),Y(p[1]),3.4,0,Math.PI*2); ctx.fill();
+    });
+    ctx.globalAlpha=1;
+    ctx.font='11.5px "Malgun Gothic", sans-serif';
+    ctx.fillText('IRGC 스웜 출몰 수로', X(55.70)-30, Y(26.93)-8);
+
+    /* 유조선 3척 */
+    ctx.fillStyle=C.text;
+    [[56.70,26.38],[56.20,26.585],[55.40,26.45]].forEach(function(p,i){
+      ctx.globalAlpha= i===1? .95 : .5;
+      ctx.beginPath(); ctx.ellipse(X(p[0]),Y(p[1]),8,3.5,-0.15,0,Math.PI*2); ctx.fill();
+    });
+    ctx.globalAlpha=1;
+
+    /* 엣지 비콘 */
+    ctx.fillStyle=C.muted; ctx.font='600 11.5px Consolas, monospace';
+    ctx.fillText('← 바레인 5함대 260km · 알우데이드', 14, Y(26.15));
+    ctx.fillText('↑ 이스파한·나탄즈 300km+', X(55.9), 34);
+    ctx.fillText('자스크 150km →', W-150, Y(25.75));
+    ctx.fillText('↙ 후티 · 바브엘만데브 (원거리)', 14, H-46);
+
+    /* 지명 대라벨 + 스케일바 */
+    ctx.fillStyle=C.muted; ctx.font='700 17px Consolas, monospace';
+    ctx.fillText('IRAN', X(55.1), Y(27.06));
+    ctx.fillText('OMAN (MUSANDAM)', X(56.02), Y(25.86));
+    ctx.fillText('U.A.E.', X(55.05), Y(25.35));
+    ctx.fillStyle=C.buoy; ctx.font='700 15px Consolas, monospace';
+    ctx.fillText('STRAIT OF HORMUZ', X(56.30), Y(26.30));
+    /* scale: 50km = 50/99*1° lon */
+    var sx=X(55.0), sy=H-24, sw=X(55.0+50/99)-sx;
+    ctx.strokeStyle=C.text; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(sx,sy); ctx.lineTo(sx+sw,sy); ctx.stroke();
+    ctx.fillStyle=C.muted; ctx.font='11px Consolas, monospace';
+    ctx.fillText('50 km', sx+sw/2-16, sy-6);
+  }
+
+  /* ══ 2. 본편 화면 목업 배경 (황혼 전장) ══ */
+  var bv = document.getElementById('battleView');
+  function drawBattle(){
+    if(!bv) return;
+    var ctx = bv.getContext('2d'), W=bv.width, H=bv.height, HZ=176;
+    /* 하늘 */
+    var sky = ctx.createLinearGradient(0,0,0,HZ);
+    sky.addColorStop(0,'#0a1420'); sky.addColorStop(.62,'#1b3050'); sky.addColorStop(1,'#8a4d20');
+    ctx.fillStyle=sky; ctx.fillRect(0,0,W,HZ);
+    /* 태양 잔광 */
+    var sun = ctx.createRadialGradient(W*.38,HZ,4, W*.38,HZ,180);
+    sun.addColorStop(0,'rgba(232,162,74,.85)'); sun.addColorStop(1,'rgba(232,162,74,0)');
+    ctx.fillStyle=sun; ctx.fillRect(0,0,W,HZ+60);
+    /* 바다 */
+    var sea = ctx.createLinearGradient(0,HZ,0,H);
+    sea.addColorStop(0,'#33230f'); sea.addColorStop(.18,'#122436'); sea.addColorStop(1,'#081420');
+    ctx.fillStyle=sea; ctx.fillRect(0,HZ,W,H-HZ);
+    /* 원근 그리드 */
+    ctx.strokeStyle='rgba(79,168,175,.28)'; ctx.lineWidth=1;
+    var vx=W*.46;
+    for(var i=-14;i<=14;i++){
+      ctx.beginPath(); ctx.moveTo(vx+i*26,HZ+4); ctx.lineTo(vx+i*150,H); ctx.stroke();
+    }
+    for(var r=0;r<9;r++){
+      var yy=HZ+6+Math.pow(r/8,1.8)*(H-HZ-6);
+      ctx.globalAlpha=.14+.16*(r/8);
+      ctx.beginPath(); ctx.moveTo(0,yy); ctx.lineTo(W,yy); ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+    /* 무산담 실루엣 (우측) */
+    ctx.fillStyle='#0c1826';
+    ctx.beginPath();
+    ctx.moveTo(W,HZ-58);
+    [[W-60,HZ-44],[W-130,HZ-52],[W-200,HZ-30],[W-260,HZ-38],[W-330,HZ-16],[W-400,HZ-6]].forEach(function(p){ctx.lineTo(p[0],p[1]);});
+    ctx.lineTo(W-430,HZ+2); ctx.lineTo(W,HZ+2); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle='rgba(232,162,74,.5)'; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.moveTo(W-430,HZ+1);
+    [[W-400,HZ-6],[W-330,HZ-16],[W-260,HZ-38],[W-200,HZ-30],[W-130,HZ-52],[W-60,HZ-44],[W,HZ-58]].forEach(function(p){ctx.lineTo(p[0],p[1]);});
+    ctx.stroke();
+    /* 이란 해안 실루엣 (좌측) + 도시 불빛 */
+    ctx.fillStyle='#0c1826';
+    ctx.beginPath(); ctx.moveTo(0,HZ-34);
+    [[70,HZ-26],[150,HZ-40],[230,HZ-18],[300,HZ-8]].forEach(function(p){ctx.lineTo(p[0],p[1]);});
+    ctx.lineTo(330,HZ+2); ctx.lineTo(0,HZ+2); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='rgba(232,190,120,.9)';
+    for(var d=0;d<14;d++){ ctx.globalAlpha=.35+((d*37)%10)/16; ctx.fillRect(28+d*17,HZ-8-((d*13)%9),2,2); }
+    ctx.globalAlpha=1;
+
+    function glow(x,y,r,color){
+      var g=ctx.createRadialGradient(x,y,0,x,y,r);
+      g.addColorStop(0,color); g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+    }
+    /* 유조선 행렬 (백색) */
+    [[180,H-108],[330,H-136],[500,H-158]].forEach(function(p,i){
+      glow(p[0],p[1],16,'rgba(220,235,245,.5)');
+      ctx.fillStyle='#dce7ef'; ctx.globalAlpha=.9;
+      ctx.beginPath(); ctx.ellipse(p[0],p[1],14-i*2,4.5,-.06,0,Math.PI*2); ctx.fill();
+      ctx.globalAlpha=1;
+    });
+    /* 항모전단 (청록) */
+    var fx=W*.40, fy=H-70;
+    glow(fx,fy,60,'rgba(79,168,175,.4)');
+    ctx.fillStyle='#4fa8af';
+    ctx.beginPath(); ctx.moveTo(fx-34,fy+8); ctx.lineTo(fx+40,fy-2); ctx.lineTo(fx+30,fy+14); ctx.lineTo(fx-26,fy+20); ctx.closePath(); ctx.fill();
+    [[fx-90,fy+26,6],[fx+96,fy+18,6],[fx+30,fy-34,5]].forEach(function(u){
+      glow(u[0],u[1],20,'rgba(79,168,175,.55)');
+      ctx.beginPath(); ctx.moveTo(u[0],u[1]-u[2]); ctx.lineTo(u[0]+u[2]*.9,u[1]+u[2]); ctx.lineTo(u[0]-u[2]*.9,u[1]+u[2]); ctx.closePath(); ctx.fill();
+    });
+    /* IRGC 스웜 (호박, 우측에서 접근) */
+    ctx.fillStyle='#e8a24a';
+    [[W-180,H-96],[W-150,H-118],[W-210,H-124],[W-120,H-100],[W-170,H-146],[W-235,H-104]].forEach(function(p,i){
+      glow(p[0],p[1],14,'rgba(232,162,74,.5)');
+      ctx.globalAlpha=.75+(i%2)*.25;
+      ctx.beginPath(); ctx.moveTo(p[0],p[1]-6); ctx.lineTo(p[0]+5,p[1]+5); ctx.lineTo(p[0]-5,p[1]+5); ctx.closePath(); ctx.fill();
+      /* 웨이크 */
+      ctx.strokeStyle='rgba(232,162,74,.3)'; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(p[0]+4,p[1]+8); ctx.lineTo(p[0]+30,p[1]+22); ctx.stroke();
+    });
+    ctx.globalAlpha=1;
+    /* 미사일 궤적 + 요격 섬광 */
+    ctx.strokeStyle='rgba(232,162,74,.9)'; ctx.lineWidth=2.4;
+    ctx.beginPath(); ctx.moveTo(250,HZ-30); ctx.quadraticCurveTo(430,40,620,H-160); ctx.stroke();
+    ctx.strokeStyle='rgba(79,168,175,.9)'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(fx+20,fy-14); ctx.lineTo(614,H-166); ctx.stroke();
+    glow(620,H-160,44,'rgba(255,236,210,.95)');
+    glow(620,H-160,90,'rgba(224,102,90,.5)');
+    ctx.strokeStyle='#fff0dc'; ctx.lineWidth=2.6;
+    ctx.beginPath(); ctx.moveTo(606,H-174); ctx.lineTo(634,H-146); ctx.moveTo(634,H-174); ctx.lineTo(606,H-146); ctx.stroke();
+    /* 샤헤드 점선 진입 */
+    ctx.strokeStyle='rgba(232,162,74,.55)'; ctx.setLineDash([4,7]); ctx.lineWidth=1.6;
+    ctx.beginPath(); ctx.moveTo(70,HZ-20); ctx.quadraticCurveTo(300,120,540,H-210); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  function drawAll(){ readTokens(); drawMap(); drawBattle(); }
+  drawAll();
+  new MutationObserver(drawAll).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  var mq=window.matchMedia('(prefers-color-scheme: dark)');
+  (mq.addEventListener?mq.addEventListener.bind(mq,'change'):mq.addListener.bind(mq))(drawAll);
+})();
+</script>
+<!--ARTIFACT-END-->
+</body>
+</html>

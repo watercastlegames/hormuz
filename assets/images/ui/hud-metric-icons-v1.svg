@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="64" viewBox="0 0 512 64" fill="none">
+  <defs>
+    <linearGradient id="cyan" x1="8" y1="5" x2="54" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D8FEFF"/>
+      <stop offset=".48" stop-color="#68E5F2"/>
+      <stop offset="1" stop-color="#2694B4"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="1.3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g stroke="url(#cyan)" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+    <g transform="translate(0)">
+      <path d="M9 43h46M13 43l6 8h26l6-8M18 37h28l5 6H13l5-6Z"/>
+      <path d="M23 36V18h18v18M27 18V11h10v7M19 51c4 3 8 3 12 0 4 3 8 3 12 0"/>
+    </g>
+    <g transform="translate(64)">
+      <path d="M18 11h25v40H18zM22 16h17v13H22zM25 35h12M25 41h12"/>
+      <path d="M43 19h4c4 0 6 3 6 7v13c0 3-2 5-5 5h-5M49 23v8"/>
+    </g>
+    <g transform="translate(128)">
+      <path d="M12 51V27h11v24M27 51V18h11v33M42 51V11h11v40"/>
+      <path d="M10 23l12-9 10 5 20-12M47 7h5v5"/>
+    </g>
+    <g transform="translate(192)">
+      <circle cx="32" cy="31" r="21"/>
+      <path d="M11 31h42M32 10c7 7 11 14 11 21s-4 15-11 21M32 10c-7 7-11 14-11 21s4 15 11 21"/>
+    </g>
+    <g transform="translate(256)">
+      <path d="M14 51V22h10v29M27 51V13h10v38M40 51V27h10v24"/>
+      <path d="M17 17l4-8 4 8M30 8l4-6 4 6M43 22l4-8 4 8"/>
+    </g>
+    <g transform="translate(320)">
+      <path d="M11 49l11-13 8 7 17-22 6 5"/>
+      <path d="M14 51h37M16 40v11M25 32v19M34 39v12M43 25v26M52 20v31"/>
+    </g>
+    <g transform="translate(384)">
+      <circle cx="32" cy="32" r="22"/>
+      <path d="M32 15v34M42 21c-3-3-6-5-11-5-6 0-10 3-10 8 0 12 22 5 22 17 0 5-4 8-11 8-5 0-9-2-12-5"/>
+    </g>
+    <g transform="translate(448)">
+      <path d="M11 47V22l21-11 21 11v25L32 56 11 47Z"/>
+      <path d="M20 41V30l12-6 12 6v11l-12 7-12-7Z"/>
+      <path d="M32 11v13M53 22l-9 8M53 47l-9-6M11 47l9-6M11 22l9 8"/>
+    </g>
+  </g>
+</svg>

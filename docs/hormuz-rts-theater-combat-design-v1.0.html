@@ -1,0 +1,1988 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="HORMUZ RTS 전구 전투 기획서 v1.0">
+  <title>HORMUZ | RTS 전구 전투 기획서 v1.0</title>
+  <style>
+    :root {
+      --bg: #040a0f;
+      --bg-deep: #020609;
+      --panel: rgba(7, 21, 29, 0.9);
+      --panel-2: rgba(10, 31, 41, 0.82);
+      --line: rgba(70, 207, 218, 0.24);
+      --line-strong: rgba(89, 229, 236, 0.52);
+      --cyan: #72edf1;
+      --cyan-soft: #a8f7f5;
+      --amber: #ffbd69;
+      --red: #ff6a64;
+      --green: #7ce1b8;
+      --text: #e5f1f3;
+      --muted: #91a7ae;
+      --muted-2: #647981;
+      --code: #031116;
+      --shadow: 0 18px 60px rgba(0, 0, 0, 0.34);
+      --radius: 16px;
+      --content: 1040px;
+      --side: 286px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scrollbar-color: rgba(91, 217, 226, 0.42) var(--bg-deep);
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 68% 7%, rgba(30, 103, 127, 0.18), transparent 34rem),
+        radial-gradient(circle at 20% 24%, rgba(255, 148, 74, 0.08), transparent 26rem),
+        linear-gradient(180deg, #071119 0%, var(--bg) 36%, var(--bg-deep) 100%);
+      font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+      line-height: 1.72;
+      word-break: keep-all;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(73, 203, 214, 0.028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(73, 203, 214, 0.028) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: linear-gradient(to bottom, black, transparent 75%);
+    }
+
+    a {
+      color: var(--cyan);
+      text-decoration-color: rgba(114, 237, 241, 0.35);
+      text-underline-offset: 3px;
+    }
+
+    a:hover { color: #d2ffff; }
+
+    .skip-link {
+      position: fixed;
+      top: 8px;
+      left: 8px;
+      z-index: 50;
+      padding: 8px 12px;
+      color: var(--bg);
+      background: var(--cyan);
+      border-radius: 8px;
+      transform: translateY(-140%);
+      transition: transform 0.2s ease;
+    }
+
+    .skip-link:focus { transform: translateY(0); }
+
+    .masthead {
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(90deg, rgba(2, 10, 15, 0.95), rgba(4, 21, 28, 0.76)),
+        repeating-linear-gradient(115deg, transparent 0 48px, rgba(94, 225, 233, 0.04) 49px 50px);
+    }
+
+    .masthead::after {
+      content: "";
+      position: absolute;
+      right: -90px;
+      bottom: -145px;
+      width: 490px;
+      height: 320px;
+      border: 1px solid rgba(98, 231, 239, 0.18);
+      border-radius: 50%;
+      box-shadow:
+        0 0 0 42px rgba(98, 231, 239, 0.025),
+        0 0 0 84px rgba(98, 231, 239, 0.018);
+      transform: rotate(-12deg);
+    }
+
+    .masthead-inner {
+      position: relative;
+      z-index: 1;
+      width: min(1480px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 34px 0 30px;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      letter-spacing: 0.14em;
+    }
+
+    .brand-mark {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--line-strong);
+      background: rgba(26, 99, 112, 0.13);
+      transform: rotate(45deg);
+      box-shadow: inset 0 0 24px rgba(81, 227, 234, 0.1);
+    }
+
+    .brand-mark::before,
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      background: var(--cyan);
+      opacity: 0.72;
+    }
+
+    .brand-mark::before {
+      width: 22px;
+      height: 1px;
+      left: 10px;
+      top: 21px;
+    }
+
+    .brand-mark::after {
+      width: 1px;
+      height: 22px;
+      left: 21px;
+      top: 10px;
+    }
+
+    .brand strong {
+      display: block;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.25rem, 2.5vw, 1.8rem);
+      font-weight: 600;
+      color: #e8ffff;
+      text-shadow: 0 0 22px rgba(114, 237, 241, 0.23);
+    }
+
+    .brand small {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 0.68rem;
+      letter-spacing: 0.13em;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .action-button {
+      min-height: 38px;
+      padding: 0 13px;
+      color: var(--cyan-soft);
+      background: rgba(9, 38, 47, 0.72);
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      font: inherit;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    .action-button:hover {
+      background: rgba(17, 67, 78, 0.8);
+      border-color: var(--cyan);
+    }
+
+    .hero {
+      max-width: 1000px;
+      margin-top: 36px;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--cyan);
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 32px;
+      height: 1px;
+      background: var(--cyan);
+      box-shadow: 0 0 9px rgba(114, 237, 241, 0.7);
+    }
+
+    .hero h1 {
+      max-width: 920px;
+      margin: 13px 0 10px;
+      color: #f0fbfc;
+      font-size: clamp(2rem, 5vw, 4.2rem);
+      font-weight: 760;
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p {
+      max-width: 840px;
+      margin: 0;
+      color: #b8c9cd;
+      font-size: clamp(0.96rem, 1.8vw, 1.08rem);
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 22px;
+    }
+
+    .meta span {
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #b9d6d9;
+      background: rgba(5, 25, 32, 0.74);
+      font-size: 0.75rem;
+    }
+
+    .meta .pending {
+      color: #ffd39b;
+      border-color: rgba(255, 189, 105, 0.42);
+      background: rgba(74, 44, 18, 0.32);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: var(--side) minmax(0, var(--content));
+      gap: 32px;
+      justify-content: center;
+      width: min(1420px, calc(100% - 48px));
+      margin: 34px auto 80px;
+    }
+
+    .sidebar {
+      align-self: start;
+      position: sticky;
+      top: 18px;
+      max-height: calc(100vh - 36px);
+      overflow: auto;
+      padding: 17px 14px 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(4, 15, 21, 0.86);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .sidebar-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 4px 12px;
+      color: var(--cyan-soft);
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+    }
+
+    .sidebar-title span {
+      color: var(--muted-2);
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0;
+    }
+
+    #toc {
+      display: grid;
+      gap: 2px;
+    }
+
+    #toc a {
+      display: block;
+      padding: 7px 9px;
+      color: #8fa7ad;
+      border-left: 2px solid transparent;
+      border-radius: 0 7px 7px 0;
+      font-size: 0.78rem;
+      line-height: 1.35;
+      text-decoration: none;
+      transition: 0.16s ease;
+    }
+
+    #toc a[data-level="3"] {
+      padding-left: 20px;
+      font-size: 0.73rem;
+    }
+
+    #toc a:hover,
+    #toc a.active {
+      color: #d4ffff;
+      border-left-color: var(--cyan);
+      background: rgba(65, 198, 208, 0.09);
+    }
+
+    .content {
+      min-width: 0;
+      padding: clamp(24px, 5vw, 54px);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(155deg, rgba(8, 24, 32, 0.96), rgba(4, 13, 18, 0.98));
+      box-shadow: var(--shadow);
+    }
+
+    .content > h1,
+    .content > blockquote:first-of-type {
+      display: none;
+    }
+
+    .content h2,
+    .content h3 {
+      scroll-margin-top: 24px;
+    }
+
+    .content h2 {
+      position: relative;
+      margin: 58px 0 20px;
+      padding: 0 0 12px 18px;
+      color: #e7ffff;
+      border-bottom: 1px solid var(--line);
+      font-size: clamp(1.35rem, 2.8vw, 1.9rem);
+      line-height: 1.32;
+      letter-spacing: -0.02em;
+    }
+
+    .content h2:first-of-type { margin-top: 0; }
+
+    .content h2::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.22em;
+      width: 4px;
+      height: 1em;
+      background: var(--cyan);
+      box-shadow: 0 0 14px rgba(114, 237, 241, 0.58);
+    }
+
+    .content h2.sub-section {
+      margin-top: 36px;
+      padding: 0 0 8px 14px;
+      color: #bff8f5;
+      border-bottom-color: rgba(70, 207, 218, 0.14);
+      font-size: 1.12rem;
+    }
+
+    .content h2.sub-section::before {
+      top: 0.3em;
+      width: 3px;
+      height: 0.72em;
+      background: var(--amber);
+      box-shadow: 0 0 11px rgba(255, 189, 105, 0.42);
+    }
+
+    .content h3 {
+      margin: 35px 0 13px;
+      color: #bff8f5;
+      font-size: 1.08rem;
+      line-height: 1.42;
+    }
+
+    .content p { margin: 11px 0 16px; }
+
+    .content strong {
+      color: #f3ffff;
+      font-weight: 720;
+    }
+
+    .content ul,
+    .content ol {
+      margin: 12px 0 20px;
+      padding-left: 1.45rem;
+    }
+
+    .content li { margin: 5px 0; }
+    .content li::marker { color: var(--cyan); }
+
+    .content blockquote {
+      margin: 18px 0 24px;
+      padding: 14px 17px;
+      color: #b8ccd0;
+      border: 1px solid rgba(255, 189, 105, 0.25);
+      border-left: 3px solid var(--amber);
+      border-radius: 10px;
+      background: rgba(70, 42, 16, 0.2);
+    }
+
+    .content blockquote p { margin: 3px 0; }
+
+    .table-wrap {
+      max-width: 100%;
+      margin: 18px 0 28px;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(2, 13, 18, 0.72);
+    }
+
+    table {
+      width: 100%;
+      min-width: 640px;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+
+    th,
+    td {
+      padding: 12px 13px;
+      vertical-align: top;
+      text-align: left;
+      border-right: 1px solid rgba(76, 200, 210, 0.1);
+      border-bottom: 1px solid rgba(76, 200, 210, 0.13);
+    }
+
+    th:last-child,
+    td:last-child { border-right: 0; }
+
+    tr:last-child td { border-bottom: 0; }
+
+    th {
+      color: #cfffff;
+      background: rgba(30, 96, 105, 0.22);
+      font-size: 0.77rem;
+      letter-spacing: 0.03em;
+    }
+
+    tbody tr:nth-child(even) { background: rgba(36, 86, 92, 0.055); }
+    tbody tr:hover { background: rgba(66, 179, 188, 0.08); }
+
+    code {
+      padding: 0.13em 0.38em;
+      color: #9cf5ef;
+      border: 1px solid rgba(84, 207, 215, 0.16);
+      border-radius: 5px;
+      background: rgba(5, 25, 31, 0.85);
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 0.9em;
+    }
+
+    pre {
+      max-width: 100%;
+      margin: 18px 0 26px;
+      padding: 18px 19px;
+      overflow: auto;
+      color: #b9f3ef;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--code);
+      box-shadow: inset 0 0 35px rgba(47, 165, 176, 0.045);
+      line-height: 1.55;
+    }
+
+    pre code {
+      padding: 0;
+      color: inherit;
+      border: 0;
+      background: transparent;
+      font-size: 0.78rem;
+    }
+
+    hr {
+      height: 1px;
+      margin: 42px 0;
+      border: 0;
+      background: linear-gradient(90deg, transparent, var(--line-strong), transparent);
+    }
+
+    .document-note {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: start;
+      margin-bottom: 30px;
+      padding: 16px;
+      border: 1px solid rgba(255, 189, 105, 0.34);
+      border-radius: 12px;
+      background: linear-gradient(90deg, rgba(91, 53, 17, 0.28), rgba(31, 29, 19, 0.12));
+    }
+
+    .document-note .signal {
+      width: 10px;
+      height: 10px;
+      margin-top: 7px;
+      border-radius: 50%;
+      background: var(--amber);
+      box-shadow: 0 0 13px rgba(255, 189, 105, 0.76);
+    }
+
+    .document-note strong { color: #ffe2b7; }
+    .document-note p { margin: 0; color: #c8b89f; }
+
+    .footer {
+      width: min(1420px, calc(100% - 48px));
+      margin: -48px auto 36px;
+      color: var(--muted-2);
+      font-size: 0.74rem;
+      text-align: center;
+    }
+
+    .back-top {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 10;
+      width: 42px;
+      height: 42px;
+      color: var(--cyan-soft);
+      border: 1px solid var(--line-strong);
+      border-radius: 50%;
+      background: rgba(4, 22, 29, 0.9);
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: 0.18s ease;
+      pointer-events: none;
+    }
+
+    .back-top.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    @media (max-width: 1050px) {
+      .layout {
+        grid-template-columns: 1fr;
+        width: min(900px, calc(100% - 32px));
+      }
+
+      .sidebar {
+        position: static;
+        max-height: none;
+      }
+
+      #toc {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .masthead-inner {
+        width: calc(100% - 30px);
+        padding-top: 22px;
+      }
+
+      .brand-row {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .hero { margin-top: 27px; }
+      .hero h1 { font-size: 2.22rem; }
+
+      .layout {
+        width: calc(100% - 20px);
+        gap: 14px;
+        margin-top: 14px;
+      }
+
+      .content {
+        padding: 24px 18px 34px;
+        border-radius: 14px;
+      }
+
+      .content h2 { margin-top: 44px; }
+      #toc { grid-template-columns: 1fr; }
+
+      .sidebar {
+        max-height: 260px;
+        overflow: auto;
+      }
+
+      .document-note {
+        grid-template-columns: 1fr;
+        gap: 7px;
+      }
+
+      table { min-width: 560px; }
+
+      .footer {
+        width: calc(100% - 20px);
+        margin-top: -48px;
+      }
+    }
+
+    @media print {
+      :root {
+        --text: #17252a;
+        --muted: #53666c;
+        --line: #b7c9cc;
+        --cyan: #006b73;
+        --cyan-soft: #005b63;
+      }
+
+      body {
+        color: #17252a;
+        background: #fff;
+        font-size: 10pt;
+      }
+
+      body::before,
+      .sidebar,
+      .actions,
+      .back-top,
+      .footer { display: none !important; }
+
+      .masthead {
+        color: #17252a;
+        border: 0;
+        background: #fff;
+      }
+
+      .masthead::after,
+      .brand-mark { display: none; }
+
+      .masthead-inner {
+        width: 100%;
+        padding: 0 0 18px;
+      }
+
+      .brand strong,
+      .hero h1 { color: #10282d; text-shadow: none; }
+      .brand small,
+      .hero p,
+      .meta span { color: #53666c; }
+
+      .layout {
+        display: block;
+        width: 100%;
+        margin: 0;
+      }
+
+      .content {
+        padding: 0;
+        color: #17252a;
+        border: 0;
+        background: #fff;
+        box-shadow: none;
+      }
+
+      .content h2,
+      .content h3,
+      .content strong { color: #10282d; }
+
+      .table-wrap {
+        break-inside: avoid;
+        border-color: #b7c9cc;
+        background: #fff;
+      }
+
+      table {
+        min-width: 0;
+        font-size: 8.5pt;
+      }
+
+      th { color: #10282d; background: #eaf2f3; }
+      th, td { border-color: #cbd8da; }
+      pre { color: #16383d; background: #f0f6f7; }
+      code { color: #075c63; background: #eef5f5; }
+      a { color: #075c63; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#document">본문으로 이동</a>
+
+  <header class="masthead">
+    <div class="masthead-inner">
+      <div class="brand-row">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true"></div>
+          <div>
+            <strong>HORMUZ</strong>
+            <small>THEATER COMMAND SIMULATION</small>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="action-button" type="button" id="printButton">인쇄 / PDF</button>
+        </div>
+      </div>
+
+      <div class="hero">
+        <div class="eyebrow">Combat Design Document / v1.0</div>
+        <h1>RTS 전구 전투 기획서</h1>
+        <p>공격 지역 선정부터 전력 편성, 3D RTS 교전, 이란의 지역 반격과 국가 지표 정산까지 연결하는 통합 전투 설계.</p>
+        <div class="meta">
+          <span>작성일 2026-07-27</span>
+          <span>플랫폼 WebGL / PC / Mobile</span>
+          <span>조작 소규모 RTS</span>
+          <span class="pending">상태 사장님 검토용 초안</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="문서 목차">
+      <div class="sidebar-title">DOCUMENT INDEX <span id="sectionCount"></span></div>
+      <nav id="toc"></nav>
+    </aside>
+
+    <main class="content" id="document">
+      <div class="document-note">
+        <span class="signal" aria-hidden="true"></span>
+        <p><strong>적용 전 검토 문서</strong><br>이 HTML은 기획 검토본이며, 게임 코드와 HANDOVER.md의 확정 결정에는 아직 반영되지 않았습니다.</p>
+      </div>
+
+      <h1>HORMUZ RTS 전구 전투 기획서 v1.0</h1>
+<blockquote>
+<p>상태: 사장님 검토용 기획 초안<br>작성일: 2026-07-27<br>적용 범위: 본편의 3D 전투 조작, 작전 지역 선택, 전력·예산 편성, 이란 반격, 전투 결과 정산<br>구현 상태: <strong>아직 코드에 적용하지 않음. 이 문서 승인 후 구현 착수</strong></p>
+</blockquote>
+<hr>
+<h2>0. 결론</h2>
+<p>HORMUZ의 전투는 전투기나 함정을 직접 운전하는 액션 게임이 아니라, <strong>3D 전장을 내려다보며 부대를 선택하고 명령하는 소규모 RTS</strong>로 바꾼다. 플레이어는 먼저 중동 작전 지도에서 <strong>어느 전구와 어떤 표적 유형을 공격할지</strong> 결정하고, 전투기 몇 대·함정 몇 척·지원 전력을 얼마나 투입할지 편성한다. 편성에는 작전예산과 탄약이 들며, 전투에서는 좌클릭·드래그로 부대를 선택하고 우클릭으로 이동·공격·호위를 지시한다. 이란은 플레이어의 공격 지역·강도·확전 단계·자국 태세에 따라 해협, 미 해군 전력, 카타르, 바레인, 쿠웨이트, 이라크·요르단 등 공개적으로 알려진 중동 전구 방향으로 반격한다. 전투의 승패뿐 아니라 비용, 손실, 민간 피해, 방어 성공 여부가 통항률·유가·국내 지지율·국제 지지·탄약·확전·이란 안정도에 연결된다.</p>
+<h3>이 개편에서 확실히 바뀌는 것</h3>
+<ul>
+<li>직접 조종, 조준, 운전 방식은 제거한다.</li>
+<li>기존 탭 타이밍·드래그형 미니게임은 넣지 않는다.</li>
+<li>전투는 <code>전구 선택 → 목표 선택 → 전력 편성 → RTS 전투 → 이란 반격 → 정산</code>으로 진행한다.</li>
+<li>공격할 지역과 반격받을 지역을 모두 3D 전략 지도에서 보여준다.</li>
+<li>사실 기반 부분과 가상 시뮬레이션 부분을 화면과 데이터에서 구분한다.</li>
+<li>전투 중 선택 시간을 충분히 확보하기 위해 <strong>전술 일시정지와 명령 예약</strong>을 제공한다.</li>
+</ul>
+<hr>
+<h2>1. 플레이 경험의 중심</h2>
+<p>플레이어의 역할은 조종사가 아니라 <strong>미합중국 대통령 겸 통합 작전 승인권자</strong>다. 전투의 재미는 다음 세 질문에서 나온다.</p>
+<ol>
+<li><strong>어디를 공격할 것인가?</strong><ul>
+<li>해협의 즉시 위협만 제거할지</li>
+<li>이란 남부 해안의 군사 기능을 억제할지</li>
+<li>내륙 미사일·드론 군사시설까지 공격할지</li>
+<li>공격하지 않고 지역 미군기지와 민간 항로 방어에 집중할지</li>
+</ul>
+</li>
+<li><strong>얼마나 투입할 것인가?</strong><ul>
+<li>적은 비용으로 위험을 감수할지</li>
+<li>균형 전력을 편성할지</li>
+<li>압도적 전력을 투입해 성공률을 올리되 예산·확전·국제 지지를 희생할지</li>
+</ul>
+</li>
+<li><strong>전투 중 무엇을 우선할 것인가?</strong><ul>
+<li>주 목표 집중</li>
+<li>아군·호송대 방어</li>
+<li>적 발사 수단 선제 무력화</li>
+<li>손실을 줄이기 위한 조기 철수</li>
+</ul>
+</li>
+</ol>
+<p>이 세 선택이 있어야 같은 미션도 매번 다른 결과가 나온다.</p>
+<hr>
+<h2>2. 전체 전투 루프</h2>
+<h3>2.1 하루의 구조</h3>
+<table>
+<thead>
+<tr>
+<th>단계</th>
+<th>화면</th>
+<th>플레이어가 하는 일</th>
+<th>시간 규칙</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1. 정보 브리핑</td>
+<td>중동 전체 전략 지도</td>
+<td>현재 전황, 적 위협, 아군 거점, 민간 항로 확인</td>
+<td>강제 타이머 없음</td>
+</tr>
+<tr>
+<td>2. 전구 선택</td>
+<td>전략 지도</td>
+<td>공격·방어할 지역 선택</td>
+<td>강제 타이머 없음</td>
+</tr>
+<tr>
+<td>3. 목표 승인</td>
+<td>전구 확대 지도</td>
+<td>표적 <strong>유형</strong>과 교전수칙 선택</td>
+<td>강제 타이머 없음</td>
+</tr>
+<tr>
+<td>4. 전력 편성</td>
+<td>부대·예산 패널</td>
+<td>전투기 수, 함정 수, 지원 전력, 무장 수준 결정</td>
+<td>기본 180초, 일시정지 가능</td>
+</tr>
+<tr>
+<td>5. 전술 배치</td>
+<td>3D 지역 전장</td>
+<td>출발 구역과 초기 대형 지정</td>
+<td>기본 120초, 준비 완료 전 시작 안 함</td>
+</tr>
+<tr>
+<td>6. RTS 교전</td>
+<td>3D 지역 전장</td>
+<td>선택·이동·공격·호위·후퇴 명령</td>
+<td>90~180초, 전술 일시정지 가능</td>
+</tr>
+<tr>
+<td>7. 이란 반격</td>
+<td>전략 지도 → 방어 전장</td>
+<td>경보 확인 후 방어 전력 재배치, 기지·함대 방어</td>
+<td>경보 90초, 일시정지 가능</td>
+</tr>
+<tr>
+<td>8. 전투 정산</td>
+<td>상황실 보고서</td>
+<td>손실·비용·성과·지표 변화 확인</td>
+<td>확인 버튼 전까지 유지</td>
+</tr>
+</tbody></table>
+<h3>2.2 자동 진행 규칙 변경</h3>
+<ul>
+<li>전략 지도와 전력 편성 화면에서는 사용자가 결정하기 전까지 날짜가 넘어가지 않는다.</li>
+<li>기존처럼 선택창이 몇 초 만에 지나가지 않는다.</li>
+<li>무입력 자동 선택은 기본 OFF다.</li>
+<li>접근성 옵션에서만 <code>참모 추천 자동 편성</code>을 켤 수 있다.</li>
+<li>전투 중 <code>Space</code>로 전술 일시정지를 걸고 여러 명령을 예약할 수 있다.</li>
+<li>시네마틱 카메라는 전투 시작 3초와 결과 연출에만 사용하며, 교전 중 카메라 통제권을 빼앗지 않는다.</li>
+</ul>
+<hr>
+<h2>3. 정확한 조작 방식</h2>
+<h2>3.1 PC 조작</h2>
+<h3>선택</h3>
+<table>
+<thead>
+<tr>
+<th>입력</th>
+<th>동작</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>좌클릭</td>
+<td>부대 1개 선택</td>
+</tr>
+<tr>
+<td>빈 바다 좌클릭</td>
+<td>선택 해제</td>
+</tr>
+<tr>
+<td>좌클릭 드래그</td>
+<td>사각형 안의 부대 다중 선택</td>
+</tr>
+<tr>
+<td><code>Shift + 좌클릭</code></td>
+<td>현재 선택에 부대 추가·제외</td>
+</tr>
+<tr>
+<td>같은 부대 더블클릭</td>
+<td>화면 안의 같은 병과 전부 선택</td>
+</tr>
+<tr>
+<td><code>Ctrl + 1~5</code></td>
+<td>선택 부대를 지휘그룹으로 저장</td>
+</tr>
+<tr>
+<td><code>1~5</code></td>
+<td>지휘그룹 선택</td>
+</tr>
+<tr>
+<td>숫자키 더블 입력</td>
+<td>해당 지휘그룹으로 카메라 이동</td>
+</tr>
+<tr>
+<td><code>Tab</code></td>
+<td>선택된 부대 종류별 순환</td>
+</tr>
+<tr>
+<td><code>F</code></td>
+<td>선택 부대로 카메라 초점</td>
+</tr>
+</tbody></table>
+<h3>명령</h3>
+<table>
+<thead>
+<tr>
+<th>입력</th>
+<th>상황</th>
+<th>명령</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>지면 우클릭</td>
+<td>빈 바다·지상</td>
+<td>해당 지점으로 이동</td>
+</tr>
+<tr>
+<td>적 우클릭</td>
+<td>확인된 적</td>
+<td>해당 적을 집중 공격</td>
+</tr>
+<tr>
+<td>미확인 표식 우클릭</td>
+<td>불명 접촉</td>
+<td>식별 거리까지 접근, 확인 후 교전수칙 적용</td>
+</tr>
+<tr>
+<td>아군·민간선 우클릭</td>
+<td>보호 대상</td>
+<td>호위·엄호</td>
+</tr>
+<tr>
+<td><code>A</code> 후 좌클릭</td>
+<td>지점 지정</td>
+<td>공격 이동. 이동 중 마주친 적과 교전</td>
+</tr>
+<tr>
+<td><code>M</code> 후 좌클릭</td>
+<td>지점 지정</td>
+<td>강제 이동. 적을 무시하고 이동</td>
+</tr>
+<tr>
+<td><code>H</code></td>
+<td>현재 위치</td>
+<td>위치 사수</td>
+</tr>
+<tr>
+<td><code>S</code></td>
+<td>즉시</td>
+<td>현재 명령 중지</td>
+</tr>
+<tr>
+<td><code>R</code> 후 좌클릭</td>
+<td>철수 구역</td>
+<td>교전 이탈·귀환</td>
+</tr>
+<tr>
+<td><code>Shift + 명령</code></td>
+<td>복수 지점</td>
+<td>이동·공격 명령 순서 예약</td>
+</tr>
+<tr>
+<td><code>Space</code></td>
+<td>언제든</td>
+<td>전술 일시정지/재개</td>
+</tr>
+</tbody></table>
+<h3>카메라</h3>
+<table>
+<thead>
+<tr>
+<th>입력</th>
+<th>동작</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>WASD</code> 또는 화면 가장자리</td>
+<td>지도 이동</td>
+</tr>
+<tr>
+<td>마우스 휠</td>
+<td>줌 인·아웃</td>
+</tr>
+<tr>
+<td>휠 버튼 드래그</td>
+<td>카메라 회전·기울기</td>
+</tr>
+<tr>
+<td>미니맵 좌클릭</td>
+<td>해당 지역으로 즉시 이동</td>
+</tr>
+<tr>
+<td><code>Home</code></td>
+<td>작전 구역 전체 보기</td>
+</tr>
+</tbody></table>
+<h3>명령 피드백</h3>
+<ul>
+<li>이동 명령은 청록색 경로선과 목적지 링으로 표시한다.</li>
+<li>공격 명령은 적색 조준 링과 점선 공격 경로로 표시한다.</li>
+<li>호위 명령은 보호 대상과 선택 부대 사이의 청록색 연결선으로 표시한다.</li>
+<li>명령이 불가능하면 커서가 회색으로 바뀌고, 화면 하단에 이유를 짧게 표시한다.</li>
+<li>혼합 부대 선택 시 명령 가능한 부대만 수행하고, 제외된 부대 수를 표시한다.</li>
+</ul>
+<h2>3.2 모바일 조작</h2>
+<p>우클릭이 없는 모바일은 같은 의도를 두 단계 탭으로 처리한다.</p>
+<table>
+<thead>
+<tr>
+<th>입력</th>
+<th>동작</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>부대 탭</td>
+<td>1개 선택</td>
+</tr>
+<tr>
+<td>부대 길게 누르기</td>
+<td>다중 선택에 추가·제외</td>
+</tr>
+<tr>
+<td>빈 영역 길게 누른 뒤 드래그</td>
+<td>선택 상자</td>
+</tr>
+<tr>
+<td>선택 후 빈 지점 탭</td>
+<td>이동</td>
+</tr>
+<tr>
+<td>선택 후 적 탭</td>
+<td>공격</td>
+</tr>
+<tr>
+<td>선택 후 아군·민간선 탭</td>
+<td>호위</td>
+</tr>
+<tr>
+<td>하단 <code>공격 이동</code> 버튼 후 지점 탭</td>
+<td>공격 이동</td>
+</tr>
+<tr>
+<td>하단 <code>철수</code> 버튼 후 철수 구역 탭</td>
+<td>철수</td>
+</tr>
+<tr>
+<td>두 손가락 드래그</td>
+<td>카메라 이동</td>
+</tr>
+<tr>
+<td>핀치</td>
+<td>줌</td>
+</tr>
+<tr>
+<td>두 손가락 회전</td>
+<td>카메라 회전</td>
+</tr>
+<tr>
+<td>일시정지 버튼</td>
+<td>전술 일시정지</td>
+</tr>
+</tbody></table>
+<p>모바일의 터치 표적은 최소 44px로 만들고, 작은 3D 모델을 직접 찍기 어려울 때는 모델 위의 HTML 선택 링이 입력을 대신 받는다.</p>
+<hr>
+<h2>4. 전력 편성과 예산</h2>
+<h2>4.1 부대 수를 결정하는 방식</h2>
+<p>성능과 가독성을 위해 화면의 한 전술 토큰은 다음 실제 단위를 대표한다.</p>
+<table>
+<thead>
+<tr>
+<th>전술 토큰</th>
+<th align="right">게임상 실제 수량</th>
+<th>플레이어 선택 단위</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>전투기 편대</td>
+<td align="right">2기</td>
+<td>2·4·6·8기</td>
+</tr>
+<tr>
+<td>헬기 편대</td>
+<td align="right">2기</td>
+<td>2·4기</td>
+</tr>
+<tr>
+<td>구축함</td>
+<td align="right">1척</td>
+<td>1·2·3척</td>
+</tr>
+<tr>
+<td>LCS 소해함</td>
+<td align="right">1척</td>
+<td>1·2척</td>
+</tr>
+<tr>
+<td>공격 잠수함</td>
+<td align="right">1척</td>
+<td>0·1척</td>
+</tr>
+<tr>
+<td>무인소해정 분대</td>
+<td align="right">3척</td>
+<td>3·6척</td>
+</tr>
+<tr>
+<td>초계·정찰 패키지</td>
+<td align="right">1개 편대</td>
+<td>0·1개</td>
+</tr>
+<tr>
+<td>전자전 지원</td>
+<td align="right">지도 밖 지원</td>
+<td>0·1개</td>
+</tr>
+<tr>
+<td>전략 폭격 패키지</td>
+<td align="right">지도 밖 출발, 전장 진입 1개 토큰</td>
+<td>0·1개</td>
+</tr>
+</tbody></table>
+<p>전투기 6기를 선택하면 3개 전투기 토큰이 배치되고 각 토큰 위에 <code>×2</code>가 표시된다. 함정은 한 토큰이 한 척이다.</p>
+<h2>4.2 작전예산</h2>
+<p>기존 상단의 6개 핵심 지표를 복잡하게 만들지 않기 위해 예산은 <strong>작전 편성 화면과 정산 화면에서만 보이는 캠페인 자원</strong>으로 둔다.</p>
+<ul>
+<li>캠페인 시작 작전예산: <code>120 BP</code></li>
+<li>사용하지 않은 예산은 다음 날로 전액 이월</li>
+<li>긴급 추가예산은 한 판에 1회 가능: <code>+30 BP</code></li>
+<li>긴급 추가예산 대가: 국내 지지율 <code>-4</code>, 국제 지지 <code>-2</code></li>
+<li>손실된 부대는 같은 전투에서 복구되지 않는다.</li>
+<li>미사용 예산은 최종 점수의 효율 보너스로 반영한다.</li>
+</ul>
+<h3>1차 밸런스 비용</h3>
+<table>
+<thead>
+<tr>
+<th>전력</th>
+<th align="right">편성 단위</th>
+<th align="right">BP</th>
+<th align="right">탄약</th>
+<th>주요 역할</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>전투기 편대</td>
+<td align="right">2기</td>
+<td align="right">8</td>
+<td align="right">2</td>
+<td>제공·요격·대함 공격</td>
+</tr>
+<tr>
+<td>이지스 구축함</td>
+<td align="right">1척</td>
+<td align="right">16</td>
+<td align="right">4</td>
+<td>함대 방공·대함·호위</td>
+</tr>
+<tr>
+<td>LCS 소해함</td>
+<td align="right">1척</td>
+<td align="right">10</td>
+<td align="right">1</td>
+<td>기뢰 탐색·항로 개척</td>
+</tr>
+<tr>
+<td>공격 잠수함</td>
+<td align="right">1척</td>
+<td align="right">18</td>
+<td align="right">3</td>
+<td>은밀 정찰·해상 위협 차단</td>
+</tr>
+<tr>
+<td>MH-60R 편대</td>
+<td align="right">2기</td>
+<td align="right">9</td>
+<td align="right">2</td>
+<td>정찰·잠수정 대응·구조</td>
+</tr>
+<tr>
+<td>무인소해정 분대</td>
+<td align="right">3척</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td>기뢰 탐색·제거</td>
+</tr>
+<tr>
+<td>초계·정찰 패키지</td>
+<td align="right">1개</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td>시야·식별 범위 확대</td>
+</tr>
+<tr>
+<td>전자전 지원</td>
+<td align="right">1개</td>
+<td align="right">8</td>
+<td align="right">0</td>
+<td>적 탐지·명중률 일시 저하</td>
+</tr>
+<tr>
+<td>전략 폭격 패키지</td>
+<td align="right">1개</td>
+<td align="right">28</td>
+<td align="right">8</td>
+<td>내륙 군사시설 임무 전용</td>
+</tr>
+</tbody></table>
+<p>수치는 구현 후 자동 플레이와 실제 사용자 플레이 기록으로 조정한다.</p>
+<h2>4.3 편성의 핵심 트레이드오프</h2>
+<ul>
+<li><strong>최소 편성</strong>: 예산 보존, 실패·손실·반격 위험 증가</li>
+<li><strong>균형 편성</strong>: 성공률과 비용의 표준</li>
+<li><strong>압도 편성</strong>: 전투 성공률 상승, 확전·국제 지지 하락 가능성 증가</li>
+<li><strong>정찰 없는 편성</strong>: 비용 절약, 미확인 표적·매복·오인 위험 증가</li>
+<li><strong>방공 없는 공격 편성</strong>: 공격력 상승, 이란 반격 때 지역 거점 방어가 약해짐</li>
+</ul>
+<p>즉, 모든 전력을 공격에 쓰면 공격은 쉬워지지만 다음 이란 반격을 막기 어려워진다.</p>
+<hr>
+<h2>5. 공격 지역 선택: 중동 전구 지도</h2>
+<p>전략 지도는 두 단계로 선택한다.</p>
+<ol>
+<li><strong>전구 선택</strong>: 해협, 이란 남부 해안, 이란 내륙, 걸프 해상, 지역 미군 거점</li>
+<li><strong>표적 유형 선택</strong>: 함정, 해안 감시·레이더, 드론·미사일 군사시설, 해상 봉쇄 수단, 방어 대상</li>
+</ol>
+<p>실제 시설의 정밀 좌표, 접근 경로, 취약점은 게임 데이터에 넣지 않는다. 공개 사실을 바탕으로 하되 국가·전구·기능 유형 단위로 추상화한다.</p>
+<table>
+<thead>
+<tr>
+<th>전구</th>
+<th>플레이어 임무</th>
+<th>3D 전장 성격</th>
+<th>주요 효과</th>
+<th>예상 반격 방향</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>호르무즈 해협</td>
+<td>고속정 차단, 기뢰 제거, 호송</td>
+<td>좁은 해상 RTS</td>
+<td>통항률 직접 상승</td>
+<td>상선·함대 공격, 연안 미사일·드론</td>
+</tr>
+<tr>
+<td>이란 남부 해안·도서</td>
+<td>해안 감시·드론 지휘 기능 억제</td>
+<td>해안+해상 혼합 RTS</td>
+<td>해협 위협 감소</td>
+<td>미 해군 전력·바레인 방향 압박</td>
+</tr>
+<tr>
+<td>이란 내륙 군사 전구</td>
+<td>미사일·드론 군사기능 억제</td>
+<td>공중 침투·호위 RTS</td>
+<td>이란 공격력 큰 폭 감소</td>
+<td>카타르·쿠웨이트·이라크/요르단 방향 보복 위험 증가</td>
+</tr>
+<tr>
+<td>걸프만·오만만 해상</td>
+<td>봉쇄·선박 검사·항로 확보</td>
+<td>넓은 해상 RTS</td>
+<td>해상 통제·유가 영향</td>
+<td>상선·유조선·해군 전력 비대칭 공격</td>
+</tr>
+<tr>
+<td>카타르·바레인·쿠웨이트 방어</td>
+<td>지역 거점 방공·기능 유지</td>
+<td>기지 주변 방어 RTS</td>
+<td>아군 작전 지속 능력 보존</td>
+<td>탄도탄·드론 파상공격</td>
+</tr>
+<tr>
+<td>이라크·요르단 방어</td>
+<td>주둔지·보급로 방어</td>
+<td>내륙 방어 RTS</td>
+<td>병참·국제 지지 보존</td>
+<td>드론·미사일·대리세력 압박</td>
+</tr>
+</tbody></table>
+<h3>전구 지도 표시</h3>
+<ul>
+<li>아군 전구: 청록색 육각형</li>
+<li>이란 군사 전구: 호박색 육각형</li>
+<li>즉시 위협: 적색 점멸 링</li>
+<li>민간 에너지·항로: 백색</li>
+<li>공격 승인 후 <code>아군 출격선</code>과 <code>예상 반격선</code>을 동시에 표시</li>
+<li>예상 반격선은 확률 범위이며, 실제 반격이 확정된 것처럼 미리 보여주지 않는다.</li>
+</ul>
+<hr>
+<h2>6. 사실 기반 공격·반격 규칙</h2>
+<h2>6.1 2026-07-27 기준 공개 사실에서 가져올 패턴</h2>
+<p>게임은 다음 공개 패턴을 사용하되, 각 사건을 그대로 재현한다고 주장하지 않는다.</p>
+<ul>
+<li>2025년 미국의 이란 핵 관련 시설 공격 뒤 이란이 카타르 알우데이드 기지를 공격한 전례가 있다. 미 국방부는 이를 공개적으로 설명했다.</li>
+<li>2026년 7월 공개 보도에는 미국과 이란이 상대 공격에 대응하는 <code>strike-for-strike</code> 성격의 상호 보복을 이어가다 일시 중단한 흐름이 나온다.</li>
+<li>CENTCOM은 2026년 7월 이란 군사 지휘시설, 드론 저장시설, 통신망, 해안 감시시설, 해상 능력 등을 공격 범주로 공개했다.</li>
+<li>CENTCOM은 2026년 7월 이란 공격으로 요르단에서 미군 사망·실종이 발생했다고 공개했다.</li>
+<li>카타르는 미군의 주요 공군·지휘 거점, 바레인은 미 해군 5함대 본부, 쿠웨이트는 미 육군의 전구 지원 거점이라는 공개 자료가 있다.</li>
+<li>이란 및 연계 세력의 압박은 미군기지만이 아니라 민간 선박, 에너지 시설, 사우디아라비아·이라크·요르단 등으로 확산될 수 있다는 최신 보도가 있다.</li>
+</ul>
+<p>이 사실은 <strong>전구와 보복 방향을 설계하는 근거</strong>일 뿐, 실제 작전 성공률이나 피해량을 의미하지 않는다.</p>
+<h2>6.2 게임 속 보복 결정식</h2>
+<p>이란 반격은 완전한 랜덤이 아니라 다음 값을 조합해 결정한다.</p>
+<pre><code class="language-text">반격 가중치 =
+  플레이어가 공격한 전구와의 대응성 35%
+  공격 강도·투입 BP 20%
+  현재 확전 단계 15%
+  이란 태세(실용/강경/절박) 15%
+  살아남은 이란 전력 10%
+  공개 정보·경보 수준 5%
+</code></pre>
+<h3>공격과 반격의 연결</h3>
+<table>
+<thead>
+<tr>
+<th>플레이어 행동</th>
+<th>이란의 우선 반격 후보</th>
+<th>게임상 논리</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>해협 위협만 제한적으로 제거</td>
+<td>호송대·미 해군 함정</td>
+<td>같은 전구의 대칭 대응</td>
+</tr>
+<tr>
+<td>남부 해안 군사기능 공격</td>
+<td>바레인 해군 기능·해협 함대</td>
+<td>해상 작전 능력에 대한 대응</td>
+</tr>
+<tr>
+<td>내륙 미사일·드론 군사기능 공격</td>
+<td>카타르 공군 기능·쿠웨이트 병참·이라크/요르단 주둔지</td>
+<td>지역 미군 작전 기반에 대한 보복</td>
+</tr>
+<tr>
+<td>해상 봉쇄·선박 검사 강화</td>
+<td>민간 선박·유조선·걸프 에너지 흐름</td>
+<td>비대칭 경제 압박</td>
+</tr>
+<tr>
+<td>이란 본토 대규모 타격</td>
+<td>복수 전구 동시 공격</td>
+<td>확전 단계가 높을 때만 활성화</td>
+</tr>
+<tr>
+<td>방어 중심·공격 자제</td>
+<td>저강도 드론·회색지대 도발 또는 보복 보류</td>
+<td>실용·강경 태세에서 출구를 남김</td>
+</tr>
+</tbody></table>
+<h3>태세별 반격 성격</h3>
+<table>
+<thead>
+<tr>
+<th>이란 태세</th>
+<th>반격 특징</th>
+<th>플레이어가 읽을 수 있는 신호</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>실용</td>
+<td>제한적·상징적·사전 경보 가능</td>
+<td>외교 채널, 낮은 발사 준비도</td>
+</tr>
+<tr>
+<td>강경</td>
+<td>군사 거점과 해상 전력을 실제로 압박</td>
+<td>드론 분산, 미사일 준비, 대리세력 활동</td>
+</tr>
+<tr>
+<td>절박</td>
+<td>복수 전구 동시 공격, 민간 경제 압박 확대</td>
+<td>통신 단절, 대규모 이동, 경보 불확실성</td>
+</tr>
+</tbody></table>
+<p>반격 대상을 100% 예고하면 선택이 정답 암기가 되므로, 정찰 수준에 따라 <code>유력</code>, <code>가능</code>, <code>미상</code>으로만 표시한다.</p>
+<hr>
+<h2>7. 전투 유형별 실제 플레이</h2>
+<h2>7.1 해협 고속정 차단전</h2>
+<p><strong>임무 예시:</strong> <code>IRGC 고속정 8척을 무력화하고 유조선 4척 이상을 생존시키십시오.</code></p>
+<ul>
+<li>추천 전력: 전투기 2<del>4기, 구축함 1</del>2척, 헬기 0~2기</li>
+<li>적 행동: 분산 접근, 유조선 집중, 일부 미끼 기동, 연안 발사 지원</li>
+<li>핵심 조작:<ul>
+<li>전투기 다중 선택 → <code>A</code> 공격 이동으로 접근로 차단</li>
+<li>구축함 우클릭 → 유조선 호위</li>
+<li>위협 고속정 우클릭 → 집중 공격</li>
+<li>적 연안 발사 경보 시 함대를 이동시켜 대형 분산</li>
+</ul>
+</li>
+<li>성공 조건: 지정 수량 무력화 + 민간선 생존</li>
+<li>실패 조건: 호송대 과반 손실 또는 주요 함정 격침</li>
+</ul>
+<h2>7.2 유조선 호송전</h2>
+<p><strong>임무 예시:</strong> <code>TSS 항로를 따라 유조선 6척 중 5척 이상을 해협 밖으로 호송하십시오.</code></p>
+<ul>
+<li>추천 전력: 구축함 2척, 전투기 2기, 정찰 지원</li>
+<li>적 행동: 고속정, 드론, 잠수정, 기뢰 위험</li>
+<li>핵심 조작:<ul>
+<li>함정을 유조선에 우클릭해 호위</li>
+<li>전투기 편대는 전방 공격 이동</li>
+<li>정찰 부대는 측면 수색</li>
+<li>위협이 커지면 일부 함정만 분리해 요격하고 호위 핵심은 유지</li>
+</ul>
+</li>
+<li>성공 조건: 목표 수의 유조선 탈출</li>
+<li>추가 보상: 전투 시간과 호송대 피해가 적을수록 통항률·유가 개선</li>
+</ul>
+<h2>7.3 기뢰 항로 개척전</h2>
+<p><strong>임무 예시:</strong> <code>안전 항로 3개 구간을 확보하고 소해 전력의 70% 이상을 보존하십시오.</code></p>
+<ul>
+<li>추천 전력: LCS 1<del>2척, USV 3</del>6척, 헬기 2기, 구축함 1척</li>
+<li>적 행동: 숨은 기뢰, 소해정 기습, 드론 괴롭힘</li>
+<li>핵심 조작:<ul>
+<li>USV 다중 선택 → 탐색 지점 순차 예약</li>
+<li>LCS 위치 사수 → 스캔 범위 유지</li>
+<li>구축함은 소해 전력을 호위</li>
+<li>확인된 기뢰 지대는 공격 대상이 아니라 회피·제거 구역으로 처리</li>
+</ul>
+</li>
+<li>성공 조건: 안전 항로 완성</li>
+<li>실패 조건: 소해 전력 전멸 또는 제한 시간 내 항로 미완성</li>
+</ul>
+<p>기존 드래그형 소해 미니게임은 사용하지 않는다. 같은 RTS 선택·이동·호위 명령으로 해결한다.</p>
+<h2>7.4 지역 미군기지 방공전</h2>
+<p><strong>임무 예시:</strong> <code>카타르 전구의 공군 작전 기능을 80% 이상 보존하십시오.</code></p>
+<ul>
+<li>추천 전력: 전투기 4~6기, 구축함 또는 지역 방공 지원, 전자전</li>
+<li>적 행동: 탄도탄·순항미사일·드론의 시간차 파상공격, 미끼 표적</li>
+<li>핵심 조작:<ul>
+<li>전투기 지휘그룹으로 드론 웨이브 차단</li>
+<li>방공 부대는 위치 사수</li>
+<li>고위협 접촉에 집중 공격</li>
+<li>탄약이 부족하면 저위협 미끼를 무시하고 핵심 위협 우선</li>
+</ul>
+</li>
+<li>성공 조건: 핵심 기능 생존 + 허용 피해 이하</li>
+<li>실패 조건: 작전 기능 마비</li>
+</ul>
+<p>미사일을 개별 탭하는 미니게임 대신, <strong>방공 구역 배치·표적 우선순위·탄약 관리</strong>를 RTS로 처리한다.</p>
+<h2>7.5 남부 해안 군사기능 억제전</h2>
+<p><strong>임무 예시:</strong> <code>해협 공격을 지원하는 군사 기능 3개 중 2개를 무력화하고 철수하십시오.</code></p>
+<ul>
+<li>추천 전력: 전투기 4기, 구축함 1척, 전자전·정찰 지원</li>
+<li>적 행동: 해안 방공, 이동식 미끼, 드론 반격, 함정 공격</li>
+<li>핵심 조작:<ul>
+<li>정찰로 표적 식별</li>
+<li>전자전 지원 후 공격 편대 진입</li>
+<li>공격 편대별 표적 분담</li>
+<li>목표 달성 즉시 <code>R</code>로 철수</li>
+</ul>
+</li>
+<li>성공 조건: 확인된 군사기능 목표 달성 + 편대 귀환</li>
+<li>국제 지지 패널티: 미확인 표적 공격이나 과잉 공격 시 증가</li>
+</ul>
+<h2>7.6 내륙 군사시설 정밀타격전</h2>
+<p><strong>임무 예시:</strong> <code>장거리 미사일·드론 군사기능을 억제하고 공격 편대를 귀환시키십시오.</code></p>
+<ul>
+<li>추천 전력: 전략 폭격 패키지, 전투기 호위, 전자전·정찰</li>
+<li>적 행동: 방공망, 가짜 표적, 이동 표적, 귀환 경로 위협</li>
+<li>핵심 조작:<ul>
+<li>정찰 완료 전 공격 금지</li>
+<li>호위 편대와 공격 편대를 지휘그룹으로 분리</li>
+<li>방공 위협을 우회하거나 전자전 지속 시간 안에 진입</li>
+<li>목표 달성 후 전 부대 철수</li>
+</ul>
+</li>
+<li>성공 조건: 확인된 군사기능 억제 + 공격 편대 귀환</li>
+<li>전략 대가: BP·탄약·확전 비용이 가장 크고, 이란의 지역 미군기지 보복 가능성이 크게 증가</li>
+</ul>
+<p>기존 타이밍형 폭격 미니게임은 사용하지 않는다.</p>
+<h2>7.7 복수 전구 반격전</h2>
+<p>확전 4 이상 또는 이란 <code>절박</code> 태세에서만 등장한다.</p>
+<p><strong>상황 예시:</strong> 카타르에는 미사일, 바레인에는 드론, 해협에는 고속정이 동시에 접근.</p>
+<ul>
+<li>전투 시작 전 120초 동안 제한된 방어 전력을 세 전구에 분배한다.</li>
+<li>플레이어는 한 전구를 직접 지휘하고, 나머지는 편성·교전수칙에 따라 자동 교전한다.</li>
+<li>전술 일시정지 상태에서 전구 탭을 전환해 명령할 수 있다.</li>
+<li>모든 전구를 완벽히 지키기 어렵게 만들어 전략적 손실 선택을 요구한다.</li>
+</ul>
+<hr>
+<h2>8. 부대 능력과 적 AI</h2>
+<h2>8.1 공통 부대 능력치</h2>
+<p>각 부대는 다음 값만 사용한다.</p>
+<ul>
+<li>내구도</li>
+<li>속도</li>
+<li>탐지 범위</li>
+<li>공격 범위</li>
+<li>대함·대공·대지 효율</li>
+<li>잔여 탄약</li>
+<li>재장전 시간</li>
+<li>사기·전투 지속 의지</li>
+<li>역할 태그: 공격, 방공, 호위, 정찰, 소해, 전자전</li>
+</ul>
+<p>개별 미사일의 실제 세부 제원이나 현실의 취약점은 게임 수치로 직접 재현하지 않는다.</p>
+<h2>8.2 교전수칙</h2>
+<p>선택 부대 하단에 세 가지 교전수칙을 둔다.</p>
+<table>
+<thead>
+<tr>
+<th>교전수칙</th>
+<th>행동</th>
+<th>장점</th>
+<th>단점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>사격 보류</td>
+<td>명시 명령 전까지 공격 안 함</td>
+<td>오인·탄약 소모 방지</td>
+<td>기습에 취약</td>
+</tr>
+<tr>
+<td>방어 교전</td>
+<td>아군·보호 대상에 위협이 되는 적만 공격</td>
+<td>표준, 국제 지지 안전</td>
+<td>선제 차단이 늦음</td>
+</tr>
+<tr>
+<td>자유 교전</td>
+<td>탐지된 적대 표적을 자동 공격</td>
+<td>전투 효율 상승</td>
+<td>탄약 소모·오인 위험</td>
+</tr>
+</tbody></table>
+<p>기본값은 <code>방어 교전</code>이다.</p>
+<h2>8.3 이란 전술 AI</h2>
+<ul>
+<li>고속정: 흩어져 접근한 뒤 호송대나 약한 함정을 향해 집결</li>
+<li>드론: 여러 방향에서 시간차로 진입해 방공 탄약 소모 유도</li>
+<li>연안 발사 수단: 발사 후 위치를 바꾸거나 미끼 신호 생성</li>
+<li>잠수정: 탐지 전까지 은폐, 호송 항로 측면 접근</li>
+<li>기뢰: 움직이지 않지만 안전 항로를 제한</li>
+<li>반격 AI: 목표 달성이 어려워지면 전멸까지 싸우지 않고 일부 전력 보존</li>
+</ul>
+<p>난이도는 단순 체력 증가가 아니라 적의 정보 수준, 미끼 사용, 공격 시차, 표적 우선순위로 조절한다.</p>
+<hr>
+<h2>9. 전투 결과와 국가 지표</h2>
+<h2>9.1 미션 점수</h2>
+<pre><code class="language-text">미션 점수 100 =
+  주 목표 달성 45
+  아군·민간 생존 20
+  예산 효율 15
+  전투 시간 10
+  교전수칙·오인·민간 피해 10
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>등급</th>
+<th align="right">점수</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S</td>
+<td align="right">90~100</td>
+<td>목표 달성, 손실·비용 최소</td>
+</tr>
+<tr>
+<td>A</td>
+<td align="right">80~89</td>
+<td>목표 달성, 감수 가능한 손실</td>
+</tr>
+<tr>
+<td>B</td>
+<td align="right">70~79</td>
+<td>부분 손실을 동반한 성공</td>
+</tr>
+<tr>
+<td>C</td>
+<td align="right">55~69</td>
+<td>불완전 성공</td>
+</tr>
+<tr>
+<td>D</td>
+<td align="right">40~54</td>
+<td>작전 실패, 일부 전력 보존</td>
+</tr>
+<tr>
+<td>F</td>
+<td align="right">0~39</td>
+<td>작전 붕괴 또는 중대한 손실</td>
+</tr>
+</tbody></table>
+<h2>9.2 공통 지표 변화</h2>
+<table>
+<thead>
+<tr>
+<th>결과 요소</th>
+<th>오르는 값</th>
+<th>떨어지는 값</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>해협 임무 성공</td>
+<td>통항률, 지지율</td>
+<td>탄약, BP</td>
+</tr>
+<tr>
+<td>민간선 생존</td>
+<td>통항률, 국제 지지</td>
+<td>-</td>
+</tr>
+<tr>
+<td>적은 비용의 성공</td>
+<td>최종 점수, 지지율</td>
+<td>-</td>
+</tr>
+<tr>
+<td>아군 함정·항공기 손실</td>
+<td>-</td>
+<td>지지율, 탄약, BP</td>
+</tr>
+<tr>
+<td>미군기지 방어 성공</td>
+<td>지지율, 작전 지속 능력</td>
+<td>탄약</td>
+</tr>
+<tr>
+<td>미군기지 기능 마비</td>
+<td>-</td>
+<td>지지율, 국제 지지, 다음 전투 가용 전력</td>
+</tr>
+<tr>
+<td>확인된 군사표적 정밀타격</td>
+<td>이란 군사력 감소</td>
+<td>BP, 탄약, 국제 지지 일부, 확전</td>
+</tr>
+<tr>
+<td>미확인·과잉 공격</td>
+<td>-</td>
+<td>국제 지지, 지지율, 확전</td>
+</tr>
+<tr>
+<td>대규모 본토 공격</td>
+<td>이란 군사력 큰 폭 감소</td>
+<td>확전, 국제 지지, 유가, 반격 위험</td>
+</tr>
+<tr>
+<td>조기 철수</td>
+<td>아군 생존</td>
+<td>목표 점수, 지지율 일부</td>
+</tr>
+</tbody></table>
+<h2>9.3 이란 반격 결과의 영향</h2>
+<ul>
+<li>카타르 전구 피해: 다음 항공작전 편성 한도 감소</li>
+<li>바레인 전구 피해: 함정 정비·보급 비용 증가</li>
+<li>쿠웨이트 전구 피해: 캠페인 BP 회복·병참 효율 감소</li>
+<li>이라크·요르단 전구 피해: 국제 지지와 국내 지지 하락</li>
+<li>해협 함대 피해: 호송·소해 가능 전력 감소</li>
+<li>민간 에너지 시설 피해: 유가 상승, 국제 지지 하락</li>
+</ul>
+<p>전투 결과가 다음 날 부대 편성과 전구 선택을 실제로 바꿔야 한다.</p>
+<hr>
+<h2>10. UI 구성</h2>
+<h2>10.1 전략 지도</h2>
+<ul>
+<li>화면 중앙: 중동 전구 지도</li>
+<li>좌측: 오늘의 정보 브리핑, 확정 사실, 미확인 정보</li>
+<li>우측: 선택 전구의 목표 후보·위험·예상 반격</li>
+<li>상단: 기존 6개 핵심 지표</li>
+<li>하단: <code>방어 유지</code>, <code>제한 공격</code>, <code>정밀 공격</code>, <code>대규모 작전</code> 강도 버튼</li>
+<li>공격 방향은 밝은 청록선, 예상 반격 방향은 흐린 적색선</li>
+</ul>
+<h2>10.2 전력 편성</h2>
+<ul>
+<li>좌측: 가용 부대 목록과 수량</li>
+<li>중앙: 공격·호위·정찰·방공 슬롯</li>
+<li>우측: BP, 탄약, 예상 성공률 범위, 확전 위험, 반격 취약 전구</li>
+<li>하단: <code>참모 추천</code>, <code>편성 초기화</code>, <code>배치 시작</code></li>
+<li>전투기와 함정 수는 <code>- / +</code>와 슬라이더 두 방식 모두 제공</li>
+</ul>
+<h2>10.3 전투 HUD</h2>
+<ul>
+<li>좌상단: 임무 목표·남은 시간</li>
+<li>좌하단: 선택된 부대 카드, 내구도, 탄약, 현재 명령</li>
+<li>하단 중앙: 이동·공격 이동·위치 사수·호위·철수·교전수칙</li>
+<li>우하단: 미니맵과 전구 전환</li>
+<li>우상단: BP 소모, 아군 손실, 민간 피해</li>
+<li>중앙 3D 화면: 기존 cinematic 콘셉트의 색감·지형·발광 품질 유지</li>
+</ul>
+<h2>10.4 전투 정산</h2>
+<ul>
+<li>목표 달성률</li>
+<li>투입 전력과 생존 전력</li>
+<li>사용 BP와 잔여 BP</li>
+<li>사용 탄약</li>
+<li>이란 피해와 잔존 위협</li>
+<li>즉시 반격 또는 다음 날 반격 가능성</li>
+<li>통항률·유가·지지율·국제 지지·탄약·확전·이란 안정도 변화</li>
+<li>뉴스 헤드라인과 다음 날 작전 제한</li>
+</ul>
+<hr>
+<h2>11. 3D 품질과 성능을 동시에 지키는 규칙</h2>
+<p>사용자가 승인한 cinematic 콘셉트 수준의 인상을 유지하되, RTS에서 여러 부대를 동시에 표시하기 위해 모델을 용도별로 나눈다.</p>
+<table>
+<thead>
+<tr>
+<th>단계</th>
+<th>용도</th>
+<th>모델 품질</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LOD0 Hero</td>
+<td>브리핑·전투 시작·결과 시네마틱</td>
+<td>Meshy 고품질 원본 또는 근접 최적화본</td>
+</tr>
+<tr>
+<td>LOD1 Combat</td>
+<td>선택된 부대·근거리 전투</td>
+<td>실루엣과 텍스처를 유지한 중간 폴리</td>
+</tr>
+<tr>
+<td>LOD2 Tactical</td>
+<td>중거리 다중 부대</td>
+<td>저폴리+발광 림</td>
+</tr>
+<tr>
+<td>Impostor</td>
+<td>원거리·전략 지도</td>
+<td>고품질 렌더 기반 이미지 토큰</td>
+</tr>
+</tbody></table>
+<p>필수 성능 상한:</p>
+<ul>
+<li>동시 삼각형 120,000 이하</li>
+<li>드로콜 90 이하</li>
+<li>그림자맵 사용 금지</li>
+<li>고속정·드론·기뢰·유조선은 인스턴싱</li>
+<li>원거리에서는 LOD 자동 전환</li>
+<li>텍스트는 HTML 오버레이</li>
+<li>전투 중 카메라에 가까운 선택 부대만 LOD0 또는 LOD1 사용</li>
+<li>모바일 목표 55fps 이상</li>
+</ul>
+<hr>
+<h2>12. 사실성과 픽션의 경계</h2>
+<h3>사실로 표시할 것</h3>
+<ul>
+<li>공개적으로 확인된 국가·해역·지역 거점의 존재와 기능</li>
+<li>공개 발표·보도로 확인된 공격과 보복의 큰 방향</li>
+<li>해협, 걸프만, 오만만, 카타르, 바레인, 쿠웨이트, 이라크, 요르단 등 전구 관계</li>
+<li>날짜가 붙은 뉴스릴과 출처 링크</li>
+</ul>
+<h3>가상 시뮬레이션으로 표시할 것</h3>
+<ul>
+<li>DAY 1 이후 플레이어 선택으로 갈라지는 공격</li>
+<li>각 전투의 부대 수·성공률·피해량</li>
+<li>이란 AI가 선택하는 다음 보복</li>
+<li>국가 지표 변화와 엔딩</li>
+</ul>
+<h3>넣지 않을 것</h3>
+<ul>
+<li>군사시설의 정밀 좌표</li>
+<li>실제 방공망의 취약점</li>
+<li>현실 작전에 바로 쓸 수 있는 침투 경로·고도·시간·무장 절차</li>
+<li>실제 민간 피해를 점수 보상으로 삼는 표현</li>
+<li>특정 민족·국가·종교를 악마화하는 표현</li>
+</ul>
+<hr>
+<h2>13. 데이터 구조 초안</h2>
+<pre><code class="language-js">state = {
+  dials: {
+    transit: 30,
+    oil: 84,
+    approval: 44,
+    intl: 55,
+    ammo: 45,
+    esc: 3
+  },
+  campaign: {
+    opBudget: 120,
+    emergencyBudgetUsed: false,
+    availableForces: {},
+    damagedTheaters: {}
+  },
+  theater: {
+    selectedId: null,
+    targetType: null,
+    operationIntensity: &#39;LIMITED&#39;,
+    intelLevel: 0
+  },
+  forcePackage: {
+    fighterPairs: 0,
+    destroyers: 0,
+    lcs: 0,
+    submarines: 0,
+    helicopterPairs: 0,
+    usvSections: 0,
+    recon: false,
+    ew: false,
+    strategicStrike: false
+  },
+  battle: {
+    scenarioId: null,
+    phase: &#39;BRIEF&#39;,
+    selectedUnitIds: [],
+    commandGroups: {},
+    objectiveProgress: {},
+    friendlyLosses: [],
+    civilianLosses: 0,
+    spentBudget: 0,
+    spentAmmo: 0
+  },
+  iranResponse: {
+    posture: &#39;HARDLINE&#39;,
+    candidateTheaters: [],
+    chosenTheater: null,
+    warningLevel: &#39;UNKNOWN&#39;,
+    responseDelay: 0
+  }
+};
+</code></pre>
+<p>데이터 파일은 다음처럼 분리한다.</p>
+<ul>
+<li><code>theaters.json</code>: 전구, 공개 근거, 화면 표시, 피해 효과</li>
+<li><code>battle-scenarios.json</code>: 임무 목표, 적 구성, 성공·실패 조건</li>
+<li><code>unit-defs.json</code>: 부대 역할과 추상화된 능력치</li>
+<li><code>force-costs.json</code>: BP·탄약 비용</li>
+<li><code>iran-responses.json</code>: 공격-반격 가중치</li>
+<li><code>battle-results.json</code>: 등급과 국가 지표 변화</li>
+</ul>
+<hr>
+<h2>14. 구현 순서</h2>
+<h3>P0. 전투 수직 슬라이스</h3>
+<p>한 개 미션을 처음부터 끝까지 완성한다.</p>
+<p><code>해협 전구 선택 → 고속정 차단 목표 → 전투기·구축함 편성 → 다중 선택·우클릭 공격 → 적 반격 → 결과 정산</code></p>
+<p>완료 기준:</p>
+<ul>
+<li>좌클릭, 박스 선택, Shift 다중 선택</li>
+<li>우클릭 이동·공격·호위</li>
+<li>공격 이동, 위치 사수, 철수</li>
+<li>전술 일시정지와 명령 예약</li>
+<li>전투기 2·4·6기 및 구축함 1·2척 편성</li>
+<li>BP·탄약 차감</li>
+<li>적 고속정 AI와 아군 자동 교전</li>
+<li>승패에 따른 국가 지표 변화</li>
+</ul>
+<h3>P1. 지역 반격과 방공전</h3>
+<ul>
+<li>카타르·바레인·쿠웨이트·이라크/요르단 전구 노드</li>
+<li>공격에 따른 이란 반격 가중치</li>
+<li>지역 미군기지 방공전</li>
+<li>전력 분산과 거점 피해 효과</li>
+</ul>
+<h3>P2. 전투 유형 확장</h3>
+<ul>
+<li>유조선 호송전</li>
+<li>기뢰 항로 개척전</li>
+<li>남부 해안 군사기능 억제전</li>
+<li>내륙 군사시설 정밀타격전</li>
+</ul>
+<h3>P3. 복수 전구와 모바일</h3>
+<ul>
+<li>복수 전구 동시 반격</li>
+<li>모바일 선택·명령 UI</li>
+<li>LOD·인스턴싱·성능 최적화</li>
+<li>난이도와 수치 밸런싱</li>
+</ul>
+<h3>P4. 캠페인 통합</h3>
+<ul>
+<li>18일 디렉터 루프에 전투 삽입</li>
+<li>기존 점수·엔딩·랭킹과 연결</li>
+<li>저장·복원 sanitize</li>
+<li>한/영 문자열</li>
+</ul>
+<hr>
+<h2>15. 승인 기준</h2>
+<p>다음 항목이 승인되면 구현에 들어간다.</p>
+<ol>
+<li>직접 조종을 제거하고 RTS 선택·명령 방식으로 확정</li>
+<li>공격 지역을 중동 전구 지도에서 먼저 선택</li>
+<li>전투기·함정 수와 지원 전력을 전투 전에 편성</li>
+<li>캠페인 작전예산 120 BP 사용</li>
+<li>이란 반격은 공격 지역·강도·태세에 연동</li>
+<li>카타르·바레인·쿠웨이트·이라크/요르단·해상 전구를 반격 후보로 사용</li>
+<li>기존 미니게임은 제거하고 모든 현장 개입을 RTS로 통합</li>
+<li>전술 일시정지와 긴 준비 시간을 제공</li>
+<li>사실 기반과 가상 전개를 화면에서 구분</li>
+<li>P0 해협 고속정 차단전을 첫 구현 대상으로 사용</li>
+</ol>
+<hr>
+<h2>16. 공개 근거 자료</h2>
+<p>2026-07-27에 확인한 공개 자료다. 구현 단계에서는 날짜가 바뀌면 다시 검증한다.</p>
+<ul>
+<li><a href="https://www.centcom.mil/MEDIA/PUBLIC-RELEASES/Article/4554310/us-concludes-13th-night-of-strikes-on-iranian-military-targets/">CENTCOM — U.S. Concludes 13th Night of Strikes on Iranian Military Targets, 2026-07-23</a></li>
+<li><a href="https://www.centcom.mil/MEDIA/PUBLIC-RELEASES/Article/4549648/centcom-update-on-recently-fallen-us-service-members/">CENTCOM — Update on Recently Fallen U.S. Service Members, 2026-07-19</a></li>
+<li><a href="https://www.centcom.mil/MEDIA/PUBLIC-RELEASES/Article/4504919/us-defends-disables-threats-in-response-to-iranian-aggression/">CENTCOM — U.S. Defends, Disables Threats in Response to Iranian Aggression, 2026-05-31</a></li>
+<li><a href="https://www.centcom.mil/Portals/6/Documents/Publications/260406-FactSheet.pdf">CENTCOM — Operation Epic Fury Fact Sheet, 2026-04-06</a></li>
+<li><a href="https://www.war.gov/News/News-Stories/Article/Article/4227082/historically-successful-strike-on-iranian-nuclear-site-was-15-years-in-the-maki/">U.S. Department of Defense — 2025 Al Udeid retaliation account</a></li>
+<li><a href="https://www.centcom.mil/MEDIA/PRESS-RELEASES/Article/4026657/uscentcom-commander-visits-the-kingdom-of-bahrain/">CENTCOM — USCENTCOM Commander Visits the Kingdom of Bahrain, 2025-01-11</a></li>
+<li><a href="https://www.usarcent.army.mil/About/Units/ASGKuwait/">U.S. Army Central — Area Support Group Kuwait</a></li>
+<li><a href="https://www.reuters.com/world/asia-pacific/iran-will-halt-attacks-long-us-maintains-pause-iranian-source-says-after-trump-2026-07-26/">Reuters — Iran says it will halt strikes as long as U.S. bombing pause holds, 2026-07-26</a></li>
+<li><a href="https://www.reuters.com/world/middle-east/iran-says-it-still-controls-strait-not-seeking-talks-after-trump-halts-bombing-2026-07-27/">Reuters — Drones attack Iran&#39;s neighbours as pause is tested, 2026-07-27</a></li>
+</ul>
+
+    </main>
+  </div>
+
+  <footer class="footer">
+    HORMUZ RTS THEATER COMBAT DESIGN v1.0 / LOCAL REVIEW DOCUMENT
+  </footer>
+
+  <button class="back-top" type="button" id="backTop" aria-label="문서 맨 위로">TOP</button>
+
+  <script>
+    (() => {
+      const documentRoot = document.getElementById("document");
+      const toc = document.getElementById("toc");
+      const headings = [...documentRoot.querySelectorAll("h2, h3")];
+      const usedIds = new Set();
+
+      function makeId(text, index) {
+        const base = text
+          .toLowerCase()
+          .replace(/[^\p{L}\p{N}]+/gu, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 72) || `section-${index + 1}`;
+        let id = base;
+        let suffix = 2;
+        while (usedIds.has(id)) id = `${base}-${suffix++}`;
+        usedIds.add(id);
+        return id;
+      }
+
+      headings.forEach((heading, index) => {
+        const isMajor = heading.tagName === "H2" && /^\d+\.\s/.test(heading.textContent.trim());
+        if (heading.tagName === "H2") {
+          heading.classList.add(isMajor ? "major-section" : "sub-section");
+        }
+        heading.id = makeId(heading.textContent.trim(), index);
+        const link = document.createElement("a");
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent;
+        link.dataset.level = isMajor ? "2" : "3";
+        toc.appendChild(link);
+      });
+
+      document.getElementById("sectionCount").textContent =
+        `${headings.filter((heading) => heading.classList.contains("major-section")).length} SECTIONS`;
+
+      documentRoot.querySelectorAll("table").forEach((table) => {
+        if (table.parentElement.classList.contains("table-wrap")) return;
+        const wrap = document.createElement("div");
+        wrap.className = "table-wrap";
+        table.parentNode.insertBefore(wrap, table);
+        wrap.appendChild(table);
+      });
+
+      const links = [...toc.querySelectorAll("a")];
+      const observer = new IntersectionObserver((entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (!visible) return;
+        links.forEach((link) => {
+          link.classList.toggle("active", link.getAttribute("href") === `#${visible.target.id}`);
+        });
+      }, { rootMargin: "-8% 0px -78% 0px", threshold: 0 });
+
+      headings.forEach((heading) => observer.observe(heading));
+
+      const backTop = document.getElementById("backTop");
+      window.addEventListener("scroll", () => {
+        backTop.classList.toggle("visible", window.scrollY > 700);
+      }, { passive: true });
+
+      backTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+      document.getElementById("printButton").addEventListener("click", () => window.print());
+    })();
+  </script>
+</body>
+</html>

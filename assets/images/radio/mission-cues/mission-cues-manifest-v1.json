@@ -1,0 +1,134 @@
+{
+  "version": 1,
+  "project": "HORMUZ mission cue images",
+  "updatedAt": "2026-07-28T14:51:45+09:00",
+  "generator": "OpenAI built-in image_gen",
+  "mode": "cinematic mission-state illustrations derived from approved concept references",
+  "styleReference": "output/step0/hormuz-ui-cinematic-concept-v1.png",
+  "delivery": {
+    "sourceFormat": "png",
+    "runtimeFormat": "webp",
+    "runtimeEncoding": "ffmpeg libwebp, picture preset, quality 84, compression level 6",
+    "dimensions": "1672x941",
+    "usage": "briefing, short in-battle situation cues, and battle result only",
+    "realtime3dReplacement": false
+  },
+  "promptPolicy": [
+    "Premium cinematic naval strategy visual quality matching the approved HORMUZ concept",
+    "Realistic Strait of Hormuz sea, coast, terrain, atmosphere, ships, and aircraft",
+    "Text-free negative-space composition for HTML overlay labels",
+    "No text, letters, numbers, HUD, flags, logos, national insignia, watermark, gore, or casualties"
+  ],
+  "items": [
+    {
+      "id": "briefing",
+      "trigger": "before battle",
+      "titleKo": "호송대 방어 작전 브리핑",
+      "source": "01-briefing-v1.png",
+      "runtime": "01-briefing-v1.webp",
+      "bytes": 241330,
+      "sha256": "15c1386d2b61e5190467877e126ce28c610f912327ee5c081f09af7cc8c41928",
+      "generatedSource": "C:\\Users\\smini\\.codex\\generated_images\\019fa298-355d-7493-bf74-894d40be2b7d\\call_HVlS5V3BKORCjUhx4Wz3eP9e.png",
+      "scene": "Three-tanker convoy preparation with one destroyer, four fighters, and three helicopters"
+    },
+    {
+      "id": "contact",
+      "trigger": "enemy engagement starts",
+      "titleKo": "적 고속정 접촉",
+      "source": "02-contact-v1.png",
+      "runtime": "02-contact-v1.webp",
+      "bytes": 224788,
+      "sha256": "fcd29fd0d494b0877be3460440cb1a178a75bf1e7875a862f6bf2f7d3d7aab58",
+      "generatedSource": "C:\\Users\\smini\\.codex\\generated_images\\019fa298-355d-7493-bf74-894d40be2b7d\\call_6MN1IjwoiddIb2JIOHebtkMb.png",
+      "scene": "Exactly eight hostile fast boats approaching in three groups"
+    },
+    {
+      "id": "targetLock",
+      "trigger": "player orders an attack",
+      "titleKo": "공격 표적 고정",
+      "source": "03-target-lock-v1.png",
+      "runtime": "03-target-lock-v1.webp",
+      "bytes": 166348,
+      "sha256": "d41ea8b1c4fd2eea23b83357d68e708905f0a0e51e8be3a6906d987babbbbb91",
+      "generatedSource": "C:\\Users\\smini\\.codex\\generated_images\\019fa298-355d-7493-bf74-894d40be2b7d\\call_0acw0iWWszaxipDM31rIdXR4.png",
+      "scene": "Rear F/A-18 attack alignment toward two fast boats"
+    },
+    {
+      "id": "weaponFire",
+      "trigger": "first allied weapon fires",
+      "titleKo": "아군 무기 발사",
+      "source": "04-weapon-fire-v1.png",
+      "runtime": "04-weapon-fire-v1.webp",
+      "bytes": 157062,
+      "sha256": "7e84843b122945fcdc93cb6cea8be6fc4bee73c47b24f3b0c902ba5878821cb0",
+      "generatedSource": "C:\\Users\\smini\\.codex\\generated_images\\019fa298-355d-7493-bf74-894d40be2b7d\\call_WXzenLuE12bc5PMl5uHslg56.png",
+      "scene": "Single forward-axis air-launched missile release and ignition"
+    },
+    {
+      "id": "targetHit",
+      "trigger": "first enemy hit",
+      "titleKo": "적 고속정 명중",
+      "source": "05-target-hit-v1.png",
+      "runtime": "05-target-hit-v1.webp",
+      "bytes": 204462,
+      "sha256": "d3068fec2e6ed1992949a51818957f7ac6e88009b142504d8835b18b9d9799b6",
+      "generatedSource": "C:\\Users\\smini\\.codex\\generated_images\\019fa298-355d-7493-bf74-894d40be2b7d\\call_giPQY33anIlgcFHm9Xwuwl4I.png",
+      "scene": "Contained hit on one fast boat while another turns away"
+    },
+    {
+      "id": "allyHit",
+      "trigger": "first allied unit hit",
+      "titleKo": "아군 함정 피격",
+      "source": "06-ally-hit-v1.png",
+      "runtime": "06-ally-hit-v1.webp",
+      "bytes": 225894,
+      "sha256": "f4ebd1d7d2f8cf60b214f671db91ddd30da2c77ca612ac5da1327f43de6c862f",
+      "generatedSource": "C:\\Users\\smini\\.codex\\generated_images\\019fa298-355d-7493-bf74-894d40be2b7d\\call_hgM1mq6zTf9j4hA8dYRYW2LS.png",
+      "scene": "Limited bow-area destroyer hit with convoy in the background"
+    },
+    {
+      "id": "convoyThreat",
+      "trigger": "first tanker hit",
+      "titleKo": "호송대 위험",
+      "source": "07-convoy-threat-v1.png",
+      "runtime": "07-convoy-threat-v1.webp",
+      "bytes": 271812,
+      "sha256": "6cbff585c43a1f7083ea236400c7751e7c13998eba3ac21cfa9e72192f7697e0",
+      "generatedSource": "C:\\Users\\smini\\.codex\\generated_images\\019fa298-355d-7493-bf74-894d40be2b7d\\call_biOQp7lFdyTtczpFfNbbYdMy.png",
+      "scene": "Exactly three fast boats threatening one tanker with a helicopter interposed"
+    },
+    {
+      "id": "reentry",
+      "trigger": "fighter begins a repeat attack",
+      "titleKo": "전투기 재공격 진입",
+      "source": "08-reentry-v1.png",
+      "runtime": "08-reentry-v1.webp",
+      "bytes": 150696,
+      "sha256": "86b064d3a3d7bc0471ca118e035d2d557f0a03b492708ee4456e19d7fe4a7b63",
+      "generatedSource": "C:\\Users\\smini\\.codex\\generated_images\\019fa298-355d-7493-bf74-894d40be2b7d\\call_nexf6wm8jK1f2MmkiCa1gOrV.png",
+      "scene": "Exactly four fighters banking independently into a second attack"
+    },
+    {
+      "id": "success",
+      "trigger": "battle victory",
+      "titleKo": "항로 확보",
+      "source": "09-success-v1.png",
+      "runtime": "09-success-v1.webp",
+      "bytes": 224398,
+      "sha256": "ac7146a68e6cccb62186beb69c3c3551f7d91432d91601a20c2486d95db3c36d",
+      "generatedSource": "C:\\Users\\smini\\.codex\\generated_images\\019fa298-355d-7493-bf74-894d40be2b7d\\call_0gR71xr7UArmM6vPhaRtPxGW.png",
+      "scene": "Three tankers protected by one destroyer, four fighters, and two helicopters at dawn"
+    },
+    {
+      "id": "failure",
+      "trigger": "battle defeat",
+      "titleKo": "방어선 이탈",
+      "source": "10-failure-v1.png",
+      "runtime": "10-failure-v1.webp",
+      "bytes": 150898,
+      "sha256": "b1f857a3826632713a0824079304a4c9052b4aea65cd13e5602ebb2616a28ab7",
+      "generatedSource": "C:\\Users\\smini\\.codex\\generated_images\\019fa298-355d-7493-bf74-894d40be2b7d\\call_5oUuB4n6RVD92ptlvqr42cEU.png",
+      "scene": "One damaged but afloat tanker, separated convoy, and regrouping allied force"
+    }
+  ]
+}

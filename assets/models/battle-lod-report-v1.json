@@ -1,0 +1,14 @@
+{
+  "generator": "@gltf-transform/cli 4.1.1 + meshoptimizer simplify",
+  "jobs": [
+    {
+      "out": "combat-v1/mcm-usv-meshy6-web-battle-lod-v1.glb",
+      "before": 40412,
+      "after": 17767,
+      "error": 1,
+      "srcSize": 3066856,
+      "outSize": 1986192
+    }
+  ],
+  "note": "전투 런타임 LOD. 나머지 후보는 기존 Meshy strategic/lod3 변형이 더 가벼워 채택하지 않고 삭제했다: strategic-v1/coastal-defense-tel-meshy6-web-battle-lod-v1.glb, strategic-v1/vlcc-tanker-meshy6-web-battle-lod-v1.glb, combat-v1/mh-60r-seahawk-meshy6-web-battle-lod-v1.glb, combat-v1/irgc-fast-attack-craft-meshy6-web-battle-lod-v1.glb"
+}

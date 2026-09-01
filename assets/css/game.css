@@ -1,0 +1,1866 @@
+:root {
+  color-scheme: dark;
+  --cyan: #59d9e9;
+  --cyan2: #91f3ff;
+  --cyan-dim: rgba(58, 201, 220, .32);
+  --ink: #02090d;
+  --panel: rgba(2, 19, 27, .91);
+  --panel2: rgba(5, 30, 39, .95);
+  --amber: #ffbd68;
+  --red: #ff6559;
+  --white: #d9eef3;
+  --muted: #7f9ca4;
+  --line: rgba(90, 218, 234, .36);
+  font-family: "Pretendard Variable", "Pretendard", "SUIT Variable", "SUIT", "Segoe UI Variable", "Noto Sans KR", "Malgun Gothic", sans-serif;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: var(--ink); color: var(--white); font-weight:500; font-variant-numeric: tabular-nums; text-rendering:optimizeLegibility; }
+button { font: inherit; }
+button:focus-visible { outline: 2px solid var(--cyan2); outline-offset: 3px; }
+.game-shell, #world-canvas, .google-game-map-host, .google-game-map-host > gmp-map-3d { position: absolute; inset: 0; width: 100%; height: 100%; }
+.game-shell { overflow: hidden; contain: layout paint; }
+#world-canvas { z-index:1;display:block;touch-action:none;transition:opacity .45s,visibility .45s; }
+.google-game-map-host {
+  z-index:0;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  overflow:hidden;
+  background:#7598ac;
+  filter:saturate(.9) contrast(1.06) brightness(.92);
+  transition:opacity .55s,visibility .55s;
+}
+.google-terrain-active .google-game-map-host {
+  opacity:1;
+  visibility:visible;
+  pointer-events:none;
+}
+.google-map-pending .google-game-map-host {
+  opacity:1;
+  visibility:visible;
+  pointer-events:none;
+  transition:none;
+}
+.google-map-pending #world-canvas {
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  transition:none;
+}
+.google-map-pending .google-game-map-loading {
+  display:flex;
+  opacity:1;
+  visibility:visible;
+}
+.google-terrain-active #world-canvas {
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+}
+.google-terrain-active .map-labels { display:block; }
+.google-terrain-active .map-label { display:none; }
+.google-terrain-active .map-label.strait { display:block; }
+.google-terrain-active .scanlines { opacity:.055; }
+.google-terrain-active .vignette {
+  background:
+    linear-gradient(180deg,rgba(4,20,28,.08),transparent 34%),
+    radial-gradient(circle at 50% 47%,transparent 48%,rgba(0,5,8,.38) 100%);
+}
+.google-game-map-loading {
+  position:absolute;
+  z-index:2;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:11px;
+  padding:14px 18px;
+  color:#dffcff;
+  background:
+    radial-gradient(circle at 50% 54%,rgba(26,88,104,.22),transparent 34%),
+    linear-gradient(180deg,#03121a,#071d28 58%,#092b38);
+  font-size:16px;
+  font-weight:800;
+}
+.google-game-map-loading span {
+  padding:13px 17px;
+  border:1px solid var(--line);
+  background:rgba(2,19,27,.9);
+  box-shadow:0 16px 44px rgba(0,0,0,.28);
+}
+.google-game-map-loading.hidden { display:none; }
+.google-game-map-loading i {
+  width:20px;
+  height:20px;
+  border:3px solid rgba(89,217,233,.2);
+  border-top-color:var(--cyan);
+  border-radius:50%;
+  animation:googleMapSpin .8s linear infinite;
+}
+@keyframes googleMapSpin { to { transform:rotate(360deg); } }
+.scanlines, .vignette, .map-labels { position: absolute; inset: 0; pointer-events: none; }
+.map-labels { overflow: hidden; }
+.scanlines { opacity: .09; background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(116,222,239,.11) 3px 4px); mix-blend-mode: overlay; }
+.vignette { background: radial-gradient(circle at 50% 45%, transparent 37%, rgba(0,4,7,.18) 71%, rgba(0,2,4,.66) 100%); }
+
+.top-hud { position: absolute; z-index: 5; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; padding: 10px 16px 0; pointer-events: none; }
+.brand-block { position: relative; width: 248px; min-height: 136px; padding: 0 14px 15px; background: linear-gradient(105deg, rgba(2,18,25,.92), rgba(2,17,23,.54) 72%, transparent); border-left: 1px solid var(--line); clip-path: polygon(0 0, 100% 0, 78% 100%, 0 100%); }
+.brand { font: 600 37px/1 "IBM Plex Mono", monospace; letter-spacing: .09em; text-shadow: 0 0 14px rgba(102,235,249,.55); }
+.day-label { margin-top: 14px; font: 500 16px/1.2 "IBM Plex Mono", monospace; color: #b7d8df; }
+.act-label { margin-top: 7px; font-size: 13px; letter-spacing: .08em; color: var(--cyan); }
+.day-track { width: 155px; height: 2px; margin-top: 13px; background: rgba(89,217,233,.17); overflow: hidden; }
+.day-track i { display: block; width: 5%; height: 100%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); transition: width .5s; }
+.dial-grid { display: grid; grid-template-columns: repeat(8, 82px); border: 1px solid var(--line); background: rgba(0,16,23,.82); box-shadow: 0 12px 38px rgba(0,0,0,.28), inset 0 0 35px rgba(45,193,217,.04); clip-path: polygon(8px 0,100% 0,100% 100%,0 100%,0 8px); }
+.dial { position: relative; min-height: 104px; display: grid; place-items: center; align-content: center; gap: 4px; border-right: 1px solid var(--line); background: linear-gradient(180deg, rgba(10,52,63,.43), rgba(0,14,20,.35)); }
+.dial:last-child { border-right: 0; }
+.dial-name { color: #88d9e3; font-size: 13px; }
+.dial strong { font: 500 22px/1 "IBM Plex Mono", monospace; color: #d8f7fa; }
+.dial-icon { width: 24px; height: 19px; position: relative; opacity: .85; }
+.dial-icon::before, .dial-icon::after { content: ""; position: absolute; }
+.icon-transit::before { left: 1px; right: 1px; bottom: 4px; height: 4px; border: 1px solid var(--cyan); transform: skewX(-25deg); }
+.icon-transit::after { left: 7px; top: 0; width: 10px; height: 10px; border-left: 2px solid var(--cyan); border-right: 1px solid var(--cyan); }
+.icon-oil::before { left: 8px; top: 0; width: 8px; height: 18px; border: 1px solid var(--cyan); }
+.icon-oil::after { left: 10px; top: 4px; width: 4px; height: 5px; background: var(--cyan); }
+.icon-approval::before { left: 2px; top: 6px; width: 5px; height: 12px; background: var(--cyan); box-shadow: 8px 0 var(--cyan),16px 0 var(--cyan); }
+.icon-approval::after { left: 3px; top: 0; width: 4px; height: 4px; border-radius: 50%; background: var(--cyan); box-shadow: 8px 0 var(--cyan),16px 0 var(--cyan); }
+.icon-intl::before { inset: 0 3px 0 3px; border: 1px solid var(--cyan); border-radius: 50%; }
+.icon-intl::after { left: 10px; top: 0; height: 19px; border-left: 1px solid var(--cyan); box-shadow: -5px 0 0 -4px var(--cyan), 5px 0 0 -4px var(--cyan); }
+.icon-ammo::before { left: 1px; bottom: 1px; width: 5px; height: 16px; background: var(--cyan); box-shadow: 8px 0 var(--cyan),16px 0 var(--cyan); clip-path: polygon(50% 0,100% 30%,100% 100%,0 100%,0 30%); }
+.icon-esc::before { left: 2px; bottom: 0; width: 3px; height: 7px; background: var(--cyan); box-shadow: 5px -3px var(--cyan),10px -6px var(--cyan),15px -10px var(--cyan),20px -15px var(--cyan); }
+.icon-budget::before { left: 2px; right: 2px; top: 4px; bottom: 2px; border: 1px solid var(--cyan); }
+.icon-budget::after { left: 7px; right: 7px; top: 1px; height: 4px; border: 1px solid var(--cyan); }
+.icon-party::before { left: 2px; bottom: 2px; width: 4px; height: 10px; background: var(--cyan); box-shadow: 8px -5px var(--cyan),16px -1px var(--cyan); }
+.icon-party::after { left: 0; right: 0; bottom: 0; height: 1px; background: var(--cyan); }
+.dial.good strong { color: var(--cyan2); }
+.dial.danger strong { color: var(--red); text-shadow: 0 0 10px rgba(255,64,52,.38); }
+
+.map-label { position: absolute; z-index: 3; padding: 3px 6px; color: #a6d7dc; background: rgba(1,11,16,.62); border-left: 1px solid rgba(89,217,233,.65); font: 500 10px/1.15 "IBM Plex Mono", monospace; white-space: nowrap; transition: opacity .15s; }
+.map-label.sea { border: 0; color: rgba(111,208,221,.45); background: none; letter-spacing: .2em; font-size: 12px; }
+.map-label.strait { color: #b9f6ff; border: 1px solid rgba(89,217,233,.35); background: rgba(0,18,26,.78); font-size: 11px; }
+.map-label.major { text-transform: uppercase; }
+.map-legend { position: absolute; z-index: 5; left: 17px; top: 151px; display: flex; flex-direction: column; gap: 5px; padding: 9px 11px; color: #8fb6be; background: rgba(1,13,19,.72); border-left: 1px solid var(--line); font: 500 10px/1.2 "IBM Plex Mono", monospace; }
+.map-legend span { display: flex; align-items: center; gap: 7px; }
+.map-legend .line { width: 22px; border-top: 2px solid var(--cyan); }
+.map-legend .line.approach { border-top-style: dashed; opacity: .6; }
+.map-legend small { color: #526e75; }
+.auto-camera { position: absolute; z-index: 6; right: 18px; bottom: 81px; padding: 10px 13px; color: #94b5bc; border: 1px solid rgba(103,211,226,.42); background: rgba(1,15,21,.83); letter-spacing: .08em; cursor: pointer; }
+.auto-camera i { display: inline-block; width: 9px; height: 9px; margin-right: 8px; border-radius: 50%; background: #42616a; }
+.auto-camera.active { color: #d7f8fb; }
+.auto-camera.active i { background: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
+.campaign-office {
+  position: absolute;
+  z-index: 7;
+  right: 18px;
+  bottom: 130px;
+  min-width: 118px;
+  padding: 11px 14px;
+  color: #dffcff;
+  border: 1px solid rgba(255, 189, 104, .65);
+  background: linear-gradient(180deg, rgba(78, 52, 24, .94), rgba(31, 22, 12, .96));
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .28);
+  cursor: pointer;
+}
+.campaign-office:hover { border-color: var(--amber); box-shadow: 0 0 24px rgba(255, 189, 104, .14); }
+.google-terrain-active .auto-camera { opacity:1;pointer-events:auto; }
+
+.brief-panel { position: absolute; z-index: 5; left: 50%; bottom: 76px; width: min(680px, calc(100vw - 40px)); transform: translateX(-50%); padding: 13px 20px 15px; text-align: center; background: linear-gradient(180deg, rgba(3,25,33,.95), rgba(1,12,18,.95)); border: 1px solid var(--line); clip-path: polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px),0 12px); }
+.eyebrow { color: var(--cyan); font: 600 10px/1.2 "IBM Plex Mono", monospace; letter-spacing: .15em; text-transform: uppercase; }
+.brief-panel p { margin: 6px 0 0; font-size: 16px; font-weight: 600; }
+.ticker { position: absolute; z-index: 10; left: 0; right: 0; bottom: 0; height: 48px; display: flex; align-items: center; background: rgba(0,10,15,.96); border-top: 1px solid rgba(89,217,233,.32); }
+.ticker strong { align-self: stretch; display: grid; place-items: center; min-width: 88px; background: linear-gradient(90deg,#6e1617,#a32b28); border-right: 1px solid var(--red); font-size: 17px; letter-spacing: .16em; }
+.ticker-window { overflow: hidden; white-space: nowrap; flex: 1; min-width: 0; contain: paint; }
+.ticker span { display: inline-block; padding-left: 24px; font: 500 14px/1 "IBM Plex Mono", monospace; letter-spacing: .06em; animation: ticker 24s linear infinite; }
+@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-35%); } }
+
+.decision-panel { position: absolute; z-index: 20; left: 50%; bottom: 62px; width: min(920px, calc(100vw - 30px)); transform: translate(-50%, 115%); padding: 16px; background: linear-gradient(145deg,rgba(2,26,35,.98),rgba(0,10,16,.98)); border: 1px solid rgba(89,217,233,.72); box-shadow: 0 -16px 60px rgba(0,0,0,.5), 0 0 32px rgba(45,198,218,.08); transition: transform .3s cubic-bezier(.2,.8,.2,1); clip-path: polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%,0 12px); }
+.decision-panel.open { transform: translate(-50%, 0); }
+.decision-head { display: flex; justify-content: space-between; gap: 20px; align-items: center; margin-bottom: 11px; }
+.decision-head h2 { margin: 3px 0; font-size: 21px; }
+.decision-head p { margin: 0; color: var(--muted); font: 500 11px "IBM Plex Mono", monospace; }
+.decision-timer { width: 66px; text-align: center; border-left: 1px solid var(--line); }
+.decision-timer span { display: block; color: var(--amber); font: 600 27px/1 "IBM Plex Mono", monospace; }
+.decision-timer small { color: var(--muted); font-size: 9px; }
+.decision-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+.decision-card { min-height: 126px; position: relative; padding: 13px 13px 11px; text-align: left; color: var(--white); background: linear-gradient(145deg,rgba(11,55,65,.78),rgba(3,24,31,.93)); border: 1px solid rgba(89,217,233,.43); cursor: pointer; overflow: hidden; }
+.decision-card:hover { border-color: var(--cyan2); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.3),inset 0 0 24px rgba(60,212,231,.08); }
+.decision-card::after { content: ""; position: absolute; right: -23px; bottom: -26px; width: 68px; height: 68px; border: 1px solid rgba(89,217,233,.13); transform: rotate(45deg); }
+.card-index { position: absolute; right: 10px; top: 7px; color: rgba(112,224,237,.26); font: 600 24px/1 "IBM Plex Mono", monospace; }
+.card-category { display: block; color: var(--cyan); font-size: 9px; letter-spacing: .16em; }
+.decision-card strong { display: block; margin: 9px 0 4px; font-size: 17px; }
+.decision-card > span:not(.card-index):not(.card-category):not(.delta-row) { color: #8faab0; font-size: 11px; }
+.delta-row { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 9px; }
+.delta-row b { padding: 2px 4px; font: 500 9px "IBM Plex Mono", monospace; color: #82e8ce; background: rgba(34,173,140,.09); }
+.delta-row b.bad { color: #ff8a78; background: rgba(214,72,56,.1); }
+
+.modal-layer { position: absolute; inset: 0; z-index: 40; display: grid; place-items: center; pointer-events: none; }
+.modal-layer:not(:empty) { pointer-events: auto; background: rgba(0,5,8,.55); backdrop-filter: blur(4px); }
+.game-modal { width: min(720px, calc(100vw - 30px)); max-height: calc(100vh - 40px); overflow: auto; padding: 23px; background: linear-gradient(145deg,rgba(4,30,39,.98),rgba(1,12,18,.99)); border: 1px solid rgba(89,217,233,.62); box-shadow: 0 25px 90px rgba(0,0,0,.7); clip-path: polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px); }
+.game-modal h2 { margin: 4px 0 5px; font-size: 25px; }
+.game-modal > p { margin: 0 0 17px; color: #91aeb5; font-size: 13px; }
+.modal-top { display: flex; justify-content: space-between; color: var(--cyan); font: 600 11px "IBM Plex Mono", monospace; letter-spacing: .12em; }
+.modal-top b { color: var(--amber); font-size: 18px; }
+.mini-arena { height: 330px; position: relative; overflow: hidden; background: #021019; border: 1px solid var(--line); touch-action: none; }
+.mini-status { padding-top: 9px; text-align: center; color: var(--cyan); font: 500 11px "IBM Plex Mono", monospace; }
+.radar-ring { position: absolute; left: 50%; top: 50%; border: 1px solid rgba(83,219,235,.28); border-radius: 50%; transform: translate(-50%,-50%); }
+.radar-ring.r1 { width: 240px; height: 240px; }
+.radar-ring.r2 { width: 130px; height: 130px; }
+.intercept-arena::before { content: ""; position: absolute; inset: 0; background: repeating-radial-gradient(circle at 50%,transparent 0 47px,rgba(64,205,225,.08) 48px 49px); }
+.intercept-window { position: absolute; left: 43%; top: 8%; bottom: 8%; width: 14%; border-left: 1px solid var(--cyan); border-right: 1px solid var(--cyan); background: rgba(52,210,228,.09); }
+.missile-track { position: absolute; top: 48%; width: 14px; height: 7px; background: var(--red); box-shadow: -24px 0 22px var(--red); clip-path: polygon(0 0,100% 50%,0 100%); }
+.fire-button, .drop-button { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); padding: 10px 28px; color: white; background: #8b2422; border: 1px solid var(--red); cursor: pointer; }
+.mine-arena { background: radial-gradient(circle at 45% 43%,rgba(22,83,94,.56),transparent 40%),repeating-linear-gradient(30deg,transparent 0 32px,rgba(62,185,202,.06) 33px 34px),#03121a; }
+.mine-target { position: absolute; width: 44px; height: 44px; transform: translate(-50%,-50%); border: 1px solid var(--red); border-radius: 50%; background: rgba(196,48,39,.14); cursor: crosshair; }
+.mine-target span { position: absolute; inset: 14px; border-radius: 50%; background: var(--red); box-shadow: 0 0 15px var(--red); }
+.mine-target.cleared { border-color: var(--cyan); opacity: .3; transform: translate(-50%,-50%) scale(.5); transition: .25s; }
+.mine-target.cleared span { background: var(--cyan); box-shadow: 0 0 15px var(--cyan); }
+.bombrun-arena { background: linear-gradient(rgba(14,49,48,.4),rgba(0,12,16,.75)),repeating-linear-gradient(25deg,transparent 0 36px,rgba(132,186,145,.08) 37px 38px),#15170f; }
+.terrain-lines { position: absolute; inset: 0; background: repeating-radial-gradient(ellipse at 50%,transparent 0 32px,rgba(187,178,111,.09) 34px 35px); transform: perspective(400px) rotateX(20deg); }
+.bomb-target { position: absolute; left: 50%; top: 50%; width: 70px; height: 70px; transform: translate(-50%,-50%); border: 2px solid var(--red); border-radius: 50%; box-shadow: 0 0 0 20px rgba(255,71,55,.05); }
+.bomb-reticle { position: absolute; width: 42px; height: 42px; transform: translate(-50%,-50%); border: 1px solid white; border-radius: 50%; }
+.bomb-reticle::before,.bomb-reticle::after { content:""; position:absolute; background:white; }
+.bomb-reticle::before { left:50%;top:-8px;bottom:-8px;width:1px; }
+.bomb-reticle::after { top:50%;left:-8px;right:-8px;height:1px; }
+
+.power-compare { display: grid; grid-template-columns: 1fr 120px 1fr; align-items: center; gap: 18px; margin: 18px 0; }
+.power-compare > div { padding: 13px; text-align: center; border: 1px solid var(--line); background: rgba(9,43,52,.45); }
+.power-compare span { display: block; color: var(--muted); font-size: 10px; }
+.power-compare strong { color: var(--cyan2); font: 600 30px "IBM Plex Mono", monospace; }
+.power-compare i { height: 6px; background: var(--red); box-shadow: 0 0 14px rgba(255,60,48,.6); }
+.power-compare i.ready { background: var(--cyan); box-shadow: 0 0 14px rgba(65,221,238,.6); }
+.term-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 9px; }
+.term { padding: 11px; border: 1px solid rgba(89,217,233,.2); background: rgba(2,18,24,.7); }
+.term > span,.term small { display:block; color:var(--muted); font-size:10px; }
+.term button { width: 100%; margin: 6px 0; padding: 8px; color: var(--white); background: rgba(42,140,153,.18); border: 1px solid var(--line); cursor: pointer; }
+.modal-actions { display:flex; justify-content:center; gap:10px; margin-top:19px; }
+.primary-button,.ghost-button { min-width: 160px; padding: 12px 18px; color: white; border: 1px solid var(--cyan); background: linear-gradient(180deg,#126b79,#073943); cursor: pointer; letter-spacing:.04em; }
+.primary-button:hover { box-shadow: 0 0 24px rgba(70,220,238,.22); }
+.primary-button:disabled { opacity:.35; cursor:not-allowed; }
+.ghost-button { color:#a5c2c8; background:rgba(1,15,21,.75); border-color:rgba(116,204,216,.35); }
+.danger-action { color:#ffb0a7;border-color:rgba(255,101,89,.6);background:rgba(92,21,20,.72); }
+
+.embedded-rts-shell { position:absolute;inset:0;background:#01080c; }
+.embedded-rts-frame { display:block;width:100%;height:100%;border:0;background:#01080c; }
+.embedded-rts-exit {
+  position:absolute;z-index:3;right:18px;top:18px;padding:10px 15px;color:#ffd1cc;
+  border:1px solid rgba(255,101,89,.7);background:rgba(63,16,16,.88);cursor:pointer;
+}
+
+.campaign-office-modal { width:min(960px,calc(100vw - 30px)); }
+.budget-ledger { display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px 0 11px; }
+.budget-ledger div {
+  padding:14px;border:1px solid rgba(89,217,233,.25);
+  background:linear-gradient(145deg,rgba(10,53,62,.55),rgba(2,19,26,.7));
+}
+.budget-ledger span,.budget-ledger strong { display:block; }
+.budget-ledger span { color:#8eaeb5;font-size:15px; }
+.budget-ledger strong { margin-top:4px;color:#f0ffff;font:700 25px "IBM Plex Mono",monospace; }
+.budget-ledger div:last-child strong { color:var(--amber); }
+.politics-ledger { display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px; }
+.politics-ledger span { padding:8px 10px;color:#9cb8be;border:1px solid rgba(89,217,233,.16);background:rgba(5,31,39,.62);font-size:15px; }
+.politics-ledger b { color:#e3fbfd; }
+.operation-roadmap { display:grid;grid-template-columns:repeat(2,1fr);gap:8px;max-height:42vh;overflow:auto;padding-right:4px; }
+.operation-roadmap article { padding:12px;border-left:3px solid #557078;background:rgba(4,27,34,.68); }
+.operation-roadmap article.completed { border-color:var(--cyan); }
+.operation-roadmap article.failed { border-color:var(--red); }
+.operation-roadmap span,.operation-roadmap strong,.operation-roadmap p,.operation-roadmap small { display:block; }
+.operation-roadmap span { color:var(--cyan);font-size:15px; }
+.operation-roadmap strong { margin-top:4px;color:#e8fbfd;font-size:17px; }
+.operation-roadmap p { margin:5px 0;color:#9bb3b8;font-size:15px;line-height:1.5; }
+.operation-roadmap small { color:#d9b57e;font-size:15px; }
+.budget-note { margin:12px 0 0!important;padding:10px;border-left:2px solid var(--amber);background:rgba(111,72,24,.12);font-size:15px!important;line-height:1.55; }
+.congress-modal { width:min(820px,calc(100vw - 30px)); }
+.congress-meter { margin:17px 0; }
+.congress-meter > div { display:flex;justify-content:space-between;align-items:end;color:#9eb8bd;font-size:15px; }
+.congress-meter strong { color:#f2ffff;font:700 24px "IBM Plex Mono",monospace; }
+.congress-meter > i { display:block;height:9px;margin:8px 0;background:rgba(89,217,233,.13);overflow:hidden; }
+.congress-meter > i b { display:block;height:100%;background:linear-gradient(90deg,#f2a251,var(--cyan));box-shadow:0 0 15px var(--cyan);transition:width .25s; }
+.congress-actions { display:grid;grid-template-columns:repeat(3,1fr);gap:8px; }
+.congress-actions button {
+  min-height:142px;padding:13px;text-align:left;color:#dceff2;border:1px solid rgba(89,217,233,.32);
+  background:linear-gradient(145deg,rgba(11,54,64,.64),rgba(3,22,29,.88));cursor:pointer;
+}
+.congress-actions button:hover { border-color:var(--cyan); }
+.congress-actions button:disabled { opacity:.35;cursor:default; }
+.congress-actions strong,.congress-actions span,.congress-actions small { display:block; }
+.congress-actions strong { color:#f0ffff;font-size:17px; }
+.congress-actions span { margin:8px 0;color:#9eb6bb;font-size:15px;line-height:1.45; }
+.congress-actions small { color:var(--amber);font-size:15px; }
+.congress-message { min-height:44px;margin:12px 0!important;padding:10px;color:#d8f4f7!important;border-left:2px solid var(--cyan);background:rgba(43,147,161,.09);font-size:15px!important; }
+
+.report-layer { position:absolute; z-index:35; inset:0; display:grid; place-items:center; pointer-events:none; opacity:0; transition:opacity .2s; }
+.report-layer.show { opacity:1; }
+.day-report { padding:18px 35px; text-align:center; background:rgba(1,14,20,.94); border-top:1px solid var(--cyan); border-bottom:1px solid var(--cyan); box-shadow:0 15px 70px #000; }
+.day-report span { display:block; color:var(--cyan); font:600 11px "IBM Plex Mono",monospace; letter-spacing:.2em; }
+.day-report strong { display:block; margin-top:5px; font-size:19px; }
+
+.ending-modal { text-align:center; }
+.ending-grade { float:left; min-width:78px; color:var(--cyan2); font:900 72px/1 "IBM Plex Mono",monospace; text-shadow:0 0 22px rgba(74,225,243,.4); }
+.ending-modal h1 { margin:10px 0 2px; font-size:34px; }
+.ending-modal > p { font-size:15px; }
+.final-score { clear:both; margin:25px auto 12px; padding:13px; border:1px solid var(--line); background:rgba(6,40,48,.55); }
+.final-score small { display:block;color:var(--muted); }
+.final-score strong { display:block;color:var(--cyan2);font:600 43px "IBM Plex Mono",monospace; }
+.final-score b { color:var(--amber);font-size:11px; }
+.score-parts { display:grid;grid-template-columns:repeat(6,1fr);border:1px solid rgba(89,217,233,.18); }
+.score-parts div { padding:8px 3px;border-right:1px solid rgba(89,217,233,.18); }
+.score-parts div:last-child { border:0; }
+.score-parts span,.score-parts b { display:block;font-size:10px; }
+.score-parts span { color:var(--muted); }.score-parts b { margin-top:3px;color:#c9e6ea;font-family:"IBM Plex Mono",monospace; }
+
+.title-screen,.replay-screen,.loading-screen,.fatal-error { position:absolute; inset:0; z-index:100; }
+.title-screen {
+  isolation:isolate;
+  display:grid;
+  align-items:center;
+  overflow:hidden;
+  background:#03111a;
+  transition:opacity .65s,visibility .65s;
+}
+.title-screen::before {
+  content:"";
+  position:absolute;
+  z-index:-3;
+  inset:-2.5%;
+  background:url("../images/title/hormuz-main-title-cinematic-president-rear-v6.webp") center center/cover no-repeat;
+  animation:title-camera-breathe 20s ease-in-out infinite alternate;
+}
+.title-screen::after {
+  content:"";
+  position:absolute;
+  z-index:-2;
+  inset:0;
+  background:
+    linear-gradient(90deg,rgba(1,9,15,.98) 0%,rgba(2,14,22,.9) 24%,rgba(2,14,22,.32) 48%,rgba(2,10,16,.05) 72%),
+    linear-gradient(180deg,rgba(0,5,9,.38),transparent 24%,transparent 66%,rgba(0,6,11,.68));
+}
+.title-screen.hidden { opacity:0;visibility:hidden;pointer-events:none; }
+.title-shade {
+  position:absolute;
+  z-index:-1;
+  inset:0;
+  pointer-events:none;
+  opacity:.22;
+  background-image:linear-gradient(rgba(91,222,238,.06) 1px,transparent 1px);
+  background-size:100% 4px;
+  mix-blend-mode:screen;
+}
+.title-horizon {
+  position:absolute;
+  z-index:1;
+  right:clamp(30px,4vw,70px);
+  top:clamp(28px,4vw,58px);
+  display:flex;
+  align-items:center;
+  gap:13px;
+  color:rgba(213,242,245,.74);
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:.06em;
+  text-shadow:0 1px 10px rgba(0,8,12,.8);
+}
+.title-horizon i { width:42px;height:1px;background:rgba(96,225,239,.75);box-shadow:0 0 9px var(--cyan); }
+.title-content {
+  position:relative;
+  z-index:2;
+  width:min(650px,calc(100vw - 84px));
+  margin-left:clamp(38px,7.2vw,138px);
+  padding:32px 30px 30px 34px;
+  border-left:2px solid rgba(93,225,238,.68);
+  background:linear-gradient(90deg,rgba(2,15,23,.7),rgba(2,15,23,.15) 76%,transparent);
+  filter:drop-shadow(0 20px 42px rgba(0,4,8,.38));
+}
+.title-kicker {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:#8cecf5;
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:.13em;
+}
+.title-kicker i {
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--cyan2);
+  box-shadow:0 0 0 5px rgba(89,217,233,.1),0 0 18px var(--cyan);
+}
+.title-content h1 {
+  margin:10px 0 0;
+  color:#edfaff;
+  font:600 clamp(72px,8.3vw,126px)/.86 "IBM Plex Mono","Segoe UI Variable",sans-serif;
+  letter-spacing:.045em;
+  text-shadow:0 0 44px rgba(85,222,238,.28),0 7px 30px rgba(0,5,10,.9);
+}
+.title-command {
+  margin:16px 0 5px;
+  color:#ffcf8c;
+  font-size:clamp(20px,1.65vw,26px);
+  font-weight:900;
+  letter-spacing:.08em;
+  text-shadow:0 2px 16px rgba(0,4,8,.9);
+}
+.title-lead { max-width:570px;margin:8px 0 0;color:#d6e7e9;font-size:17px;font-weight:650;line-height:1.7;text-shadow:0 2px 12px rgba(0,5,9,.95); }
+.title-rule { display:flex;align-items:center;gap:12px;width:100%;height:auto;margin:22px 0 17px;color:#7cb7be;font-size:13px;font-weight:700;letter-spacing:.11em; }
+.title-rule::before { content:"";width:86px;height:2px;background:linear-gradient(90deg,var(--cyan2),rgba(89,217,233,.2));box-shadow:0 0 12px var(--cyan); }
+.disclaimer { max-width:570px;margin:0;color:#9ab2b7;font-size:13px;line-height:1.65;text-shadow:0 1px 10px rgba(0,4,8,.95); }
+.save-summary[hidden] { display:none; }
+.save-summary {
+  width:min(570px,100%);
+  margin-top:16px;
+  padding:13px 14px 12px;
+  border:1px solid rgba(101,220,233,.32);
+  border-left:3px solid var(--cyan2);
+  background:linear-gradient(135deg,rgba(3,25,35,.92),rgba(3,17,26,.76));
+  box-shadow:inset 0 1px rgba(255,255,255,.04),0 12px 28px rgba(0,5,9,.22);
+  backdrop-filter:blur(12px);
+}
+.save-summary-heading { display:grid;grid-template-columns:1fr auto;gap:2px 14px;align-items:end; }
+.save-summary-heading > span {
+  grid-column:1/-1;
+  color:#72dbe6;
+  font-size:12px;
+  font-weight:850;
+  letter-spacing:.12em;
+}
+.save-summary-heading strong { color:#effcff;font-size:17px;line-height:1.35; }
+.save-summary-heading small { color:#a9c4c9;font-size:12px;text-align:right; }
+.save-summary-metrics { display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin-top:10px; }
+.save-summary-metrics > span {
+  min-width:0;
+  padding:7px 4px 6px;
+  border:1px solid rgba(101,220,233,.15);
+  background:rgba(1,12,19,.52);
+  text-align:center;
+}
+.save-summary-metrics small,.save-summary-metrics strong { display:block;white-space:nowrap; }
+.save-summary-metrics small { color:#8fb3b9;font-size:12px;font-weight:700; }
+.save-summary-metrics strong { margin-top:3px;color:#e8fbff;font-size:14px;font-family:"IBM Plex Mono","Segoe UI Variable",sans-serif; }
+.save-summary-recent {
+  overflow:hidden;
+  margin:9px 0 0;
+  color:#c0d7da;
+  font-size:13px;
+  line-height:1.45;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.title-actions { display:flex;gap:10px;margin-top:24px; }
+.title-actions button {
+  position:relative;
+  min-height:56px;
+  padding:11px 22px;
+  border-radius:2px;
+  font-size:15px;
+  font-weight:800;
+  overflow:hidden;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.title-actions button:hover { transform:translateY(-2px); }
+.title-actions button:disabled {
+  cursor:wait;
+  opacity:.62;
+  transform:none;
+  filter:saturate(.72);
+}
+.title-actions .primary-button {
+  min-width:220px;
+  color:#effcff;
+  border-color:#70e5f1;
+  background:linear-gradient(120deg,rgba(18,130,144,.96),rgba(6,59,70,.96));
+  box-shadow:inset 0 1px rgba(255,255,255,.15),0 10px 30px rgba(0,0,0,.28);
+}
+.title-actions .primary-button::after { content:"→";position:absolute;right:18px;top:50%;transform:translateY(-50%);color:#b9f8ff;font-size:22px; }
+.title-start-button span,.title-start-button small,.title-continue-button span,.title-continue-button small { display:block;text-align:left;line-height:1.25; }
+.title-start-button small,.title-continue-button small { margin-top:2px;color:#a6d7dc;font-size:12px;font-weight:650; }
+.title-actions .ghost-button { min-width:174px;background:rgba(2,20,29,.72);backdrop-filter:blur(10px); }
+.title-screen.has-save .title-content { padding-top:25px;padding-bottom:24px; }
+.title-screen.has-save .title-actions { margin-top:14px; }
+.title-screen.has-save #continue-game { order:-1;min-width:220px;border-color:#70e5f1;background:linear-gradient(120deg,rgba(18,130,144,.96),rgba(6,59,70,.96)); }
+.title-screen.has-save #start-game { border-color:rgba(107,197,208,.4);background:rgba(2,20,29,.72);box-shadow:none; }
+.title-meta { display:flex;gap:11px;margin-top:20px;color:#a5c1c6;font-size:13px;font-weight:700;letter-spacing:.02em; }
+.title-meta span { display:flex;align-items:center;gap:7px;padding:7px 9px;border:1px solid rgba(104,213,226,.16);background:rgba(2,18,26,.42);backdrop-filter:blur(7px); }
+.title-meta i { width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan); }
+@keyframes title-camera-breathe {
+  from { transform:scale(1.015) translate3d(-.25%,0,0); }
+  to { transform:scale(1.045) translate3d(.35%,-.25%,0); }
+}
+.loading-screen {
+  z-index:300;
+  display:grid;
+  place-content:center;
+  justify-items:center;
+  gap:10px;
+  padding:24px;
+  color:#e8fbff;
+  background:#000;
+  opacity:1;
+  visibility:visible;
+  transition:none;
+}
+.boot-loading .loading-screen { display:grid;opacity:1;visibility:visible;pointer-events:auto; }
+.loading-screen.hidden { display:none; }
+.loading-mark {
+  width:58px;
+  height:58px;
+  border:1px solid rgba(89,217,233,.22);
+  border-top-color:var(--cyan);
+  border-radius:50%;
+  box-shadow:0 0 32px rgba(89,217,233,.08);
+  animation:spin 1s linear infinite;
+}
+.loading-screen b {
+  margin-top:6px;
+  font:600 31px/1 "IBM Plex Mono","Segoe UI Variable",sans-serif;
+  letter-spacing:.14em;
+}
+.loading-screen strong { margin-top:5px;font-size:17px; }
+.loading-screen span { color:#82949b;font-size:15px; }
+.loading-progress {
+  position:relative;
+  width:min(320px,72vw);
+  height:4px;
+  margin-top:15px;
+  overflow:hidden;
+  background:#10181b;
+}
+.loading-progress i {
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:42%;
+  background:linear-gradient(90deg,transparent,var(--cyan),var(--cyan2),transparent);
+  box-shadow:0 0 14px rgba(89,217,233,.8);
+  animation:loading-progress-sweep 1.35s ease-in-out infinite;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+@keyframes loading-progress-sweep {
+  from { transform:translateX(-115%); }
+  to { transform:translateX(350%); }
+}
+.fatal-error { display:grid;place-content:center;padding:30px;background:#100707;color:#ffd0ca;white-space:pre-wrap; }
+
+.replay-screen { display:grid;place-items:center;padding:20px;background:rgba(0,7,10,.92);backdrop-filter:blur(8px); }
+.replay-screen:empty { display:none; }
+.replay-card { width:min(720px,100%);padding:25px;background:rgba(2,22,29,.97);border:1px solid var(--line); }
+.replay-date { color:var(--amber);font:600 12px "IBM Plex Mono",monospace;letter-spacing:.18em; }
+.replay-card h2 { margin:4px 0;font-size:31px; }
+.replay-card p { color:#a9c1c6; }
+.replay-options { display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:20px; }
+.replay-options button { min-height:76px;padding:10px;color:var(--white);background:rgba(10,48,57,.7);border:1px solid var(--line);cursor:pointer; }
+.replay-options button:hover { border-color:var(--cyan2); }
+.replay-progress { display:flex;gap:5px;margin-bottom:15px; }
+.replay-progress i { flex:1;height:2px;background:rgba(89,217,233,.15); }
+.replay-progress i.done { background:var(--cyan);box-shadow:0 0 8px var(--cyan); }
+.history-result { margin-top:18px;padding:12px;color:#bcdce1;border-left:2px solid var(--amber);background:rgba(255,183,90,.06); }
+
+/* 한국어 UI는 핵심 조작·설명 글씨를 15px 미만으로 렌더링하지 않는다. */
+.campaign-office,
+.embedded-rts-exit,
+.game-modal > p,
+.modal-actions button,
+.disclaimer,
+.title-meta {
+  font-size:15px;
+}
+
+@media (max-width: 1180px) and (min-width: 851px) {
+  .dial-grid { grid-template-columns:repeat(4,82px); }
+  .dial { min-height:52px;grid-template-columns:1fr 1fr;padding:5px; }
+  .dial-icon { display:none; }
+}
+
+.mission-active .brief-panel,
+.mission-active .auto-camera,
+.mission-active .map-legend { opacity: 0; pointer-events: none; }
+.mission-active .modal-layer,
+.mission-active .modal-layer:not(:empty) {
+  display: block;
+  pointer-events: none;
+  background: transparent;
+  backdrop-filter: none;
+}
+.mission-hud { position:absolute;inset:0;width:100%;height:100%;pointer-events:none; }
+.mission-objective {
+  position:absolute;z-index:2;top:128px;left:50%;width:min(620px,calc(100vw - 420px));
+  transform:translateX(-50%);padding:12px 18px;text-align:center;
+  background:linear-gradient(90deg,transparent,rgba(2,20,28,.91) 12%,rgba(2,20,28,.91) 88%,transparent);
+  border-top:1px solid rgba(102,235,249,.48);border-bottom:1px solid rgba(102,235,249,.2);
+  text-shadow:0 2px 10px #000;
+}
+.mission-objective > span { display:block;color:var(--cyan);font:600 9px "IBM Plex Mono",monospace;letter-spacing:.22em; }
+.mission-objective > strong { display:block;margin-top:3px;color:#f1fbfd;font-size:21px;letter-spacing:.03em; }
+.mission-objective > p { margin:4px 0 8px;color:#8fb0b7;font-size:11px; }
+.mission-progress { height:4px;background:rgba(89,217,233,.14);overflow:hidden; }
+.mission-progress i { display:block;width:0;height:100%;background:linear-gradient(90deg,var(--cyan),#efffff);box-shadow:0 0 14px var(--cyan);transition:width .2s; }
+.mission-counters { display:flex;justify-content:space-between;margin-top:5px;color:#c7edf2;font:600 12px "IBM Plex Mono",monospace; }
+.mission-counters b:last-child { color:var(--amber); }
+.mission-telemetry {
+  position:absolute;z-index:2;left:18px;top:184px;width:190px;padding:13px 14px;
+  background:linear-gradient(135deg,rgba(2,24,32,.92),rgba(1,11,16,.84));
+  border-left:2px solid var(--cyan);border-top:1px solid rgba(89,217,233,.35);box-shadow:0 14px 35px rgba(0,0,0,.35);
+}
+.mission-telemetry > span { display:block;color:var(--cyan);font:600 8px "IBM Plex Mono",monospace;letter-spacing:.18em; }
+.mission-telemetry > strong { display:block;margin:5px 0 2px;font-size:15px; }
+.mission-telemetry > small { display:block;margin-bottom:10px;color:var(--amber);font:500 9px "IBM Plex Mono",monospace; }
+.mission-telemetry > div { display:flex;justify-content:space-between;padding:5px 0;border-top:1px solid rgba(89,217,233,.12); }
+.mission-telemetry i { color:#78969d;font-style:normal;font-size:10px; }
+.mission-telemetry b { color:#d7f9fc;font:600 11px "IBM Plex Mono",monospace; }
+.mission-reticle { position:absolute;left:50%;top:50%;width:82px;height:82px;transform:translate(-50%,-50%);border:1px solid rgba(102,235,249,.32);border-radius:50%;transition:.15s; }
+.mission-reticle::before,.mission-reticle::after { content:"";position:absolute;background:rgba(146,245,255,.7); }
+.mission-reticle::before { left:50%;top:-11px;bottom:-11px;width:1px; }
+.mission-reticle::after { top:50%;left:-11px;right:-11px;height:1px; }
+.mission-reticle i { position:absolute;inset:11px;border:1px dashed rgba(102,235,249,.38);border-radius:50%;animation:spin 5s linear infinite; }
+.mission-reticle b { position:absolute;left:50%;top:100%;transform:translate(-50%,7px);color:#6f949b;font:600 8px "IBM Plex Mono",monospace;letter-spacing:.12em; }
+.mission-reticle.locked { width:62px;height:62px;border-color:var(--red);box-shadow:0 0 20px rgba(255,70,55,.34);animation:lockPulse .7s ease-in-out infinite alternate; }
+.mission-reticle.locked i { border-color:var(--red); }
+.mission-reticle.locked b { color:var(--red); }
+@keyframes lockPulse { to { transform:translate(-50%,-50%) scale(.9); } }
+.mission-help { position:absolute;left:50%;bottom:58px;transform:translateX(-50%);padding:6px 12px;color:#75959c;background:rgba(0,10,14,.78);font:500 9px "IBM Plex Mono",monospace;letter-spacing:.08em; }
+.mission-drive { position:absolute;z-index:3;left:22px;bottom:70px;display:grid;grid-template-columns:repeat(3,56px);grid-template-rows:repeat(2,52px);gap:5px;pointer-events:auto; }
+.mission-drive button {
+  color:#c9f7fb;background:linear-gradient(145deg,rgba(10,56,66,.9),rgba(2,21,28,.92));
+  border:1px solid rgba(91,223,239,.55);font-size:20px;touch-action:none;user-select:none;box-shadow:inset 0 0 18px rgba(71,215,233,.05);
+}
+.mission-drive button:nth-child(1) { grid-column:2; }
+.mission-drive button:nth-child(2) { grid-column:1;grid-row:2; }
+.mission-drive button:nth-child(3) { grid-column:2;grid-row:2; }
+.mission-drive button:nth-child(4) { grid-column:3;grid-row:2; }
+.mission-drive button.pressed { color:white;background:#126b79;box-shadow:0 0 22px rgba(75,223,239,.32); }
+.mission-fire {
+  position:absolute;z-index:3;right:24px;bottom:72px;width:154px;height:92px;color:white;
+  background:radial-gradient(circle at 50%,#9d2824,#4a1112 72%);border:1px solid var(--red);
+  border-radius:50%;box-shadow:0 0 0 7px rgba(115,30,28,.22),0 0 34px rgba(255,60,48,.24);
+  pointer-events:auto;touch-action:none;user-select:none;
+}
+.mission-fire span,.mission-fire small { display:block;font:600 8px "IBM Plex Mono",monospace;letter-spacing:.12em; }
+.mission-fire strong { display:block;margin:2px 0;font-size:23px; }
+.mission-fire small { color:#ffaaa1; }
+.mission-fire:active { transform:scale(.94);background:#bd332d; }
+.mission-result.success { border-color:var(--cyan);box-shadow:0 0 70px rgba(63,219,237,.2); }
+.mission-result.failure { border-color:var(--red); }
+
+@media (max-width: 850px) {
+  .top-hud { padding:7px 7px 0; }
+  .brand-block { width:138px;min-height:101px;padding-left:8px; }
+  .brand { font-size:23px; }
+  .day-label { margin-top:8px;font-size:12px; }
+  .act-label { font-size:9px; }
+  .day-track { width:94px;margin-top:8px; }
+  .dial-grid { grid-template-columns:repeat(4,65px); }
+  .dial { min-height:49px;grid-template-columns:1fr 1fr;gap:0;padding:4px;border-bottom:1px solid var(--line); }
+  .dial-name { font-size:9px; }
+  .dial-icon { display:none; }
+  .dial strong { font-size:14px; }
+  .map-legend { top:112px;left:7px; }
+  .map-legend small { display:none; }
+  .brief-panel { bottom:62px;padding:9px 12px; }
+  .brief-panel .eyebrow { display:none; }
+  .brief-panel p { margin:0;font-size:12px; }
+  .ticker { height:42px; }
+  .ticker strong { min-width:61px;font-size:13px; }
+  .ticker span { font-size:11px; }
+  .auto-camera { right:8px;bottom:111px;padding:7px;font-size:9px; }
+  .campaign-office { right:8px;bottom:154px;min-width:104px;padding:8px 10px;font-size:15px; }
+  .decision-panel { bottom:42px;width:100%;padding:11px;border-left:0;border-right:0; }
+  .decision-head h2 { font-size:15px; }
+  .decision-timer span { font-size:22px; }
+  .decision-options { gap:5px; }
+  .decision-card { min-height:116px;padding:9px 7px; }
+  .decision-card strong { font-size:12px; }
+  .decision-card > span:not(.card-index):not(.card-category):not(.delta-row) { font-size:9px;line-height:1.3;display:block; }
+  .card-index { font-size:17px; }
+  .delta-row { display:none; }
+  .game-modal { padding:16px; }
+  .campaign-office-modal,.congress-modal { width:calc(100vw - 14px);max-height:calc(100vh - 14px); }
+  .budget-ledger { grid-template-columns:1fr; }
+  .budget-ledger div { padding:9px 11px; }
+  .budget-ledger strong { font-size:20px; }
+  .operation-roadmap { grid-template-columns:1fr;max-height:38vh; }
+  .congress-actions { grid-template-columns:1fr; }
+  .congress-actions button { min-height:104px; }
+  .congress-vote-actions { flex-direction:column; }
+  .congress-vote-actions button { width:100%; }
+  .embedded-rts-exit { top:8px;right:8px;padding:8px 10px; }
+  .mini-arena { height:min(330px,46vh); }
+  .term-grid { grid-template-columns:1fr 1fr; }
+  .power-compare { grid-template-columns:1fr 55px 1fr;gap:8px; }
+  .score-parts { grid-template-columns:repeat(3,1fr); }
+  .title-screen { align-items:end; }
+  .title-screen::before { inset:-1.5%;background-position:88% center;animation-duration:24s; }
+  .title-screen::after {
+    background:
+      linear-gradient(180deg,rgba(1,8,13,.12) 0%,rgba(1,8,13,.08) 28%,rgba(1,9,15,.8) 58%,rgba(1,8,13,.98) 100%),
+      linear-gradient(90deg,rgba(1,8,13,.48),rgba(1,8,13,.05));
+  }
+  .title-horizon { top:18px;right:auto;left:18px;font-size:12px; }
+  .title-horizon span:first-child,.title-horizon i { display:none; }
+  .title-content { width:calc(100vw - 28px);margin:0 14px 20px;padding:23px 18px 19px;border-left-width:1px;background:linear-gradient(180deg,rgba(2,16,24,.22),rgba(2,16,24,.72)); }
+  .title-kicker { font-size:12px;letter-spacing:.08em; }
+  .title-content h1 { margin-top:8px;font-size:clamp(50px,16vw,70px); }
+  .title-command { margin-top:12px;font-size:19px; }
+  .title-lead { font-size:15px;line-height:1.55; }
+  .title-rule { margin:15px 0 12px;font-size:12px; }
+  .disclaimer { font-size:12px;line-height:1.5; }
+  .save-summary { margin-top:11px;padding:10px; }
+  .save-summary-heading { grid-template-columns:1fr; }
+  .save-summary-heading strong { font-size:15px; }
+  .save-summary-heading small { text-align:left; }
+  .save-summary-metrics { grid-template-columns:repeat(4,1fr);gap:4px; }
+  .save-summary-recent { font-size:12px; }
+  .title-actions { flex-direction:column;margin-top:16px; }
+  .title-actions button { width:100%;min-height:51px; }
+  .title-actions .primary-button,.title-actions .ghost-button { min-width:0; }
+  .title-meta { gap:6px;flex-wrap:wrap;margin-top:12px;font-size:12px; }
+  .title-meta span { flex:1 1 calc(50% - 4px);padding:6px 7px; }
+  .replay-options { grid-template-columns:1fr; }
+  .mission-objective { top:114px;width:calc(100vw - 20px);padding:9px 12px; }
+  .mission-objective > strong { font-size:15px; }
+  .mission-objective > p { display:none; }
+  .mission-telemetry { top:186px;left:7px;width:130px;padding:9px; }
+  .mission-telemetry > strong { font-size:11px; }
+  .mission-telemetry > small { font-size:7px;margin-bottom:5px; }
+  .mission-telemetry > div { padding:3px 0; }
+  .mission-help { display:none; }
+  .mission-drive { left:10px;bottom:54px;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,46px);gap:4px; }
+  .mission-fire { right:13px;bottom:60px;width:108px;height:76px; }
+  .mission-fire strong { font-size:18px; }
+}
+
+@media (max-height: 650px) {
+  .brand-block { min-height:91px; }
+  .brand { font-size:25px; }
+  .day-label { margin-top:7px; }
+  .map-legend { display:none; }
+  .brief-panel { display:none; }
+  .decision-panel { bottom:42px; }
+  .decision-card { min-height:95px; }
+  .mini-arena { height:250px; }
+  .mission-objective { top:92px; }
+  .mission-telemetry { display:none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after { animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important; }
+}
+
+.map-check .top-hud,
+.map-check .auto-camera,
+.map-check .brief-panel,
+.map-check .decision-panel,
+.map-check .modal-layer,
+.map-check .report-layer,
+.map-check .ticker,
+.map-check .title-screen,
+.map-check .replay-screen,
+.map-check .change-feedback { display: none !important; }
+.map-check .map-legend {
+  top: 18px;
+  left: 18px;
+  font-size: 12px;
+  background: rgba(1,13,19,.9);
+}
+
+/* 2026 상황실 가독성·시네마틱 HUD */
+.brand,
+.day-label,
+.dial strong,
+.decision-timer span,
+.budget-ledger strong,
+.congress-meter strong {
+  font-family:"Segoe UI Variable","Geist Mono","Cascadia Code","IBM Plex Mono",monospace;
+}
+
+.top-hud { padding:14px 18px 0;gap:18px; }
+.brand-block {
+  width:266px;
+  min-height:142px;
+  padding:3px 16px 16px;
+  border-left:2px solid rgba(103,235,247,.62);
+  background:linear-gradient(108deg,rgba(1,18,26,.96),rgba(4,28,36,.66) 72%,transparent);
+}
+.brand { font-size:39px;font-weight:720;letter-spacing:.055em; }
+.day-label { font-size:17px;font-weight:650; }
+.act-label { font-size:15px;font-weight:700; }
+.dial-grid {
+  grid-template-columns:repeat(8,minmax(92px,106px));
+  gap:7px;
+  border:0;
+  background:transparent;
+  box-shadow:none;
+  clip-path:none;
+}
+.dial {
+  min-height:118px;
+  padding:11px 8px 22px;
+  gap:5px;
+  border:1px solid rgba(100,225,238,.34);
+  border-top-color:rgba(151,246,255,.65);
+  border-radius:5px;
+  background:
+    linear-gradient(180deg,rgba(9,48,59,.88),rgba(1,17,24,.88)),
+    radial-gradient(circle at 50% 0,rgba(106,234,246,.16),transparent 60%);
+  box-shadow:0 12px 30px rgba(0,0,0,.34),inset 0 0 28px rgba(61,202,220,.05);
+  backdrop-filter:blur(8px);
+}
+.dial:last-child { border-right:1px solid rgba(100,225,238,.34); }
+.dial::after {
+  content:"";
+  position:absolute;
+  left:10px;
+  right:10px;
+  bottom:6px;
+  height:2px;
+  background:linear-gradient(90deg,transparent,rgba(83,223,237,.52),transparent);
+}
+.dial-name { font-size:15px;font-weight:750;letter-spacing:.04em;color:#a9edf3; }
+.dial strong { font-size:24px;font-weight:650; }
+.dial-icon {
+  width:40px;
+  height:40px;
+  opacity:1;
+  background-image:url("../images/ui/hud-metric-icons-v1.svg");
+  background-repeat:no-repeat;
+  background-size:320px 40px;
+  filter:drop-shadow(0 0 7px rgba(83,222,237,.32));
+}
+.dial-icon::before,.dial-icon::after { content:none; }
+.icon-transit { background-position:0 0; }
+.icon-oil { background-position:-40px 0; }
+.icon-approval { background-position:-80px 0; }
+.icon-intl { background-position:-120px 0; }
+.icon-ammo { background-position:-160px 0; }
+.icon-esc { background-position:-200px 0; }
+.icon-budget { background-position:-240px 0; }
+.icon-party { background-position:-280px 0; }
+
+.trend-arrow {
+  display:inline-block;
+  width:9px;
+  height:9px;
+  border-top:2px solid currentColor;
+  border-right:2px solid currentColor;
+  flex:0 0 auto;
+}
+.trend-arrow.up { transform:rotate(-45deg) translateY(2px); }
+.trend-arrow.down { transform:rotate(135deg) translateY(2px); }
+.dial-trend {
+  position:absolute;
+  right:8px;
+  bottom:9px;
+  display:flex;
+  align-items:center;
+  gap:4px;
+  font-size:15px;
+  font-weight:800;
+  z-index:1;
+}
+.good,.dial-trend.good { color:#7ef0c8!important; }
+.bad,.dial-trend.bad { color:#ff897c!important; }
+
+.map-label,
+.map-label.sea,
+.map-label.strait,
+.map-legend,
+.map-legend small,
+.eyebrow,
+.decision-head p,
+.decision-timer small,
+.card-category,
+.decision-card > span:not(.card-index):not(.card-category):not(.delta-row),
+.delta-row b,
+.game-modal > p,
+.ticker span {
+  font-size:15px;
+}
+.map-label { padding:5px 8px;font-weight:700;text-shadow:0 2px 8px #000; }
+.map-label.sea { font-size:15px; }
+.map-label.strait { font-size:15px; }
+.map-legend { font-size:15px;line-height:1.4;gap:7px; }
+.eyebrow { font-weight:750; }
+.decision-head p { line-height:1.5; }
+.decision-timer { width:86px; }
+.decision-timer small { display:block;margin-top:5px; }
+.decision-card { min-height:150px;padding:15px; }
+.decision-card strong { font-size:19px; }
+.decision-card > span:not(.card-index):not(.card-category):not(.delta-row) { line-height:1.5; }
+.delta-row { gap:7px; }
+.delta-row b {
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:5px 7px;
+  font-weight:750;
+  font-style:normal;
+  border:1px solid currentColor;
+  background:rgba(26,145,115,.12);
+}
+.delta-row b.bad { background:rgba(205,66,52,.14); }
+.delta-row em { color:inherit;font-style:normal;opacity:.78; }
+
+.change-feedback {
+  position:absolute;
+  z-index:32;
+  top:150px;
+  right:18px;
+  width:min(680px,calc(100vw - 36px));
+  padding:12px;
+  opacity:0;
+  transform:translateY(-12px);
+  color:#dffbfe;
+  border:1px solid rgba(103,229,241,.56);
+  border-top:3px solid var(--amber);
+  border-radius:6px;
+  background:linear-gradient(145deg,rgba(3,29,38,.97),rgba(1,13,18,.97));
+  box-shadow:0 25px 65px rgba(0,0,0,.56);
+  pointer-events:none;
+  transition:opacity .28s,transform .28s;
+}
+.change-feedback.show { opacity:1;transform:translateY(0); }
+.change-feedback header { display:flex;justify-content:space-between;align-items:center;margin-bottom:8px; }
+.change-feedback header span { color:var(--cyan);font-size:15px;font-weight:750;letter-spacing:.07em; }
+.change-feedback header strong { color:#fff;font-size:18px; }
+.change-feedback > div { display:grid;grid-template-columns:repeat(2,1fr);gap:7px; }
+.change-feedback article {
+  display:grid;
+  grid-template-columns:16px 1fr auto;
+  align-items:center;
+  gap:6px;
+  padding:9px 10px;
+  border-left:3px solid currentColor;
+  background:rgba(255,255,255,.035);
+}
+.change-feedback article > span { color:#e6fbfd;font-size:16px;font-weight:750; }
+.change-feedback article > strong { font-size:20px; }
+.change-feedback article > small {
+  grid-column:2/4;
+  color:#a8c2c7;
+  font-size:15px;
+  line-height:1.35;
+}
+
+.congress-modal { width:min(920px,calc(100vw - 30px)); }
+.congress-visual {
+  position:relative;
+  height:205px;
+  margin:11px 0 17px;
+  overflow:hidden;
+  border:1px solid rgba(99,225,237,.38);
+  background:#07141a;
+}
+.congress-visual::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,transparent 48%,rgba(1,10,14,.88));
+  pointer-events:none;
+}
+.congress-visual img { display:block;width:100%;height:100%;object-fit:cover; }
+.congress-visual figcaption {
+  position:absolute;
+  z-index:1;
+  left:14px;
+  bottom:11px;
+  color:#f5feff;
+  font-size:16px;
+  font-weight:750;
+  letter-spacing:.04em;
+}
+.congress-live-change { display:flex;flex-wrap:wrap;gap:7px;margin:-6px 0 13px; }
+.congress-live-change span {
+  padding:6px 9px;
+  font-size:15px;
+  font-weight:800;
+  border:1px solid currentColor;
+  background:rgba(255,255,255,.035);
+}
+.congress-actions small { display:flex;flex-wrap:wrap;gap:6px; }
+.change-chip {
+  padding:4px 6px;
+  font-size:15px;
+  border:1px solid currentColor;
+  background:rgba(255,255,255,.035);
+}
+
+@media (max-width:1180px) and (min-width:851px) {
+  .dial-grid { grid-template-columns:repeat(4,104px); }
+  .dial { min-height:72px;grid-template-columns:36px 1fr;grid-template-rows:auto auto;justify-items:start;padding:7px 9px; }
+  .dial-icon { display:block;width:32px;height:32px;background-size:256px 32px;grid-row:1/3; }
+  .icon-oil { background-position:-32px 0; }
+  .icon-approval { background-position:-64px 0; }
+  .icon-intl { background-position:-96px 0; }
+  .icon-ammo { background-position:-128px 0; }
+  .icon-esc { background-position:-160px 0; }
+  .icon-budget { background-position:-192px 0; }
+  .icon-party { background-position:-224px 0; }
+}
+
+@media (max-width:850px) {
+  .top-hud { display:block;height:218px;padding:7px; }
+  .brand-block { width:100%;height:76px;min-height:76px;padding:3px 10px;clip-path:none;border-left:2px solid var(--cyan); }
+  .brand { font-size:31px; }
+  .day-label { position:absolute;left:178px;top:11px;margin:0;font-size:15px; }
+  .act-label { position:absolute;left:178px;top:36px;margin:0;font-size:15px; }
+  .day-track { position:absolute;left:178px;top:59px;width:150px;margin:0; }
+  .dial-grid { position:absolute;top:82px;left:7px;right:7px;grid-template-columns:repeat(4,1fr);gap:5px; }
+  .dial {
+    min-height:63px;
+    grid-template-columns:30px 1fr;
+    grid-template-rows:auto auto;
+    align-content:center;
+    justify-items:start;
+    gap:1px 6px;
+    padding:5px 6px;
+  }
+  .dial-icon { display:block;width:29px;height:29px;background-size:232px 29px;grid-row:1/3; }
+  .icon-oil { background-position:-29px 0; }
+  .icon-approval { background-position:-58px 0; }
+  .icon-intl { background-position:-87px 0; }
+  .icon-ammo { background-position:-116px 0; }
+  .icon-esc { background-position:-145px 0; }
+  .icon-budget { background-position:-174px 0; }
+  .icon-party { background-position:-203px 0; }
+  .dial-name { font-size:15px;line-height:1; }
+  .dial strong { font-size:18px;line-height:1; }
+  .dial-trend { display:none; }
+  .map-legend { display:none; }
+  .map-label { font-size:15px; }
+  .change-feedback { top:216px;left:7px;right:7px;width:auto;padding:9px; }
+  .change-feedback > div { grid-template-columns:1fr;max-height:240px;overflow:auto; }
+  .decision-panel { bottom:42px;max-height:62vh;overflow:auto;padding:12px; }
+  .decision-head { align-items:flex-start; }
+  .decision-head h2 { font-size:19px; }
+  .decision-options { grid-template-columns:1fr; }
+  .decision-card { min-height:112px;padding:12px; }
+  .decision-card strong { font-size:18px; }
+  .decision-card > span:not(.card-index):not(.card-category):not(.delta-row) { font-size:15px; }
+  .delta-row { display:flex; }
+  .ticker { height:48px; }
+  .ticker strong,.ticker span { font-size:15px; }
+  .auto-camera { right:8px;bottom:114px;padding:9px 10px;font-size:15px; }
+  .campaign-office { right:8px;bottom:164px;font-size:15px; }
+  .congress-visual { height:164px; }
+  .congress-actions button { min-height:120px; }
+  .mission-objective > span,
+  .mission-objective > strong,
+  .mission-objective > p,
+  .mission-telemetry > span,
+  .mission-telemetry > strong,
+  .mission-telemetry > small,
+  .mission-telemetry i,
+  .mission-telemetry b,
+  .mission-help,
+  .mission-reticle b,
+  .mission-fire span,
+  .mission-fire small { font-size:15px; }
+}
+
+/* v21 — 밝은 지역 작전지도, 읽고 넘기는 브리핑, 단계식 협상 */
+.scanlines { opacity:.035; }
+.vignette {
+  background:radial-gradient(circle at 50% 43%,transparent 48%,rgba(5,25,31,.08) 78%,rgba(2,16,22,.28) 100%);
+}
+.brief-panel {
+  width:min(790px,calc(100vw - 40px));
+  padding:15px 24px 17px;
+  background:linear-gradient(180deg,rgba(12,52,62,.94),rgba(5,31,40,.96));
+  box-shadow:0 12px 34px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.08);
+}
+.brief-panel p { font-size:18px;line-height:1.55; }
+.ticker {
+  height:58px;
+  cursor:pointer;
+  background:rgba(5,29,37,.97);
+  box-shadow:0 -10px 28px rgba(0,0,0,.18);
+}
+.ticker:hover { border-top-color:rgba(126,237,246,.76); }
+.ticker strong { min-width:104px;font-size:19px; }
+.ticker span {
+  font-family:"Pretendard Variable","Pretendard","SUIT Variable","SUIT","Noto Sans KR","Malgun Gothic",sans-serif;
+  font-size:17px;
+  font-weight:650;
+  letter-spacing:.015em;
+  line-height:1.2;
+  animation-duration:34s;
+}
+.auto-camera { bottom:92px;font-size:15px; }
+.campaign-office { bottom:143px;font-size:15px; }
+
+.cinematic-briefing {
+  width:min(1120px,calc(100vw - 34px));
+  max-height:calc(100vh - 32px);
+  padding:0;
+  overflow:auto;
+  background:linear-gradient(145deg,rgba(10,47,57,.99),rgba(4,27,35,.995));
+}
+.cinematic-briefing figure {
+  position:relative;
+  aspect-ratio:16/8.2;
+  max-height:62vh;
+  margin:0;
+  overflow:hidden;
+  background:#163d49;
+}
+.cinematic-briefing figure::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,transparent 52%,rgba(2,19,26,.92));
+  pointer-events:none;
+}
+.cinematic-briefing img { display:block;width:100%;height:100%;object-fit:cover; }
+.cinematic-briefing figcaption {
+  position:absolute;
+  z-index:1;
+  left:30px;
+  right:30px;
+  bottom:23px;
+}
+.cinematic-briefing figcaption span,
+.cinematic-briefing figcaption strong { display:block; }
+.cinematic-briefing figcaption span {
+  margin-bottom:7px;
+  color:#a9f5ff;
+  font-size:15px;
+  font-weight:800;
+  letter-spacing:.08em;
+}
+.cinematic-briefing.hostile figcaption span { color:#ffb19f; }
+.cinematic-briefing figcaption strong { color:#fff;font-size:clamp(25px,3vw,38px);line-height:1.2; }
+.cinematic-copy {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:14px 22px;
+  align-items:center;
+  padding:22px 28px 25px;
+}
+.cinematic-copy p {
+  grid-column:1;
+  margin:0;
+  color:#f0fbfc;
+  font-size:19px;
+  font-weight:750;
+  line-height:1.65;
+}
+.cinematic-copy aside {
+  grid-column:1;
+  padding:12px 14px;
+  color:#c4dadd;
+  border-left:3px solid var(--cyan);
+  background:rgba(255,255,255,.045);
+  font-size:16px;
+  line-height:1.6;
+}
+.cinematic-briefing.hostile .cinematic-copy aside { border-left-color:var(--red); }
+.cinematic-copy button { grid-column:2;grid-row:1/3;min-width:190px;min-height:54px;font-size:16px; }
+
+.president-statement-modal {
+  width:min(1180px,calc(100vw - 34px));
+  max-height:calc(100vh - 28px);
+  padding:0;
+  overflow:auto;
+  background:linear-gradient(145deg,rgba(10,42,52,.995),rgba(4,22,30,.998));
+}
+.president-statement-visual {
+  position:relative;
+  aspect-ratio:16/8.5;
+  max-height:64vh;
+  margin:0;
+  overflow:hidden;
+  background:#123640;
+}
+.president-statement-visual::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,rgba(2,18,27,.38),transparent 52%),linear-gradient(180deg,transparent 58%,rgba(2,17,24,.92));
+  pointer-events:none;
+}
+.president-statement-visual img { display:block;width:100%;height:100%;object-fit:cover; }
+.president-statement-visual figcaption {
+  position:absolute;
+  z-index:2;
+  left:28px;
+  bottom:22px;
+  display:grid;
+  gap:5px;
+  color:#fff;
+}
+.president-statement-visual figcaption span {
+  color:#9ceefa;
+  font-size:15px;
+  font-weight:850;
+  letter-spacing:.08em;
+}
+.president-statement-visual figcaption strong { font-size:clamp(24px,2.6vw,38px); }
+.president-speech-bubble {
+  position:absolute;
+  z-index:3;
+  top:13%;
+  left:5%;
+  width:min(48%,560px);
+  margin:0;
+  padding:22px 26px;
+  color:#09242c;
+  border:2px solid rgba(255,255,255,.96);
+  border-radius:22px;
+  background:rgba(244,253,255,.94);
+  box-shadow:0 18px 54px rgba(0,0,0,.36);
+  font-size:clamp(23px,2.6vw,39px);
+  font-weight:900;
+  letter-spacing:-.025em;
+  line-height:1.35;
+}
+.president-speech-bubble::after {
+  content:"";
+  position:absolute;
+  right:-24px;
+  bottom:25px;
+  width:42px;
+  height:28px;
+  background:rgba(244,253,255,.94);
+  clip-path:polygon(0 0,100% 52%,0 100%);
+}
+.president-statement-copy {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:22px;
+  align-items:center;
+  padding:22px 28px 26px;
+}
+.president-statement-copy p { margin:7px 0;color:#e7f6f8;font-size:18px;font-weight:700;line-height:1.6; }
+.president-statement-copy aside {
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:6px 12px;
+  margin:12px 0;
+  padding:12px 14px;
+  border-left:3px solid #f2b960;
+  background:rgba(255,255,255,.05);
+}
+.president-statement-copy aside span { color:#f2ca82;font-size:14px;font-weight:850; }
+.president-statement-copy aside q { color:#c8dadd;font-size:16px;font-weight:700; }
+.president-statement-copy small { display:block;color:#91aeb3;font-size:14px;line-height:1.55; }
+.president-statement-copy button { min-width:190px;min-height:56px;font-size:16px; }
+
+/* 플레이어가 고른 말을 대통령이 실제로 하는 장면.
+   남의 발언을 전달만 하는 화면과 같은 틀을 쓰므로, 여기서는 생중계 표지와
+   말풍선이 뜨는 움직임으로 "지금 내가 말하고 있다"를 드러낸다. */
+.president-live-tag {
+  position:absolute;
+  z-index:4;
+  top:18px;
+  right:20px;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:7px 14px;
+  color:#fff5f4;
+  background:rgba(196,42,32,.92);
+  border:1px solid rgba(255,255,255,.55);
+  border-radius:999px;
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+.president-live-tag::before {
+  content:"";
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#fff;
+  animation:president-live-pulse 1.4s ease-in-out infinite;
+}
+.president-delivery .president-speech-bubble {
+  transform-origin:88% 88%;
+  animation:president-speak-in .46s cubic-bezier(.2,.9,.25,1.15) both;
+}
+.president-delivery .president-statement-copy .delta-row {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 14px;
+  margin:12px 0 4px;
+}
+@keyframes president-speak-in {
+  from { opacity:0;transform:scale(.82) translateY(14px); }
+  to { opacity:1;transform:scale(1) translateY(0); }
+}
+@keyframes president-live-pulse {
+  0%,100% { opacity:1; }
+  50% { opacity:.25; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .president-delivery .president-speech-bubble { animation:none; }
+  .president-live-tag::before { animation:none; }
+}
+
+.news-modal { width:min(920px,calc(100vw - 30px)); }
+.news-modal > p { color:#bad1d5;font-size:16px;line-height:1.55; }
+.news-list { display:grid;gap:8px;max-height:58vh;overflow:auto;padding-right:5px; }
+.news-list article {
+  display:grid;
+  grid-template-columns:66px 1fr;
+  gap:13px;
+  padding:14px;
+  border-left:3px solid var(--red);
+  background:rgba(255,255,255,.045);
+}
+.news-list article > span { color:#ffb1a8;font-size:15px;font-weight:800; }
+.news-list strong { color:#fff;font-size:15px; }
+.news-list p { margin:5px 0 0;color:#d6e9ec;font-size:17px;line-height:1.55; }
+
+.negotiation-modal { width:min(980px,calc(100vw - 30px)); }
+.negotiation-visual {
+  position:relative;
+  height:min(30vh,260px);
+  margin:-23px -23px 18px;
+  overflow:hidden;
+}
+.negotiation-visual::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,transparent 50%,rgba(3,25,32,.94));
+}
+.negotiation-visual img { display:block;width:100%;height:100%;object-fit:cover; }
+.negotiation-visual figcaption {
+  position:absolute;
+  z-index:1;
+  left:23px;
+  bottom:15px;
+  color:#fff;
+  font-size:16px;
+  font-weight:800;
+}
+.negotiation-progress { display:flex;gap:7px;margin:5px 0 16px; }
+.negotiation-progress i { flex:1;height:5px;background:rgba(124,220,230,.18); }
+.negotiation-progress i.done { background:linear-gradient(90deg,var(--cyan),#79efc5);box-shadow:0 0 12px rgba(89,217,233,.4); }
+.negotiation-modal > p { color:#b9cfd3;font-size:16px;line-height:1.55; }
+.negotiation-choice-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:15px 0; }
+.negotiation-choice-grid button {
+  min-height:145px;
+  padding:15px;
+  text-align:left;
+  color:#dceff1;
+  border:1px solid rgba(104,218,230,.34);
+  background:linear-gradient(145deg,rgba(16,66,76,.62),rgba(5,33,41,.86));
+  cursor:pointer;
+}
+.negotiation-choice-grid button.selected {
+  border:2px solid var(--cyan2);
+  background:linear-gradient(145deg,rgba(28,112,122,.72),rgba(6,50,59,.94));
+  box-shadow:0 0 24px rgba(89,217,233,.17);
+}
+.negotiation-choice-grid strong,
+.negotiation-choice-grid span,
+.negotiation-choice-grid small { display:block; }
+.negotiation-choice-grid strong { color:#fff;font-size:18px; }
+.negotiation-choice-grid span { margin:9px 0;color:#bdd0d3;font-size:15px;line-height:1.48; }
+.negotiation-choice-grid small { color:var(--amber);font-size:15px;font-weight:750; }
+.negotiation-live {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+  padding:12px;
+  border:1px solid currentColor;
+  background:rgba(255,255,255,.035);
+}
+.negotiation-live div { display:flex;align-items:center;justify-content:space-between;padding:6px 9px;background:rgba(0,0,0,.13); }
+.negotiation-live span { color:#d4e7e9;font-size:15px; }
+.negotiation-live strong { font-size:25px; }
+.negotiation-live p { grid-column:1/3;margin:2px 0 0;text-align:center;font-size:17px;font-weight:850; }
+.agreement-summary { display:grid;grid-template-columns:repeat(2,1fr);gap:8px; }
+.agreement-summary article { padding:12px;border:1px solid rgba(97,214,226,.22);background:rgba(255,255,255,.035); }
+.agreement-summary span,.agreement-summary strong { display:block; }
+.agreement-summary span { color:#9eb9bd;font-size:15px; }
+.agreement-summary strong { margin-top:5px;color:#fff;font-size:18px; }
+.negotiation-status { display:flex;justify-content:space-between;margin-top:12px;padding:12px 15px;border:1px solid currentColor;font-size:17px; }
+
+.replay-screen {
+  overflow:auto;
+  padding:22px;
+  background:rgba(7,31,39,.94);
+  backdrop-filter:blur(9px);
+}
+.replay-card {
+  width:min(1060px,100%);
+  max-height:calc(100vh - 44px);
+  overflow:auto;
+  padding:20px;
+  background:linear-gradient(145deg,rgba(11,52,62,.99),rgba(4,27,35,.995));
+}
+.replay-visual {
+  height:min(34vh,290px);
+  margin:0 0 16px;
+  overflow:hidden;
+  border:1px solid rgba(121,225,235,.3);
+}
+.replay-visual img { width:100%;height:100%;object-fit:cover;display:block; }
+.replay-date {
+  font-family:"Pretendard Variable","Pretendard","SUIT Variable","SUIT","Noto Sans KR","Malgun Gothic",sans-serif;
+  font-size:16px;
+}
+.replay-card h2 { font-size:32px; }
+.replay-card > p { color:#d2e3e5;font-size:18px;line-height:1.55; }
+.replay-options button { min-height:154px;padding:14px;text-align:left; }
+.replay-options button strong,
+.replay-options button > span { display:block; }
+.replay-options button strong { font-size:18px; }
+.replay-options button > span { margin-top:8px;color:#b5cacd;font-size:15px;line-height:1.45; }
+.history-battle-chip {
+  display:inline-flex;
+  align-items:center;
+  width:max-content;
+  margin-top:10px;
+  padding:6px 9px;
+  border:1px solid rgba(255,183,90,.72);
+  border-radius:999px;
+  color:#ffe0ac;
+  background:rgba(255,139,45,.13);
+  font-size:14px;
+  font-style:normal;
+  font-weight:900;
+  letter-spacing:.02em;
+}
+.history-battle-launch .replay-visual { border-color:rgba(255,183,90,.52); }
+.history-battle-loading {
+  display:grid;
+  gap:5px;
+  margin-top:15px;
+  padding:14px 16px;
+  border:1px solid rgba(255,183,90,.45);
+  background:linear-gradient(90deg,rgba(255,139,45,.14),rgba(255,255,255,.025));
+}
+.history-battle-loading strong { color:#ffe0ac;font-size:20px; }
+.history-battle-loading span { color:#d6e7e8;font-size:16px;line-height:1.5; }
+.replay-screen.battle-active { visibility:hidden;pointer-events:none; }
+.history-result-visual { position:relative; }
+.history-result-visual::after {
+  content:"";
+  position:absolute;
+  inset:45% 0 0;
+  background:linear-gradient(transparent,rgba(2,12,17,.78));
+  pointer-events:none;
+}
+.history-result-visual figcaption {
+  position:absolute;
+  z-index:1;
+  left:16px;
+  bottom:14px;
+  padding:7px 11px;
+  border-left:4px solid #72e7f0;
+  color:#fff;
+  background:rgba(2,15,20,.76);
+  font-size:16px;
+  font-weight:900;
+}
+.replay-result-card.success { box-shadow:inset 0 0 0 1px rgba(80,226,171,.3),0 24px 70px rgba(0,0,0,.42); }
+.replay-result-card.failure { box-shadow:inset 0 0 0 1px rgba(255,102,96,.34),0 24px 70px rgba(0,0,0,.42); }
+.replay-result-card.success .history-result-visual figcaption { border-left-color:#50e2ab; }
+.replay-result-card.failure .history-result-visual figcaption { border-left-color:#ff6660; }
+.history-battle-report {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:8px;
+  margin:16px 0;
+}
+.history-battle-report article,
+.history-impact-grid article {
+  min-width:0;
+  padding:11px 12px;
+  border:1px solid rgba(121,225,235,.22);
+  background:rgba(255,255,255,.035);
+}
+.history-battle-report span,
+.history-battle-report strong,
+.history-impact-grid span,
+.history-impact-grid strong { display:block; }
+.history-battle-report span,
+.history-impact-grid span { color:#a9c3c6;font-size:15px; }
+.history-impact-grid small { display:block;margin-top:3px;color:#c8dadd;font-size:15px;line-height:1.4; }
+.history-battle-report strong { margin-top:4px;color:#fff;font-size:21px; }
+.history-impact-title {
+  display:block;
+  margin:18px 0 8px;
+  color:#e8f7f8;
+  font-size:18px;
+  font-weight:900;
+}
+.history-impact-grid {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+}
+.history-impact-grid article { position:relative;padding-right:38px; }
+.history-impact-grid strong { margin-top:5px;font-size:19px; }
+.history-impact-grid article::after {
+  position:absolute;
+  right:11px;
+  top:50%;
+  translate:0 -50%;
+  font-size:24px;
+  font-weight:1000;
+}
+.history-impact-grid article.good { border-color:rgba(80,226,171,.38);background:rgba(80,226,171,.07); }
+.history-impact-grid article.good strong { color:#7ff0c3; }
+.history-impact-grid article.good::after { content:"▲";color:#50e2ab; }
+.history-impact-grid article.bad { border-color:rgba(255,102,96,.4);background:rgba(255,102,96,.07); }
+.history-impact-grid article.bad strong { color:#ff9d98; }
+.history-impact-grid article.bad::after { content:"▼";color:#ff6660; }
+.history-no-change {
+  margin:8px 0 0;
+  padding:12px;
+  color:#bdd0d3;
+  border:1px solid rgba(121,225,235,.18);
+  font-size:16px;
+}
+.history-result { display:grid;grid-template-columns:1fr auto;align-items:center;gap:7px 18px; }
+.history-result span,.history-result strong { display:block;font-size:16px; }
+.history-result button { grid-column:2;grid-row:1/3; }
+
+@media (max-width:850px) {
+  .brief-panel { display:none; }
+  .ticker { height:56px; }
+  .ticker strong { min-width:74px;font-size:17px; }
+  .ticker span { font-size:16px; }
+  .auto-camera { bottom:124px; }
+  .campaign-office { bottom:174px; }
+  .cinematic-briefing { width:calc(100vw - 14px); }
+  .cinematic-briefing figure { aspect-ratio:16/10; }
+  .cinematic-briefing figcaption { left:16px;right:16px;bottom:14px; }
+  .president-statement-modal { width:calc(100vw - 14px); }
+  .president-statement-visual { aspect-ratio:4/5;max-height:none; }
+  .president-statement-visual img { object-position:67% center; }
+  .president-speech-bubble { top:7%;left:4%;width:76%;padding:16px 17px;font-size:24px; }
+  .president-speech-bubble::after { right:18%;bottom:-22px;transform:rotate(90deg); }
+  .president-statement-visual figcaption { left:16px;right:16px;bottom:14px; }
+  .president-statement-copy { grid-template-columns:1fr;padding:18px 17px 20px; }
+  .president-statement-copy button { width:100%; }
+  .cinematic-copy { display:block;padding:16px; }
+  .cinematic-copy p { font-size:17px; }
+  .cinematic-copy aside { margin:12px 0;font-size:15px; }
+  .cinematic-copy button { width:100%; }
+  .negotiation-visual { margin:-16px -16px 15px;height:190px; }
+  .negotiation-choice-grid,.agreement-summary { grid-template-columns:1fr; }
+  .negotiation-choice-grid button { min-height:112px; }
+  .power-compare { grid-template-columns:1fr 60px 1fr;gap:8px; }
+  .replay-screen { padding:7px; }
+  .replay-card { max-height:calc(100vh - 14px);padding:12px; }
+  .replay-visual { height:190px; }
+  .replay-card h2 { font-size:25px; }
+  .replay-options { grid-template-columns:1fr; }
+  .replay-options button { min-height:116px; }
+  .history-battle-report { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .history-impact-grid { grid-template-columns:1fr; }
+  .history-result-visual figcaption { left:10px;bottom:10px;font-size:15px; }
+  .history-result { display:block; }
+  .history-result button { width:100%;margin-top:12px; }
+}
+
+/* ── 언어 토글과 개발자 정보 버튼 ───────────────────────────── */
+
+.lang-switch {
+  position:absolute; z-index:6;
+  top:max(14px,env(safe-area-inset-top)); right:max(14px,env(safe-area-inset-right));
+  display:inline-flex; gap:2px; padding:3px;
+  border:1px solid #2a4a58; border-radius:999px;
+  background:#03151ecc; backdrop-filter:blur(6px);
+}
+.lang-switch button {
+  min-width:66px; padding:7px 12px;
+  border:0; border-radius:999px; background:transparent;
+  color:#8fb6c4; font:inherit; font-size:12px; font-weight:700; letter-spacing:.02em;
+  cursor:pointer; transition:background .18s ease,color .18s ease;
+}
+.lang-switch button:hover { color:#d8ecf2; }
+.lang-switch button.active { background:#1a5f74; color:#eaf7fb; }
+.lang-switch button:focus-visible { outline:2px solid #4fd2ee; outline-offset:2px; }
+
+.developer-fixed-link {
+  position:fixed; z-index:80;
+  /* 하단 48px 속보 밴드 위에 얹히지 않도록 그만큼 띄운다. */
+  right:max(14px,env(safe-area-inset-right)); bottom:max(60px,calc(env(safe-area-inset-bottom) + 60px));
+  display:grid; grid-template-columns:26px auto; align-items:center; gap:8px;
+  min-height:46px; padding:7px 15px 7px 8px;
+  border:1px solid #2f5768; border-radius:999px;
+  background:#04161fee; color:#dceff5;
+  font:inherit; font-size:12px; font-weight:800; letter-spacing:.02em;
+  text-decoration:none; box-shadow:0 12px 30px #000a;
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+.developer-fixed-link:hover {
+  transform:translateY(-3px); border-color:#4fd2ee; box-shadow:0 16px 36px #000c;
+}
+.developer-fixed-link:active { transform:scale(.96); }
+/* 결정 패널·모달·리플레이가 열려 있는 동안은 조작을 가리지 않게 비켜 준다.
+   main.js 의 감시자가 버튼 자체에 이 클래스를 토글한다.
+   숨김을 전환 애니메이션에 맡기지 않는다 — 스로틀된 탭에서 transition 이
+   시작되지 않아 버튼이 패널 위에 남는 사고(r2025 계열)를 피하기 위해
+   visibility 로 즉시 숨긴다. */
+.developer-fixed-link.overlay-hidden {
+  opacity:0; visibility:hidden; pointer-events:none;
+}
+.developer-link-mark {
+  display:grid; place-items:center; width:26px; height:26px;
+  border-radius:50%; background:#1a5f74; color:#eaf7fb; font-size:14px; font-weight:900;
+}
+
+@media (max-width:640px) {
+  /* 아래쪽에 두면 타이틀 하단의 특징 칩과 겹친다. 상단 이미지 영역이 비어 있으므로
+     오른쪽 위에 그대로 두고 크기만 줄인다. */
+  .lang-switch { top:max(10px,env(safe-area-inset-top)); right:max(10px,env(safe-area-inset-right)); }
+  .lang-switch button { min-width:48px; padding:5px 9px; font-size:11px; }
+  .developer-fixed-link {
+    right:max(9px,env(safe-area-inset-right)); bottom:max(56px,calc(env(safe-area-inset-bottom) + 56px));
+    display:flex; align-items:center; justify-content:center;
+    box-sizing:border-box; width:46px; height:46px; min-height:46px;
+    padding:8px; border-radius:50%; overflow:hidden;
+  }
+  .developer-fixed-link span {
+    position:absolute; width:1px; height:1px; overflow:hidden;
+    clip:rect(0 0 0 0); white-space:nowrap;
+  }
+}
+
+/* ── 좌상단 HORMUZ = 시작 화면 복귀 버튼 ─────────────────── */
+/* button 기본 스타일을 걷어내고 기존 .brand 타이포를 그대로 쓴다. */
+.brand {
+  display: block; padding: 0; border: 0; background: none;
+  color: inherit; text-align: left; cursor: pointer;
+  transition: color .18s ease, text-shadow .18s ease;
+}
+.brand:hover { color: #b8f6ff; text-shadow: 0 0 20px rgba(102,235,249,.85); }
+.brand:active { transform: scale(.98); }
+.brand:focus-visible { outline: 2px solid #4fd2ee; outline-offset: 3px; border-radius: 4px; }
+
+/* .top-hud 는 전장 조작을 가리지 않으려 pointer-events:none 이다.
+   그 안의 브랜드 버튼만 다시 클릭을 받게 한다. */
+#brand-home { pointer-events: auto; }
+
+/* 한국어판 대문 제목은 「호르무즈」다. IBM Plex Mono 에 한글이 없어 그대로 두면
+   대체 글꼴로 떨어지며 자간이 벌어진다. 한글일 때만 본문 글꼴과 자간을 쓴다. */
+html[lang="ko"] .title-content h1 {
+  font-family: Pretendard, "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -.02em;
+}
+
+/* ── v70 · 작전 화면이 지도를 가리는 양 줄이기 ─────────────────
+   폰에서 상단 HUD 가 213px(화면의 23%)을 먹고, 선택 결과 패널이 뜨면 합쳐서 55% 가
+   가려졌다. 360px 폭에서는 76% 였다. 지도가 이 게임의 절반인데 절반이 안 보였다.
+   글자 크기(15px 하한)는 건드리지 않는다. 최소 높이와 여백만 줄인다. */
+
+@media (max-width: 850px) {
+  /* 상단 213px → 134px. 브랜드 칸은 글자 한 줄만 담으면 되고,
+     날짜·국면·진행바는 그 오른쪽 빈 자리에 얹혀 있어 높이를 더 먹지 않는다. */
+  .top-hud { height: 136px; padding: 6px 7px; }
+  .brand-block { height: 48px; min-height: 48px; padding: 1px 10px; }
+  .brand { font-size: 23px; }
+  .day-label { left: 138px; top: 2px; }
+  .act-label { left: 138px; top: 21px; }
+  .day-track { left: 138px; top: 40px; width: 124px; }
+
+  /* 타일 하나가 63px 였는데 실제 글자는 30px 이었다. 나머지는 전부 빈 여백이었다.
+     아이콘은 좁은 폭에서 이름 자리를 빼앗으므로 접는다 — 이름이 이미 뜻을 말한다. */
+  .dial-grid { top: 54px; gap: 3px; }
+  .dial {
+    min-height: 34px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    align-content: center;
+    justify-items: start;
+    gap: 0;
+    padding: 1px 7px;
+  }
+  .dial-icon { display: none; }
+  .dial-name { line-height: 1.15; }
+  .dial strong { font-size: 15px; line-height: 1.15; }
+
+  .ticker { height: 34px; }
+
+  /* 선택 결과: 최대 5줄까지 늘어나 360px 폭에서 화면의 76% 를 먹었다.
+     자리를 새 HUD 아래로 옮기고, 한 줄을 한 줄로 만든다 — 지표 이름·증감·전후값이
+     따로 줄을 차지할 이유가 없다. 7.6초 뒤 알아서 사라진다. */
+  .change-feedback { top: 140px; padding: 8px; }
+  .change-feedback header { margin-bottom: 6px; }
+  .change-feedback header strong { font-size: 15px; }
+  .change-feedback > div { max-height: 30vh; gap: 4px; }
+
+  .change-feedback article {
+    grid-template-columns: 13px auto auto 1fr;
+    gap: 5px;
+    padding: 5px 8px;
+  }
+
+  .change-feedback article > strong { font-size: 15px; }
+
+  .change-feedback article > small {
+    grid-column: auto;
+    justify-self: end;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /* 결정 패널은 62vh 안에 선택지 3개가 다 들어와야 한다. 하나라도 스크롤해야
+     보이면 못 본 선택지가 생겨 판단이 왜곡된다. 설명은 두 줄에서 끊는다 —
+     무엇을 고르는지는 위의 제목 줄에서 이미 읽힌다. */
+  .decision-panel { padding: 10px; }
+  .decision-head { margin-bottom: 7px; }
+  .decision-head p { display: none; }
+  .decision-options { gap: 6px; }
+  .decision-card { min-height: 0; padding: 7px 9px; }
+  .decision-card strong { margin: 3px 0 2px; }
+
+  .decision-card > span:not(.card-index):not(.card-category):not(.delta-row) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+  }
+
+  .delta-row {
+    margin-top: 5px;
+    flex-wrap: nowrap;
+    overflow: hidden;
+  }
+
+  .delta-row b { padding: 2px 5px; }
+}
+
+/* 데스크톱: 범례가 브랜드·지표 타일 아래로 5px 파고들어 있었다(상시).
+   AUTO CAM 은 개발자 버튼과 115x14px 겹쳤다. 세로로 줄을 세운다. */
+@media (min-width: 851px) {
+  .map-legend { top: 168px; }
+  .auto-camera { bottom: 114px; }
+  .campaign-office { bottom: 165px; }
+}
+
+/* 오른쪽 버튼 줄이 지도 한가운데를 가로질러 '온전히 보이는 띠' 를 잘랐다.
+   아래로 붙여 띠를 잇는다. 속보 밴드가 34px 이므로 그 위로만 비켜서면 된다. */
+@media (max-width: 850px) {
+  .auto-camera { bottom: 100px; }
+  .campaign-office { bottom: 146px; }
+}
+
+@media (max-width: 640px) {
+  .developer-fixed-link {
+    bottom: max(44px, calc(env(safe-area-inset-bottom) + 44px));
+  }
+}
+
+/* 결정 패널: 여백을 줄여도 영문 세 번째 선택지가 62vh 를 넘겼다.
+   못 본 선택지가 생기는 것보다 이 순간에 지도를 조금 더 덮는 편이 낫다.
+   대기 상태(하루의 대부분)의 가림은 이 값과 무관하다. */
+@media (max-width: 850px) {
+  .decision-panel { max-height: 68vh; }
+}
+
+
+/* 대통령 발언 선택 — 결정 카드와 같은 생김새를 쓰되 말풍선 화면 안에 들어간다. */
+.president-choice-grid {
+  display: grid;
+  gap: 9px;
+  margin-top: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+.president-choice-grid .decision-card { min-height: 0; }
+.president-choice-grid .decision-card strong {
+  margin: 6px 0 5px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+.president-choice-grid .decision-card small {
+  display: block;
+  margin-top: 8px;
+  color: #7f9aa2;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.president-choice-modal .president-statement-copy { display: block; }
+
+@media (max-width: 850px) {
+  .president-choice-grid { grid-template-columns: 1fr; }
+  .president-choice-grid .decision-card strong { font-size: 15px; }
+}
+
+
+/* 결정 카드 분류 아이콘 (프로젝트매니저 war 테마).
+ * 밝은 카툰 그림이라 어두운 카드 위에서 튀지 않게 채도를 낮춘다. */
+.card-category {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.card-category .category-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  opacity: .86;
+  filter: saturate(.7) brightness(.95);
+}
+.decision-card:hover .category-icon,
+.decision-card:focus-visible .category-icon {
+  opacity: 1;
+  filter: saturate(1) brightness(1.06);
+}
+
+
+/* 화면 곳곳의 작은 아이콘 (프로젝트매니저 '이미지 자료 자동 수집').
+ * war 테마는 전투·분류, business 테마는 예산·정치·결과에 쓴다.
+ * 원본이 밝은 카툰 그림이라 어두운 화면에서 튀지 않게 채도를 낮춘다. */
+.ui-icon, .ledger-icon, .operation-icon, .modal-icon, .ending-icon {
+  object-fit: contain;
+  opacity: .88;
+  filter: saturate(.72) brightness(.95);
+}
+.ledger-icon {
+  width: 22px;
+  height: 22px;
+  margin-right: 7px;
+  vertical-align: -5px;
+}
+.budget-ledger > div,
+.politics-ledger > span {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.operation-icon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 30px;
+  height: 30px;
+  opacity: .55;
+}
+/* 아이콘을 오른쪽 위에 띄우되, 그만큼 글 자리를 비워 둔다.
+ * 비워두지 않으면 제목이 길 때 아이콘 밑으로 파고든다. */
+.operation-roadmap article {
+  position: relative;
+  padding-right: 48px;
+}
+.operation-roadmap article.completed .operation-icon {
+  opacity: 1;
+  filter: saturate(1) brightness(1.06) drop-shadow(0 0 8px rgba(85, 230, 165, .45));
+}
+.operation-roadmap article.failed .operation-icon {
+  opacity: .7;
+  filter: grayscale(.8) brightness(.8);
+}
+.modal-icon {
+  width: 26px;
+  height: 26px;
+  margin-right: 8px;
+  vertical-align: -7px;
+}
+.ending-icon {
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 6px;
+  opacity: 1;
+  filter: saturate(1) drop-shadow(0 0 14px rgba(255, 199, 102, .45));
+}

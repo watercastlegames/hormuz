@@ -1,0 +1,11 @@
+﻿{
+    "generator":  "Topology-preserved Meshy strategic GLB -\u003e 512px texture",
+    "purpose":  "Carrier flight-deck UV correction without geometry simplification",
+    "source":  "assets/models/ships-v1/nimitz-carrier-meshy6-web-strategic-v1.glb",
+    "output":  "assets/models/battle-detail-v4/nimitz-carrier-meshy-textured-detail-v4.glb",
+    "triangles":  14103,
+    "textureLimit":  512,
+    "geometrySimplified":  false,
+    "uvTopologyPreserved":  true,
+    "bytes":  791500
+}

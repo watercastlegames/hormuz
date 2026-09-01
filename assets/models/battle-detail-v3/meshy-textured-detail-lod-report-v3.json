@@ -1,0 +1,39 @@
+﻿{
+    "generator":  "Meshy source GLB -\u003e UV-boundary-safe gltfpack -\u003e 512px texture",
+    "purpose":  "One selected or representative textured detail model per major strategic unit type",
+    "jobs":  [
+                 {
+                     "id":  "destroyer",
+                     "source":  "assets/models/ships-v1/arleigh-burke-destroyer-meshy6-web-v1.glb",
+                     "output":  "assets/models/battle-detail-v3/arleigh-burke-destroyer-meshy-textured-detail-v3.glb",
+                     "triangles":  9320,
+                     "textureLimit":  512,
+                     "uvBoundaryLocked":  true,
+                     "permissiveSimplification":  false,
+                     "aggressiveSimplification":  false,
+                     "bytes":  405404
+                 },
+                 {
+                     "id":  "carrier",
+                     "source":  "assets/models/ships-v1/nimitz-carrier-meshy6-web-v1.glb",
+                     "output":  "assets/models/battle-detail-v3/nimitz-carrier-meshy-textured-detail-v3.glb",
+                     "triangles":  10484,
+                     "textureLimit":  512,
+                     "uvBoundaryLocked":  true,
+                     "permissiveSimplification":  false,
+                     "aggressiveSimplification":  false,
+                     "bytes":  450096
+                 },
+                 {
+                     "id":  "tanker",
+                     "source":  "assets/models/strategic-v1/vlcc-tanker-meshy6-web-v1.glb",
+                     "output":  "assets/models/battle-detail-v3/vlcc-tanker-meshy-textured-detail-v3.glb",
+                     "triangles":  13888,
+                     "textureLimit":  512,
+                     "uvBoundaryLocked":  true,
+                     "permissiveSimplification":  false,
+                     "aggressiveSimplification":  false,
+                     "bytes":  622692
+                 }
+             ]
+}

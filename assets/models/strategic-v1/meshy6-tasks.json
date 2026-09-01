@@ -1,0 +1,70 @@
+{
+  "batch": "strategic-v1",
+  "createdAt": "2026-07-27",
+  "approvedCredits": 120,
+  "reportedConsumedCredits": 120,
+  "settings": {
+    "aiModel": "meshy-6",
+    "modelType": "standard",
+    "topology": "triangle",
+    "targetPolycount": 40000,
+    "shouldRemesh": true,
+    "shouldTexture": true,
+    "hdTexture": true,
+    "textureResolution": "4k",
+    "enablePbr": false,
+    "imageEnhancement": true,
+    "removeLighting": true,
+    "targetFormats": [
+      "glb"
+    ]
+  },
+  "tasks": [
+    {
+      "asset": "vlcc-tanker",
+      "taskId": "019fa32d-d0d7-7cce-826f-b230299ba125",
+      "status": "SUCCEEDED",
+      "credits": 30,
+      "reference": "assets/meshy-references/strategic-v1/vlcc-tanker-reference-v1.png",
+      "sourceGlb": "assets/meshy-source/strategic-v1/vlcc-tanker-meshy6-v1.glb",
+      "sourceTexture": "assets/meshy-source/strategic-v1/vlcc-tanker-meshy6-v1_base_color.png",
+      "webGlb": "assets/models/strategic-v1/vlcc-tanker-meshy6-web-v1.glb",
+      "sourceBytes": 15565248,
+      "webBytes": 3282288
+    },
+    {
+      "asset": "irgc-fast-attack-craft",
+      "taskId": "019fa32d-da1f-7da9-aa8a-79f857ec1f51",
+      "status": "FAILED",
+      "errorCode": "timeout",
+      "errorMessage": "Your request took too long to process. Please retry. If this persists, try simplifying your input.",
+      "credits": 30,
+      "reference": "assets/meshy-references/strategic-v1/irgc-fast-attack-craft-reference-v1.png",
+      "runtimeFallback": "procedural"
+    },
+    {
+      "asset": "port-gantry-crane",
+      "taskId": "019fa32d-e327-7cdf-8397-89627a3204d5",
+      "status": "SUCCEEDED",
+      "credits": 30,
+      "reference": "assets/meshy-references/strategic-v1/port-gantry-crane-reference-v1.png",
+      "sourceGlb": "assets/meshy-source/strategic-v1/port-gantry-crane-meshy6-v1.glb",
+      "sourceTexture": "assets/meshy-source/strategic-v1/port-gantry-crane-meshy6-v1_base_color.png",
+      "webGlb": "assets/models/strategic-v1/port-gantry-crane-meshy6-web-v1.glb",
+      "sourceBytes": 16018032,
+      "webBytes": 3828652
+    },
+    {
+      "asset": "coastal-defense-tel",
+      "taskId": "019fa32d-eca6-7cec-a0aa-7f5025060864",
+      "status": "SUCCEEDED",
+      "credits": 30,
+      "reference": "assets/meshy-references/strategic-v1/coastal-defense-tel-reference-v1.png",
+      "sourceGlb": "assets/meshy-source/strategic-v1/coastal-defense-tel-meshy6-v1.glb",
+      "sourceTexture": "assets/meshy-source/strategic-v1/coastal-defense-tel-meshy6-v1_base_color.png",
+      "webGlb": "assets/models/strategic-v1/coastal-defense-tel-meshy6-web-v1.glb",
+      "sourceBytes": 15424444,
+      "webBytes": 3374808
+    }
+  ]
+}

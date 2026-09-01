@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>모델 촬영 도구</title>
+<!--
+  모델 팩 미리보기용 촬영 도구다.
+
+  GLB 하나를 받아 화면에 꽉 차게 잡고 한 장 그려서 돌려준다.
+  배포물이 아니라 docs/hormuz-model-pack-preview.html 을 만들 때만 쓴다.
+-->
+<style>
+  html, body { margin: 0; height: 100%; background: #0a1118; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="stage" width="720" height="480"></canvas>
+<script type="module">
+import * as THREE from "../assets/js/vendor/three.module.js";
+import { GLTFLoader } from "../assets/js/vendor/GLTFLoader.js";
+import { MeshoptDecoder } from "../assets/js/vendor/meshopt_decoder.module.js";
+
+const canvas = document.getElementById("stage");
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.setSize(720, 480, false);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a1118);
+
+/* 어두운 배경에서 실루엣이 살도록 위·앞·뒤 세 방향에서 빛을 준다. */
+scene.add(new THREE.HemisphereLight(0xbfe9f5, 0x14202a, 1.15));
+const key = new THREE.DirectionalLight(0xffffff, 2.1);
+key.position.set(4, 6, 5);
+scene.add(key);
+const rim = new THREE.DirectionalLight(0x9fdcff, 1.25);
+rim.position.set(-5, 3, -4);
+scene.add(rim);
+const fill = new THREE.DirectionalLight(0xffffff, 0.55);
+fill.position.set(0, -4, 2);
+scene.add(fill);
+
+const camera = new THREE.PerspectiveCamera(32, 720 / 480, 0.01, 4000);
+const loader = new GLTFLoader();
+loader.setMeshoptDecoder(MeshoptDecoder);
+
+let current = null;
+
+window.shootModel = async (url) => {
+  if (current) {
+    scene.remove(current);
+    current.traverse((node) => {
+      if (node.isMesh || node.isSkinnedMesh) {
+        node.geometry?.dispose();
+        const materials = Array.isArray(node.material) ? node.material : [node.material];
+        materials.forEach((material) => material?.dispose());
+      }
+    });
+    current = null;
+  }
+
+  const gltf = await loader.loadAsync(url);
+  const model = gltf.scene;
+
+  /* 크기가 제각각이라 그대로 두면 어떤 건 점, 어떤 건 화면 밖이다.
+     경계 상자를 재서 원점에 놓고 한 변이 2가 되도록 맞춘다. */
+  const box = new THREE.Box3().setFromObject(model);
+  const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
+  const span = Math.max(size.x, size.y, size.z) || 1;
+
+  /* 배는 길고 병사는 세로로 길다. 가장 긴 축을 화면 가로로 눕혀야
+     같은 틀 안에서 둘 다 크게 나온다. 세로로 긴 것만 그대로 세워 둔다. */
+  const pivot = new THREE.Group();
+  pivot.add(model);
+  model.position.sub(center);
+  if (size.z > size.x && size.z > size.y) pivot.rotation.y = Math.PI / 2;
+  pivot.scale.setScalar(2 / span);
+  scene.add(pivot);
+  current = pivot;
+
+  /* 상자 여덟 귀퉁이를 화면에 찍어보고, 다 들어올 때까지 카메라를 물린다.
+     길쭉하든 뭉툭하든 한 가지 규칙으로 꽉 차게 잡힌다. */
+  const direction = new THREE.Vector3(0.58, 0.44, 0.98).normalize();
+  const fit = () => {
+    const bounds = new THREE.Box3().setFromObject(pivot);
+    const corners = [];
+    for (let index = 0; index < 8; index += 1) {
+      corners.push(new THREE.Vector3(
+        index & 1 ? bounds.max.x : bounds.min.x,
+        index & 2 ? bounds.max.y : bounds.min.y,
+        index & 4 ? bounds.max.z : bounds.min.z
+      ));
+    }
+    const middle = bounds.getCenter(new THREE.Vector3());
+    let distance = bounds.getSize(new THREE.Vector3()).length();
+    for (let pass = 0; pass < 6; pass += 1) {
+      camera.position.copy(middle).addScaledVector(direction, distance);
+      camera.lookAt(middle);
+      camera.updateMatrixWorld(true);
+      camera.updateProjectionMatrix();
+      let widest = 0;
+      for (const corner of corners) {
+        const screen = corner.clone().project(camera);
+        widest = Math.max(widest, Math.abs(screen.x), Math.abs(screen.y));
+      }
+      if (!widest) break;
+      distance *= widest / 0.92;
+    }
+  };
+  fit();
+
+  renderer.render(scene, camera);
+
+  let triangles = 0;
+  let meshes = 0;
+  model.traverse((node) => {
+    if (!node.isMesh && !node.isSkinnedMesh) return;
+    meshes += 1;
+    const geometry = node.geometry;
+    if (!geometry?.attributes?.position) return;
+    triangles += geometry.index
+      ? geometry.index.count / 3
+      : geometry.attributes.position.count / 3;
+  });
+
+  return {
+    image: canvas.toDataURL("image/jpeg", 0.88),
+    triangles: Math.round(triangles),
+    meshes,
+    size: [+size.x.toFixed(2), +size.y.toFixed(2), +size.z.toFixed(2)],
+    animations: gltf.animations?.length || 0
+  };
+};
+
+/* 움직이는 미리보기를 만든다.
+   몸(뼈대가 든 모델)과 동작(별도 파일의 clip)을 따로 불러 합친다.
+   게임이 하는 방식과 같다 — 뼈 이름이 맞으므로 그대로 붙는다. */
+window.shootAnimation = async (meshUrl, clipUrl, frameCount = 20) => {
+  if (current) {
+    scene.remove(current);
+    current = null;
+  }
+
+  const meshGltf = await loader.loadAsync(meshUrl);
+  const body = meshGltf.scene;
+  const clipGltf = clipUrl === meshUrl ? meshGltf : await loader.loadAsync(clipUrl);
+  const clip = clipGltf.animations?.[0];
+  if (!clip) throw new Error(`동작 없음: ${clipUrl}`);
+
+  const box = new THREE.Box3().setFromObject(body);
+  const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
+  const span = Math.max(size.x, size.y, size.z) || 1;
+
+  const pivot = new THREE.Group();
+  pivot.add(body);
+  body.position.sub(center);
+  pivot.scale.setScalar(2 / span);
+  scene.add(pivot);
+  current = pivot;
+
+  const mixer = new THREE.AnimationMixer(body);
+  const action = mixer.clipAction(clip);
+  action.setLoop(THREE.LoopRepeat, Infinity);
+  action.play();
+
+  /* 동작이 도는 동안 팔다리가 상자 밖으로 나간다. 한 바퀴 돌려보고
+     가장 크게 벌어진 순간에 맞춰 카메라를 잡아야 프레임마다 안 흔들린다. */
+  const reach = new THREE.Box3();
+  for (let index = 0; index < frameCount; index += 1) {
+    mixer.setTime((clip.duration * index) / frameCount);
+    pivot.updateMatrixWorld(true);
+    reach.union(new THREE.Box3().setFromObject(pivot));
+  }
+  const middle = reach.getCenter(new THREE.Vector3());
+  const direction = new THREE.Vector3(0.62, 0.16, 0.98).normalize();
+  const corners = [];
+  for (let index = 0; index < 8; index += 1) {
+    corners.push(new THREE.Vector3(
+      index & 1 ? reach.max.x : reach.min.x,
+      index & 2 ? reach.max.y : reach.min.y,
+      index & 4 ? reach.max.z : reach.min.z
+    ));
+  }
+  let distance = reach.getSize(new THREE.Vector3()).length();
+  for (let pass = 0; pass < 6; pass += 1) {
+    camera.position.copy(middle).addScaledVector(direction, distance);
+    camera.lookAt(middle);
+    camera.updateMatrixWorld(true);
+    camera.updateProjectionMatrix();
+    let widest = 0;
+    for (const corner of corners) {
+      const screen = corner.clone().project(camera);
+      widest = Math.max(widest, Math.abs(screen.x), Math.abs(screen.y));
+    }
+    if (!widest) break;
+    distance *= widest / 0.9;
+  }
+
+  const frames = [];
+  for (let index = 0; index < frameCount; index += 1) {
+    mixer.setTime((clip.duration * index) / frameCount);
+    pivot.updateMatrixWorld(true);
+    renderer.render(scene, camera);
+    frames.push(canvas.toDataURL("image/jpeg", 0.82));
+  }
+
+  return {
+    frames,
+    clipName: clip.name || "",
+    duration: +clip.duration.toFixed(2),
+    frameMs: Math.round((clip.duration * 1000) / frameCount)
+  };
+};
+
+window.__SHOOTER_READY__ = true;
+</script>
+</body>
+</html>

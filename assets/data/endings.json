@@ -1,0 +1,82 @@
+[
+  {
+    "id": "calm_hold",
+    "grade": "S+",
+    "name": "무너지지 않은 소강",
+    "tagline": "재개전 없이, 전쟁이 끝났다.",
+    "nameEn": "The Lull That Held",
+    "taglineEn": "The war ended without reigniting."
+  },
+  {
+    "id": "short_war",
+    "grade": "S",
+    "name": "짧은 전쟁",
+    "tagline": "세게, 그리고 빨리 끝냈다.",
+    "nameEn": "The Short War",
+    "taglineEn": "Hard, and over quickly."
+  },
+  {
+    "id": "hormuz_accord",
+    "grade": "A",
+    "name": "호르무즈 협정",
+    "tagline": "깨지지 않는 구조를 만들었다.",
+    "nameEn": "The Hormuz Accord",
+    "taglineEn": "You built a structure that does not break."
+  },
+  {
+    "id": "uneasy_truce",
+    "grade": "B",
+    "name": "불안한 정전",
+    "tagline": "서명은 했다. 다음은 아직 모른다.",
+    "nameEn": "Uneasy Truce",
+    "taglineEn": "It was signed. What comes next is still unknown."
+  },
+  {
+    "id": "tehran_winter",
+    "grade": "B",
+    "name": "테헤란의 겨울",
+    "tagline": "정권은 무너졌고, 재고의 행방은 사라졌다.",
+    "nameEn": "Tehran Winter",
+    "taglineEn": "The regime fell, and the stockpile vanished with it."
+  },
+  {
+    "id": "endless_war",
+    "grade": "C",
+    "name": "끝나지 않는 전쟁",
+    "tagline": "54일 동안 승리와 휴전을 선언했지만, 아무것도 끝나지 않았다.",
+    "nameEn": "The War Without End",
+    "taglineEn": "For 54 days you declared victory and ceasefire. Nothing ended."
+  },
+  {
+    "id": "oil_collapse",
+    "grade": "D",
+    "name": "배럴당 300달러",
+    "tagline": "전쟁보다 먼저 세계 경제가 쓰러졌다.",
+    "nameEn": "Three Hundred a Barrel",
+    "taglineEn": "The world economy collapsed before the war did."
+  },
+  {
+    "id": "lame_duck",
+    "grade": "D",
+    "name": "레임덕",
+    "tagline": "당신은 더 이상 결정권자가 아니다.",
+    "nameEn": "Lame Duck",
+    "taglineEn": "You are no longer the one who decides."
+  },
+  {
+    "id": "ten_warheads",
+    "grade": "E",
+    "name": "10개의 탄두",
+    "tagline": "핵시계가 답을 정했다.",
+    "nameEn": "Ten Warheads",
+    "taglineEn": "The nuclear clock settled the question."
+  },
+  {
+    "id": "gulf_war_three",
+    "grade": "F",
+    "name": "제3차 걸프전쟁",
+    "tagline": "당신이 원한 것은 이것이 아니었다.",
+    "nameEn": "The Third Gulf War",
+    "taglineEn": "This is not what you wanted."
+  }
+]

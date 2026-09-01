@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>전투가 안 끝나는 부류 — 7종 전수 점검 (2026-08-03)</title>
+<style>
+  :root {
+    --bg:#04090e; --panel:#0a1620; --line:rgba(100,228,238,.22);
+    --cyan:#64e4ee; --white:#eaf7fa; --muted:#7f9aa2; --red:#ff6b60;
+    --green:#55e6a5; --amber:#ffc766;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:0 20px 80px; color:var(--white); background:var(--bg);
+    font:400 16px/1.7 "Pretendard Variable","Pretendard","Segoe UI","Malgun Gothic",sans-serif; }
+  .wrap { max-width:1000px; margin:0 auto; }
+  header.top { padding:46px 0 22px; border-bottom:1px solid var(--line); }
+  h1 { margin:0 0 10px; font-size:28px; }
+  h1 small { display:block; margin-top:8px; color:var(--muted); font-size:15px; font-weight:400; }
+  h2 { margin:44px 0 12px; padding-bottom:8px; font-size:21px; color:var(--cyan);
+    border-bottom:1px solid var(--line); }
+  h3 { margin:0 0 8px; font-size:17px; }
+  p { margin:0 0 12px; }
+  .lead { color:#cfe6ea; }
+  .dim { color:var(--muted); font-size:14px; }
+  .scroll { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; margin:14px 0; font-size:15px; min-width:640px; }
+  th,td { padding:9px 12px; text-align:left; vertical-align:top;
+    border-bottom:1px solid rgba(100,228,238,.13); }
+  th { color:var(--cyan); white-space:nowrap; }
+  td.ok { color:var(--green); white-space:nowrap; }
+  td.no { color:var(--red); white-space:nowrap; }
+  .card { margin:16px 0; padding:16px 18px; border:1px solid var(--line);
+    border-left-width:3px; background:var(--panel); }
+  .card.fix { border-left-color:var(--amber); }
+  .card.clear { border-left-color:var(--green); }
+  .badge { display:inline-block; padding:3px 10px; margin-bottom:8px;
+    color:#04222a; background:var(--cyan); font-weight:800; font-size:13px; }
+  .before, .after { padding:10px 13px; margin:8px 0; font-size:15px; }
+  .before { color:#ffd9d5; border-left:3px solid var(--red); background:rgba(255,107,96,.07); }
+  .after { color:#ccfff0; border-left:3px solid var(--green); background:rgba(85,230,165,.07); }
+  code { padding:2px 6px; color:#bff2f7; background:rgba(100,228,238,.09); font-size:14px; }
+  pre { margin:10px 0; padding:12px 14px; overflow-x:auto; color:#bff2f7;
+    background:#061019; border:1px solid rgba(100,228,238,.16); font-size:13.5px; line-height:1.55; }
+  a { color:var(--cyan); }
+  .cta { display:inline-block; margin:8px 10px 8px 0; padding:11px 18px;
+    color:#04222a; background:var(--cyan); font-weight:800; text-decoration:none; }
+  .foot { margin-top:48px; padding-top:18px; color:var(--muted); font-size:14px;
+    border-top:1px solid var(--line); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <h1>“이겼는데 안 끝난다” — 나머지 전투 7종 전수 점검
+    <small>HORMUZ · 2026-08-03 · rts-combat.bundle.js v133 · 배포 v153</small>
+  </h1>
+  <p class="lead">라락 구출작전에서 났던 일이 다른 전투에도 있는지 봤다.
+  <b>그 부류는 없었다.</b> 대신 점검하다 다른 결함 두 건이 나와서 그것을 고쳤다.</p>
+</header>
+
+<h2>찾은 것</h2>
+<p>라락에서 났던 일은 이런 것이었다 — 적을 다 잡으면 끝나는 줄 알았는데
+적 전멸은 다음 단계로 넘어가는 조건일 뿐이었고, 화면은 그 다음에 뭘 해야 하는지
+말해주지 않았다. 그래서 이길 수 있는 판을 5분 동안 흘려보냈다.</p>
+<p>같은 구조가 성립하려면 <b>승리 조건이 여러 단계</b>여야 한다. 7종을 다 열어 보니
+그런 구조는 라락과 곡괭이산 둘뿐이고, 둘 다 이미 처방이 들어가 있었다.
+나머지 다섯은 승리 조건이 한 덩어리라 그 함정이 애초 만들어지지 않는다.</p>
+
+<div class="scroll">
+<table>
+  <thead><tr>
+    <th>전투</th><th>승리 조건</th><th>단계</th>
+    <th>적 전멸 후 방치</th><th>자동전투만</th><th>판정</th>
+  </tr></thead>
+  <tbody>
+    <tr><td>해협 방패</td><td>고속정 8척 + 유조선 2척 생존</td><td>1단계</td>
+        <td>즉시 종료</td><td>15초 자력 승리</td><td class="ok">문제 없음</td></tr>
+    <tr><td>라락 구출작전</td><td>차단 → 승선 → 이탈</td><td>3단계</td>
+        <td>17.3초 자동 종료</td><td>불필요(스스로 감)</td><td class="ok">고침 유지</td></tr>
+    <tr><td>기뢰 회랑</td><td>기뢰 7발 + 유조선 2척 생존</td><td>1단계</td>
+        <td>같은 프레임 종료</td><td>19초 자력 승리</td><td class="ok">문제 없음</td></tr>
+    <tr><td>미사일 차단막</td><td>공중 위협 8기 + 유조선 2척</td><td>1단계</td>
+        <td>즉시 종료</td><td>24초 자력 승리</td><td class="ok">문제 없음</td></tr>
+    <tr><td>해안 포대</td><td>발사 차량 4기</td><td>1단계</td>
+        <td>0.57초 종료</td><td>59초 자력 승리</td><td class="ok">문제 없음</td></tr>
+    <tr><td>곡괭이산</td><td>지하 진입부 2곳</td><td>2단계</td>
+        <td>0.9초 종료</td><td>12.3초 자력 승리</td><td class="ok">이미 고쳐짐</td></tr>
+    <tr><td>대규모 함대전</td><td>적 20기 + 유조선 2척</td><td>1단계</td>
+        <td>1초 내 종료</td><td>52초 자력 승리</td><td class="ok">문제 없음</td></tr>
+  </tbody>
+</table>
+</div>
+<p class="dim">전부 실제로 돌려서 잰 값이다. 적을 강제로 전부 없앤 뒤 아무 명령도 주지 않고
+60초 이상 지켜봤고, 자동전투만 켜고 손 놓은 경우도 따로 돌렸다.</p>
+
+<h2>대신 나온 것 두 건</h2>
+
+<div class="card fix">
+  <span class="badge">1</span>
+  <h3>화면이 알려주는 교전 시각이 실제와 달랐다</h3>
+  <p>전투가 시작되면 “적이 45초 뒤 접근합니다”라고 안내한다. 그런데 그 45라는
+  숫자가 <b>문장 안에 글자로 박혀 있었다.</b> 실제 시간은 난이도에 따라 코드가
+  최대 12초까지 줄인다. 그래서 난이도가 조금만 올라가도 화면이 말하는 초와
+  실제로 적이 오는 초가 어긋났다.</p>
+  <p>기뢰 회랑은 더 나빴다. 기뢰는 계류식이라 <b>다가오지 않는다.</b> 실제 지연값도
+  0이다. 그런데 화면은 “적이 45초 뒤 접근합니다”라고 안내했다. 오지도 않을 적을
+  45초 기다리라고 한 셈이다.</p>
+  <div class="before"><b>고치기 전</b> · 기뢰 회랑 — “적이 45초 뒤 접근합니다. 아군을 배치하세요.”</div>
+  <div class="after"><b>고친 뒤</b> · 기뢰 회랑 — “기뢰는 이미 항로에 부설돼 있습니다. 소해 전력을 배치하십시오.”</div>
+  <p>이제 문구에는 자리만 두고 실제 값을 넣는다. 지연이 0이면 기다리라는 말 대신
+  다른 문장을 쓴다.</p>
+<pre>contactCountdownLine() {
+  const seconds = Math.max(0, Math.round(this.config.battle.enemyEngageDelaySeconds || 0));
+  if (seconds &lt;= 0) return this.text("contactCountdownNow");
+  const label = this.lang === "en" ? `${seconds} seconds` : `${seconds}초`;
+  return this.text("contactCountdown").replace("{delay}", label);
+}</pre>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>전투</th><th>난이도</th><th>실제</th><th>고치기 전 화면</th><th>지금 화면</th></tr></thead>
+    <tbody>
+      <tr><td>기뢰 회랑</td><td>1·5</td><td>0초</td><td class="no">45초 뒤 접근</td><td class="ok">이미 부설돼 있음</td></tr>
+      <tr><td>미사일 차단막</td><td>1</td><td>28초</td><td class="no">45초</td><td class="ok">28초</td></tr>
+      <tr><td>미사일 차단막</td><td>3</td><td>22초</td><td class="no">45초</td><td class="ok">22초</td></tr>
+      <tr><td>해안 포대</td><td>5</td><td>8초</td><td class="no">18초</td><td class="ok">8초</td></tr>
+      <tr><td>대규모 함대전</td><td>5</td><td>18초</td><td class="no">30초</td><td class="ok">18초</td></tr>
+      <tr><td>라락 구출작전</td><td>4</td><td>16초</td><td class="no">25초</td><td class="ok">16초</td></tr>
+      <tr><td>해협 방패</td><td>5</td><td>33초</td><td class="no">45초</td><td class="ok">33초</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="dim">7종 × 난이도 2단 × 한/영 = 28가지를 다시 재서 전부 맞는 것을 확인했다.
+  검사기는 <code>tools/validate-contact-countdown.py</code> 로 남겨서, 앞으로 문구에
+  숫자를 다시 박으면 그 자리에서 걸리게 했다.</p>
+</div>
+
+<div class="card fix">
+  <span class="badge">2</span>
+  <h3>대규모 함대전 브리핑이 실제 전장과 달랐다</h3>
+  <p>미션 카드에 적힌 적 규모가 실제 배치와 전혀 달랐다. 없는 병종이 둘 적혀 있었고,
+  지켜야 할 유조선 수도 틀렸다. 이건 편성 화면 직전에 읽는 문구라, 이걸 보고
+  예산을 짜면 편성이 어긋난다.</p>
+  <div class="before"><b>고치기 전</b> — “고속정 48척, 지상군 12명, 발사 차량 6기를 제압하고 유조선 5척 중 최소 4척을 보호하십시오.”</div>
+  <div class="after"><b>고친 뒤</b> — “고속정 12척, 무인수상정 4척, 공중 위협 4기를 제압하고 유조선 3척 중 최소 2척을 보호하십시오.”</div>
+  <p>실제 전장에는 지상군도 발사 차량도 없다. 게다가 이 전투는 해병 편성 상한이
+  0이라 지상군은 <b>넣고 싶어도 넣을 수 없다.</b> 목표 수치도 66에서 실제값 20으로
+  맞췄다. 나머지 6개 미션 카드는 대조해 보니 전부 실제와 일치했다.</p>
+</div>
+
+<h2>지금 확인하실 수 있는 곳</h2>
+<p>새로고침은 <code>Ctrl+F5</code> 로 해주십시오. 아래 두 곳에서 바로 보입니다.</p>
+<p>
+  <a class="cta" href="https://sidak.kr/autodev/GameCreator/hormuz/rts-combat.html?scenario=mine_corridor&amp;lang=ko">기뢰 회랑 — 전투 로그 첫 줄</a>
+  <a class="cta" href="https://sidak.kr/autodev/GameCreator/hormuz/rts-combat.html?scenario=large_fleet_battle&amp;lang=ko">대규모 함대전</a>
+</p>
+<p class="dim">기뢰 회랑에서는 로그 맨 위에 “기뢰는 이미 항로에 부설돼 있습니다”가
+떠야 합니다. 예전 “적이 45초 뒤 접근합니다”가 보이면 캐시가 남은 것입니다.</p>
+
+<h2>확인 방법</h2>
+<div class="card clear">
+  <p>7종 각각을 실제로 띄워 놓고 이렇게 확인했다.</p>
+  <ul>
+    <li>적을 강제로 전부 없앤 뒤 <b>아무 명령도 주지 않고</b> 60초 이상 방치 — 끝나는지</li>
+    <li>자동전투만 켜고 손 놓기 — 사람 개입 없이 완주되는지</li>
+    <li>단계가 있는 전투는 각 단계에서 화면 목표 줄이 <b>지금 할 일</b>로 바뀌는지</li>
+    <li>난이도 1과 5에서 안내 문구의 숫자가 실제 값과 같은지 (한/영 각각)</li>
+  </ul>
+  <p>기존 회귀 검사도 다시 돌렸다 — 시나리오 7종 전부 통과, 미션 라우팅 통과,
+  한/영 문구 사전 413키 문제 0건.</p>
+</div>
+
+<h2>남겨둔 것</h2>
+<p>해안 포대의 옛 예외 상황 두 가지(해병만 편성했을 때, 무인수상정만 편성했을 때)는
+코드 주석에만 기록이 있고 이번에 그 편성으로 직접 돌려보지는 않았다. 진행을 막는
+문제는 아니지만, 확인하지 않았다는 사실은 그대로 남긴다.</p>
+
+<div class="foot">
+  D:\soccerstarWebSource\GameCreator\hormuz\docs\hormuz-stall-audit-2026-08-03.html<br>
+  공개 서버: https://sidak.kr/autodev/GameCreator/hormuz/
+</div>
+
+</div>
+</body>
+</html>

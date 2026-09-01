@@ -1,0 +1,13 @@
+# Local configuration and generated output
+.env
+.env.*
+!.env.example
+output/
+release/
+tools/tmp/
+node_modules/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.playwright/
+*.log

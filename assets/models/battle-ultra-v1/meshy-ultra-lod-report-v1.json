@@ -1,0 +1,78 @@
+﻿{
+    "generator":  "Meshy source GLB -\u003e gltfpack 1.2 permissive aggressive simplify -\u003e glTF-Transform 512px",
+    "purpose":  "Meshy long-range 3D LODs replacing procedural placeholder geometry in large battles",
+    "jobs":  [
+                 {
+                     "id":  "destroyer",
+                     "source":  "assets/models/ships-v1/arleigh-burke-destroyer-meshy6-web-v1.glb",
+                     "output":  "assets/models/battle-ultra-v1/arleigh-burke-destroyer-meshy-ultra-v1.glb",
+                     "targetRatio":  0.022,
+                     "textureLimit":  512,
+                     "bytes":  69008
+                 },
+                 {
+                     "id":  "fighter",
+                     "source":  "assets/models/combat-v1/fa-18e-super-hornet-meshy6-web-v1.glb",
+                     "output":  "assets/models/battle-ultra-v1/fa-18e-super-hornet-meshy-ultra-v1.glb",
+                     "targetRatio":  0.012,
+                     "textureLimit":  512,
+                     "bytes":  56540
+                 },
+                 {
+                     "id":  "helicopter",
+                     "source":  "assets/models/combat-v1/mh-60r-seahawk-meshy6-web-v1.glb",
+                     "output":  "assets/models/battle-ultra-v1/mh-60r-seahawk-meshy-ultra-v1.glb",
+                     "targetRatio":  0.016,
+                     "textureLimit":  512,
+                     "bytes":  76796
+                 },
+                 {
+                     "id":  "carrier",
+                     "source":  "assets/models/ships-v1/nimitz-carrier-meshy6-web-v1.glb",
+                     "output":  "assets/models/battle-ultra-v1/nimitz-carrier-meshy-ultra-v1.glb",
+                     "targetRatio":  0.03,
+                     "textureLimit":  512,
+                     "bytes":  72212
+                 },
+                 {
+                     "id":  "usv",
+                     "source":  "assets/models/combat-v1/mcm-usv-meshy6-web-v1.glb",
+                     "output":  "assets/models/battle-ultra-v1/mcm-usv-meshy-ultra-v1.glb",
+                     "targetRatio":  0.015,
+                     "textureLimit":  512,
+                     "bytes":  59852
+                 },
+                 {
+                     "id":  "bomber",
+                     "source":  "assets/models/combined-arms-v1/b2-spirit-meshy-t2-web-v1.glb",
+                     "output":  "assets/models/battle-ultra-v1/b2-spirit-meshy-ultra-v1.glb",
+                     "targetRatio":  0.08,
+                     "textureLimit":  512,
+                     "bytes":  16328
+                 },
+                 {
+                     "id":  "fastBoat",
+                     "source":  "assets/models/combat-v1/irgc-fast-attack-craft-meshy6-web-v1.glb",
+                     "output":  "assets/models/battle-ultra-v1/irgc-fast-attack-craft-meshy-ultra-v1.glb",
+                     "targetRatio":  0.012,
+                     "textureLimit":  512,
+                     "bytes":  60724
+                 },
+                 {
+                     "id":  "tanker",
+                     "source":  "assets/models/strategic-v1/vlcc-tanker-meshy6-web-v1.glb",
+                     "output":  "assets/models/battle-ultra-v1/vlcc-tanker-meshy-ultra-v1.glb",
+                     "targetRatio":  0.024,
+                     "textureLimit":  512,
+                     "bytes":  105552
+                 },
+                 {
+                     "id":  "tel",
+                     "source":  "assets/models/strategic-v1/coastal-defense-tel-meshy6-web-v1.glb",
+                     "output":  "assets/models/battle-ultra-v1/coastal-defense-tel-meshy-ultra-v1.glb",
+                     "targetRatio":  0.018,
+                     "textureLimit":  512,
+                     "bytes":  71964
+                 }
+             ]
+}

@@ -1,0 +1,369 @@
+[
+  {
+    "id": "swarm_approach",
+    "stance": [
+      "HARDLINE",
+      "DESPERATE"
+    ],
+    "brief": "IRGC 고속정 6척이 유조선 호송대 500m까지 접근합니다.",
+    "fx": "swarm",
+    "urgent": {
+      "auto": 0,
+      "choices": [
+        {
+          "id": "warn",
+          "name": "경고사격",
+          "desc": "이탈 확률 60%",
+          "delta": {
+            "approval": 2
+          },
+          "nameEn": "Warning Shots",
+          "descEn": "60% chance they break off"
+        },
+        {
+          "id": "evade",
+          "name": "회피 기동",
+          "desc": "안전 우선 · 통항 -4",
+          "delta": {
+            "transit": -4
+          },
+          "nameEn": "Evasive Maneuver",
+          "descEn": "Safety first · Transit -4"
+        },
+        {
+          "id": "sink",
+          "name": "격침 허가",
+          "desc": "위협 제거 · 확전 +1",
+          "delta": {
+            "esc": 1,
+            "approval": 5,
+            "intl": -7,
+            "stability": -5
+          },
+          "nameEn": "Authorize Sinking",
+          "descEn": "Threat removed · Escalation +1"
+        }
+      ]
+    },
+    "briefEn": "Six IRGC fast attack craft have closed to 500 m of the tanker convoy."
+  },
+  {
+    "id": "missile_salvo",
+    "stance": [
+      "HARDLINE",
+      "DESPERATE"
+    ],
+    "brief": "연안 미사일 포대가 호송 선단을 향해 발사 준비에 들어갔습니다.",
+    "fx": "missile",
+    "mission": "intercept",
+    "success": {
+      "ammo": -4,
+      "approval": 4
+    },
+    "failure": {
+      "transit": -10,
+      "oil": 9,
+      "ammo": -8,
+      "approval": -5
+    },
+    "briefEn": "A coastal missile battery has begun launch preparation against the convoy."
+  },
+  {
+    "id": "mine_drift",
+    "stance": [
+      "HARDLINE",
+      "PRAGMATIC"
+    ],
+    "brief": "TSS 남쪽 레인에 부유 기뢰군이 탐지됐습니다.",
+    "fx": "minefield",
+    "mission": "minesweep",
+    "success": {
+      "transit": 9,
+      "oil": -4,
+      "ammo": -2
+    },
+    "failure": {
+      "transit": -12,
+      "oil": 10,
+      "approval": -4
+    },
+    "briefEn": "A drifting minefield has been detected in the southern TSS lane."
+  },
+  {
+    "id": "tanker_seizure",
+    "stance": [
+      "HARDLINE",
+      "PRAGMATIC"
+    ],
+    "brief": "이란 고속정이 라락섬 남동 해역에서 민간 유조선을 나포했습니다.",
+    "fx": "seizure",
+    "urgent": {
+      "auto": 1,
+      "choices": [
+        {
+          "id": "rescue",
+          "name": "구출 작전",
+          "desc": "고속정 차단·헬기 투입·안전 이탈을 직접 지휘",
+          "delta": {
+            "esc": 1
+          },
+          "mission": "rescue",
+          "nameEn": "Rescue Operation",
+          "descEn": "Personally direct the intercept, helicopter insertion and safe withdrawal"
+        },
+        {
+          "id": "negotiate",
+          "name": "선원 협상",
+          "desc": "시간을 벌고 확전을 억제",
+          "delta": {
+            "transit": -3,
+            "intl": 5,
+            "stability": 5
+          },
+          "nameEn": "Negotiate for the Crew",
+          "descEn": "Buy time and hold escalation down"
+        },
+        {
+          "id": "shadow",
+          "name": "추적 감시",
+          "desc": "충돌 회피 · 유가 상승",
+          "delta": {
+            "oil": 6,
+            "approval": -2
+          },
+          "nameEn": "Shadow and Observe",
+          "descEn": "Avoid contact · Oil rises"
+        }
+      ]
+    },
+    "briefEn": "Iranian fast boats have seized a civilian tanker southeast of Larak Island."
+  },
+  {
+    "id": "shahed_wave",
+    "stance": [
+      "HARDLINE",
+      "DESPERATE"
+    ],
+    "brief": "샤헤드 무인기 파상공세가 방공망을 소모시키려 합니다.",
+    "fx": "drone",
+    "mission": "intercept",
+    "success": {
+      "ammo": -5,
+      "approval": 3
+    },
+    "failure": {
+      "ammo": -12,
+      "approval": -6,
+      "intl": -3
+    },
+    "briefEn": "A Shahed drone wave is attempting to exhaust the air defense screen."
+  },
+  {
+    "id": "notice_retaliation",
+    "stance": [
+      "PRAGMATIC"
+    ],
+    "brief": "오만 채널을 통해 제한 보복의 좌표와 시각이 사전 통보됐습니다.",
+    "fx": "missile",
+    "urgent": {
+      "auto": 0,
+      "choices": [
+        {
+          "id": "intercept",
+          "name": "전면 요격",
+          "desc": "탄약을 쓰지만 피해 없음",
+          "delta": {
+            "ammo": -6,
+            "approval": 3
+          },
+          "nameEn": "Intercept Everything",
+          "descEn": "Costs ammunition, but no damage taken"
+        },
+        {
+          "id": "shelter",
+          "name": "기지 대피",
+          "desc": "체면을 살려주고 확전 억제",
+          "delta": {
+            "approval": -2,
+            "intl": 5,
+            "esc": -1,
+            "stability": 4
+          },
+          "nameEn": "Shelter the Base",
+          "descEn": "Let them save face and hold escalation down"
+        }
+      ]
+    },
+    "briefEn": "Through the Oman channel, the coordinates and timing of a limited retaliation have been given in advance."
+  },
+  {
+    "id": "oil_market_panic",
+    "stance": [
+      "HARDLINE",
+      "PRAGMATIC",
+      "DESPERATE"
+    ],
+    "brief": "선물시장에서 호르무즈 폐쇄설이 확산하며 유가가 급등합니다.",
+    "fx": "market",
+    "urgent": {
+      "auto": 0,
+      "choices": [
+        {
+          "id": "reserve",
+          "name": "비축유 추가 방출",
+          "desc": "유가 -9 · 지지 +2",
+          "delta": {
+            "oil": -9,
+            "approval": 2
+          },
+          "nameEn": "Release More Reserves",
+          "descEn": "Oil -9 · Approval +2"
+        },
+        {
+          "id": "allied_statement",
+          "name": "동맹 공동성명",
+          "desc": "국제 +6 · 유가 -4",
+          "delta": {
+            "intl": 6,
+            "oil": -4
+          },
+          "nameEn": "Joint Allied Statement",
+          "descEn": "Intl +6 · Oil -4"
+        },
+        {
+          "id": "wait",
+          "name": "시장 관망",
+          "desc": "정책 비용 없음 · 유가 +5",
+          "delta": {
+            "oil": 5
+          },
+          "nameEn": "Let the Market Settle",
+          "descEn": "No political cost · Oil +5"
+        }
+      ]
+    },
+    "briefEn": "Rumors of a Hormuz closure are spreading through futures markets and crude is spiking."
+  },
+  {
+    "id": "harbor_explosion",
+    "stance": [
+      "DESPERATE"
+    ],
+    "brief": "반다르아바스 군항에서 대형 폭발이 발생했습니다. 책임 공방이 시작됩니다.",
+    "fx": "strike",
+    "urgent": {
+      "auto": 1,
+      "choices": [
+        {
+          "id": "deny",
+          "name": "연루 부인",
+          "desc": "확전 억제 · 국내 비판",
+          "delta": {
+            "approval": -4,
+            "esc": -1
+          },
+          "nameEn": "Deny Involvement",
+          "descEn": "Escalation contained · Criticism at home"
+        },
+        {
+          "id": "claim",
+          "name": "작전 인정",
+          "desc": "지지 상승 · 국제 하락",
+          "delta": {
+            "approval": 8,
+            "intl": -10,
+            "stability": -8,
+            "esc": 1
+          },
+          "nameEn": "Claim the Operation",
+          "descEn": "Approval rises · International standing falls"
+        },
+        {
+          "id": "investigate",
+          "name": "공동 조사",
+          "desc": "국제 +8 · 안정도 +4",
+          "delta": {
+            "intl": 8,
+            "stability": 4
+          },
+          "nameEn": "Joint Investigation",
+          "descEn": "Intl +8 · Stability +4"
+        }
+      ]
+    },
+    "briefEn": "A large explosion has struck the naval port at Bandar Abbas. The blame war has begun."
+  },
+  {
+    "id": "ceasefire_offer",
+    "stance": [
+      "PRAGMATIC"
+    ],
+    "brief": "이란 지도부가 오만을 통해 48시간 상호중지를 제안했습니다.",
+    "fx": "diplomacy",
+    "urgent": {
+      "auto": 0,
+      "choices": [
+        {
+          "id": "accept",
+          "name": "즉시 수락",
+          "desc": "확전 -1 · 국제 +6",
+          "delta": {
+            "esc": -1,
+            "intl": 6,
+            "stability": 7
+          },
+          "flag": "ceasefire",
+          "nameEn": "Accept Immediately",
+          "descEn": "Escalation -1 · Intl +6"
+        },
+        {
+          "id": "condition",
+          "name": "조건부 수락",
+          "desc": "통항 보장 요구 · 국제 +3",
+          "delta": {
+            "intl": 3,
+            "transit": 4,
+            "stability": 3
+          },
+          "nameEn": "Accept With Conditions",
+          "descEn": "Demand a transit guarantee · Intl +3"
+        },
+        {
+          "id": "reject",
+          "name": "거부",
+          "desc": "지지 +4 · 확전 +1",
+          "delta": {
+            "approval": 4,
+            "esc": 1,
+            "stability": -4
+          },
+          "nameEn": "Reject",
+          "descEn": "Approval +4 · Escalation +1"
+        }
+      ]
+    },
+    "briefEn": "Iranian leadership has proposed a 48-hour mutual halt through Oman."
+  },
+  {
+    "id": "nuclear_clock",
+    "stance": [
+      "DESPERATE"
+    ],
+    "brief": "나탄즈 남쪽 곡괭이산 지하시설에서 확인되지 않은 반입 움직임이 포착됐습니다. IAEA는 시설 용도를 검증하지 못했습니다.",
+    "fx": "bombrun",
+    "mission": "pickaxe",
+    "success": {
+      "stability": -8,
+      "approval": 5,
+      "intl": -12,
+      "esc": 2
+    },
+    "failure": {
+      "stability": -4,
+      "approval": -5,
+      "intl": -6,
+      "esc": 1
+    },
+    "briefEn": "Unverified movement of material has been observed at the Pickaxe Mountain underground site south of Natanz. The IAEA has not been able to verify what the facility is for."
+  }
+]

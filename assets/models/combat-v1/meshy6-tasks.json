@@ -1,0 +1,67 @@
+{
+  "generatedAt": "2026-07-27",
+  "approvedCredits": 120,
+  "consumedCredits": 120,
+  "settings": {
+    "aiModel": "meshy-6",
+    "format": "glb",
+    "modelType": "standard",
+    "topology": "triangle",
+    "targetPolycount": 40000,
+    "shouldRemesh": true,
+    "textureResolution": "4k",
+    "webTextureResolution": "2k",
+    "removeLighting": true,
+    "enablePbr": false
+  },
+  "assets": [
+    {
+      "id": "fighter",
+      "name": "F/A-18E Super Hornet",
+      "taskId": "019fa3d8-8e5a-73c2-bb29-88456f1f7863",
+      "status": "SUCCEEDED",
+      "credits": 30,
+      "reference": "assets/meshy-references/combat-v1/fa-18e-super-hornet-reference-v1.png",
+      "sourceGlb": "assets/meshy-source/combat-v1/fa-18e-super-hornet-meshy6-v1.glb",
+      "webGlb": "assets/models/combat-v1/fa-18e-super-hornet-meshy6-web-v1.glb",
+      "sourceBytes": 14075884,
+      "webBytes": 2349184
+    },
+    {
+      "id": "helicopter",
+      "name": "MH-60R Seahawk",
+      "taskId": "019fa3d8-c206-799d-8f0f-7f5f6328454f",
+      "status": "SUCCEEDED",
+      "credits": 30,
+      "reference": "assets/meshy-references/combat-v1/mh-60r-seahawk-reference-v1.png",
+      "sourceGlb": "assets/meshy-source/combat-v1/mh-60r-seahawk-meshy6-v1.glb",
+      "webGlb": "assets/models/combat-v1/mh-60r-seahawk-meshy6-web-v1.glb",
+      "sourceBytes": 15349736,
+      "webBytes": 3014480
+    },
+    {
+      "id": "usv",
+      "name": "MCM USV",
+      "taskId": "019fa3d8-e217-73ce-9066-e8e122683fc7",
+      "status": "SUCCEEDED",
+      "credits": 30,
+      "reference": "assets/meshy-references/combat-v1/mcm-usv-reference-v1.png",
+      "sourceGlb": "assets/meshy-source/combat-v1/mcm-usv-meshy6-v1.glb",
+      "webGlb": "assets/models/combat-v1/mcm-usv-meshy6-web-v1.glb",
+      "sourceBytes": 13666852,
+      "webBytes": 3066856
+    },
+    {
+      "id": "fastBoat",
+      "name": "IRGC Fast Attack Craft",
+      "taskId": "019fa3d9-0734-7a9f-a3c0-f32fac719b2d",
+      "status": "SUCCEEDED",
+      "credits": 30,
+      "reference": "assets/meshy-references/strategic-v1/irgc-fast-attack-craft-reference-v1.png",
+      "sourceGlb": "assets/meshy-source/combat-v1/irgc-fast-attack-craft-meshy6-v1.glb",
+      "webGlb": "assets/models/combat-v1/irgc-fast-attack-craft-meshy6-web-v1.glb",
+      "sourceBytes": 15062820,
+      "webBytes": 2790380
+    }
+  ]
+}

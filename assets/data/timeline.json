@@ -1,0 +1,527 @@
+[
+  {
+    "id": "war_opening",
+    "date": "2026.02.28",
+    "title": "전쟁 첫날 · 이란 지도부 공습",
+    "question": "미국·이스라엘의 첫 공습으로 알리 하메네이가 사망했습니다. 다음 목표를 어디까지 승인합니까?",
+    "image": "assets/images/briefings/us-national-security-council-v1.webp",
+    "choices": [
+      {
+        "id": "leadership_strike",
+        "name": "지휘부·군사시설 동시 타격",
+        "desc": "초기 우세를 얻지만 확전과 국제 비판을 감수합니다.",
+        "mod": {
+          "approval": 4,
+          "intl": -6,
+          "ammo": -8,
+          "esc": 1,
+          "budget": -180,
+          "party": 2
+        },
+        "battle": {
+          "mission": "strategic_strike"
+        },
+        "result": {
+          "image": "assets/images/history-results/coastal-strike-result-v1.webp",
+          "title": "대규모 타격 명령이 집행됐습니다",
+          "summary": "공격 편대가 이란 연안 군사시설과 이동식 발사대를 향해 출격합니다.",
+          "successTitle": "연안 발사대가 무력화됐습니다",
+          "successSummary": "초기 군사 우세를 확보했지만 국제 비판과 확전 위험이 함께 커졌습니다.",
+          "failureTitle": "타격 편대가 목표를 완전히 제압하지 못했습니다",
+          "failureSummary": "탄약과 예산을 소모한 채 이란의 대응 능력이 남아 확전 부담이 더 커졌습니다.",
+          "titleEn": "The Large-Scale Strike Order Has Been Executed",
+          "summaryEn": "Strike packages are launching against Iranian coastal military sites and mobile launchers.",
+          "successTitleEn": "The Coastal Launchers Have Been Neutralized",
+          "successSummaryEn": "You secured an early military advantage, but international criticism and escalation risk rose with it.",
+          "failureTitleEn": "The Strike Package Did Not Fully Suppress Its Targets",
+          "failureSummaryEn": "Ammunition and budget were spent while Iran retained its ability to respond, deepening the escalation burden."
+        },
+        "nameEn": "Strike Leadership and Military Sites Together",
+        "descEn": "Buys an early advantage at the cost of escalation and international criticism."
+      },
+      {
+        "id": "military_only",
+        "name": "군사시설로 제한",
+        "desc": "지도부 표적을 제외해 동맹 결속과 출구를 남깁니다.",
+        "mod": {
+          "approval": 1,
+          "intl": 4,
+          "ammo": -5,
+          "budget": -110,
+          "party": -1
+        },
+        "battle": {
+          "mission": "strategic_strike"
+        },
+        "result": {
+          "image": "assets/images/history-results/coastal-strike-result-v1.webp",
+          "title": "제한 타격 편대가 출격했습니다",
+          "summary": "민간 지역과 지도부 표적을 제외하고 확인된 군사시설만 공격합니다.",
+          "successTitle": "제한 타격 목표를 달성했습니다",
+          "successSummary": "연안 위협을 줄이면서 동맹국이 수용할 수 있는 군사적 한계를 지켰습니다.",
+          "failureTitle": "제한 타격이 충분한 억제력을 만들지 못했습니다",
+          "failureSummary": "공격 범위를 제한한 사이 일부 발사대가 살아남아 후속 대응이 필요해졌습니다.",
+          "titleEn": "The Limited Strike Package Has Launched",
+          "summaryEn": "Civilian areas and leadership targets are excluded; only confirmed military sites are struck.",
+          "successTitleEn": "The Limited Strike Achieved Its Objective",
+          "successSummaryEn": "You reduced the coastal threat while staying inside the military limits your allies can accept.",
+          "failureTitleEn": "The Limited Strike Did Not Create Enough Deterrence",
+          "failureSummaryEn": "Some launchers survived inside the restricted target set, and a follow-up response is now required."
+        },
+        "nameEn": "Limit to Military Sites",
+        "descEn": "Excluding leadership targets keeps the alliance together and leaves an exit open."
+      },
+      {
+        "id": "pause_for_ultimatum",
+        "name": "최후통첩 후 보류",
+        "desc": "전투 준비는 유지하되 외교 시간을 확보합니다.",
+        "mod": {
+          "intl": 5,
+          "approval": -3,
+          "ammo": 2,
+          "budget": -45,
+          "party": -3
+        },
+        "result": {
+          "image": "assets/images/briefings/oman-backchannel-v1.webp",
+          "title": "공격은 보류되고 최후통첩이 전달됐습니다",
+          "summary": "전력은 경계 태세를 유지하고 오만 중재 채널이 협상 시간을 확보했습니다.",
+          "titleEn": "The Strike Is Held and the Ultimatum Delivered",
+          "summaryEn": "Forces remain at alert while the Oman mediation channel buys time for negotiation."
+        },
+        "nameEn": "Hold After an Ultimatum",
+        "descEn": "Keeps the forces ready while buying time for diplomacy."
+      }
+    ],
+    "historical": "leadership_strike",
+    "titleEn": "Day One of the War · Strike on Iranian Leadership",
+    "questionEn": "Ali Khamenei was killed in the first US-Israeli strike. How far do you authorize the next set of targets?"
+  },
+  {
+    "id": "strait_closure",
+    "date": "2026.03.02",
+    "title": "해협 봉쇄와 유가 급등",
+    "question": "이란이 호르무즈 통항을 위협하고 상선 운항이 급감했습니다. 첫 대응을 선택하십시오.",
+    "image": "assets/images/briefings/iran-response-council-v1.webp",
+    "choices": [
+      {
+        "id": "escort_now",
+        "name": "다국적 호송 즉시 개시",
+        "desc": "통항을 일부 회복하지만 전력과 예산을 빠르게 씁니다.",
+        "mod": {
+          "transit": 10,
+          "oil": -4,
+          "ammo": -7,
+          "intl": 3,
+          "budget": -220,
+          "party": 2
+        },
+        "battle": {
+          "mission": "surface_swarm"
+        },
+        "result": {
+          "image": "assets/images/history-results/convoy-operation-resumed-v1.webp",
+          "title": "다국적 호송대가 해협에 진입했습니다",
+          "summary": "구축함·전투기·헬기를 편성해 유조선 항로를 직접 방어해야 합니다.",
+          "successTitle": "첫 호송대가 해협을 통과했습니다",
+          "successSummary": "민간 선박을 지켜 통항 신뢰와 국제 공조를 회복했습니다.",
+          "failureTitle": "호송 작전이 선박을 완전히 지키지 못했습니다",
+          "failureSummary": "해운사의 운항 중단이 이어지고 유가와 국내 정치 부담이 다시 커졌습니다.",
+          "titleEn": "The Multinational Convoy Has Entered the Strait",
+          "summaryEn": "Assemble destroyers, fighters and helicopters and defend the tanker route yourself.",
+          "successTitleEn": "The First Convoy Cleared the Strait",
+          "successSummaryEn": "You protected the civilian shipping and restored transit confidence and allied coordination.",
+          "failureTitleEn": "The Convoy Operation Failed to Protect the Ships",
+          "failureSummaryEn": "Carriers keep suspending sailings, and oil prices and domestic political pressure rose again."
+        },
+        "nameEn": "Begin Multinational Convoys Immediately",
+        "descEn": "Restores some transit, but burns through forces and budget fast."
+      },
+      {
+        "id": "mine_sweep_first",
+        "name": "소해 회랑부터 확보",
+        "desc": "속도는 느리지만 민간선박 피해를 줄입니다.",
+        "mod": {
+          "transit": 5,
+          "oil": 2,
+          "ammo": -3,
+          "intl": 5,
+          "budget": -140
+        },
+        "battle": {
+          "mission": "mine_clearance"
+        },
+        "result": {
+          "image": "assets/images/history-results/mine-corridor-cleared-v1.webp",
+          "title": "무인 소해 전력이 남쪽 항로에 투입됐습니다",
+          "summary": "기뢰 7발을 제거하고 민간 선박이 통과할 안전 회랑을 확보해야 합니다.",
+          "successTitle": "안전한 소해 회랑을 확보했습니다",
+          "successSummary": "기뢰 위험이 낮아져 제한적 통항이 재개되고 국제 지지가 높아졌습니다.",
+          "failureTitle": "소해 회랑을 완전히 열지 못했습니다",
+          "failureSummary": "남은 기뢰 때문에 민간 선박의 대기와 유가 불안이 계속됩니다.",
+          "titleEn": "Unmanned Minesweepers Are Committed to the Southern Lane",
+          "summaryEn": "Clear seven mines and secure a safe corridor for civilian shipping to pass through.",
+          "successTitleEn": "A Safe Cleared Corridor Is Secured",
+          "successSummaryEn": "With the mine threat reduced, limited transit resumed and international support rose.",
+          "failureTitleEn": "The Corridor Was Not Fully Opened",
+          "failureSummaryEn": "The remaining mines keep civilian shipping waiting and oil markets unsettled."
+        },
+        "nameEn": "Secure the Mine-Cleared Corridor First",
+        "descEn": "Slower, but reduces harm to civilian shipping."
+      },
+      {
+        "id": "sanctions_only",
+        "name": "제재·금융 압박 우선",
+        "desc": "군사비는 아끼지만 해협 통항 회복이 늦어집니다.",
+        "mod": {
+          "transit": -7,
+          "oil": 12,
+          "approval": -4,
+          "intl": -2,
+          "budget": 40,
+          "party": 1
+        },
+        "result": {
+          "image": "assets/images/history-results/economic-pressure-result-v1.webp",
+          "title": "이란 항만과 금융망에 추가 제재가 시작됐습니다",
+          "summary": "군사 충돌은 피했지만 상선 대기와 해협 봉쇄가 장기화되고 있습니다.",
+          "titleEn": "New Sanctions Have Hit Iranian Ports and Financial Networks",
+          "summaryEn": "Military confrontation was avoided, but shipping backlogs and the closure of the strait are dragging on."
+        },
+        "nameEn": "Lead With Sanctions and Financial Pressure",
+        "descEn": "Saves military spending, but transit recovery comes late."
+      }
+    ],
+    "historical": "escort_now",
+    "titleEn": "Strait Closure and the Oil Spike",
+    "questionEn": "Iran is threatening transit through Hormuz and merchant traffic has collapsed. Choose your first response."
+  },
+  {
+    "id": "succession",
+    "date": "2026.03.09",
+    "title": "모즈타바 하메네이 선출",
+    "question": "이란의 새 최고지도부가 출범했습니다. 공개 메시지를 어떻게 정합니까?",
+    "image": "assets/images/briefings/iran-response-council-v1.webp",
+    "choices": [
+      {
+        "id": "deny_legitimacy",
+        "name": "정통성 부정",
+        "desc": "강경 지지층은 결집하지만 협상 채널이 좁아집니다.",
+        "mod": {
+          "approval": 4,
+          "intl": -4,
+          "esc": 1,
+          "party": 3
+        },
+        "result": {
+          "image": "assets/images/briefings/iran-response-council-v1.webp",
+          "title": "이란 지도부가 강경 성명을 발표했습니다",
+          "summary": "양측의 공개 메시지가 강해지며 비공개 협상 공간이 빠르게 줄었습니다.",
+          "titleEn": "Iranian Leadership Has Issued a Hardline Statement",
+          "summaryEn": "Public messaging hardened on both sides and the private negotiating space shrank quickly."
+        },
+        "nameEn": "Deny Its Legitimacy",
+        "descEn": "Rallies the hardline base, but narrows the negotiating channel."
+      },
+      {
+        "id": "conditional_contact",
+        "name": "조건부 접촉 제안",
+        "desc": "검증 조건을 붙여 비공개 채널을 엽니다.",
+        "mod": {
+          "intl": 5,
+          "approval": -1,
+          "esc": -1,
+          "party": -1
+        },
+        "result": {
+          "image": "assets/images/briefings/oman-backchannel-v1.webp",
+          "title": "검증 조건을 포함한 비공개 접촉이 시작됐습니다",
+          "summary": "즉각적인 합의는 없지만 양측 연락관이 충돌 방지 조건을 교환하기 시작했습니다.",
+          "titleEn": "Private Contact With Verification Conditions Has Begun",
+          "summaryEn": "There is no immediate agreement, but liaison officers on both sides have started exchanging deconfliction terms."
+        },
+        "nameEn": "Offer Conditional Contact",
+        "descEn": "Opens a private channel with verification conditions attached."
+      },
+      {
+        "id": "oman_channel",
+        "name": "오만 중재에 위임",
+        "desc": "직접 승인 없이도 출구를 탐색합니다.",
+        "mod": {
+          "intl": 7,
+          "approval": -2,
+          "budget": -25,
+          "congress": 3
+        },
+        "result": {
+          "image": "assets/images/briefings/oman-backchannel-v1.webp",
+          "title": "오만 중재단이 양측 제안을 전달했습니다",
+          "summary": "공개 충돌을 피하면서 해협 통항과 안전 보장을 묶는 중재안이 준비됩니다.",
+          "titleEn": "Omani Mediators Have Carried Both Proposals",
+          "summaryEn": "Avoiding open confrontation, a mediation package tying strait transit to safety guarantees is being prepared."
+        },
+        "nameEn": "Delegate to Omani Mediation",
+        "descEn": "Explores an exit without requiring your direct endorsement."
+      }
+    ],
+    "historical": "conditional_contact",
+    "titleEn": "Mojtaba Khamenei Elected",
+    "questionEn": "Iran's new supreme leadership has taken office. How do you set the public message?"
+  },
+  {
+    "id": "interim_deal",
+    "date": "2026.06.15",
+    "title": "해협 개방 잠정 합의",
+    "question": "초기 합의가 마련됐습니다. 휴전과 해협 개방을 어떤 순서로 묶습니까?",
+    "image": "assets/images/briefings/oman-backchannel-v1.webp",
+    "choices": [
+      {
+        "id": "phased_opening",
+        "name": "단계적 개방·단계적 완화",
+        "desc": "검증할 때마다 항로와 제재를 함께 풉니다.",
+        "mod": {
+          "transit": 12,
+          "oil": -8,
+          "intl": 7,
+          "approval": 1,
+          "esc": -1,
+          "budget": 60
+        },
+        "result": {
+          "image": "assets/images/history-results/strait-reopening-result-v1.webp",
+          "title": "검증된 항로부터 단계적으로 다시 열렸습니다",
+          "summary": "상선이 안전 간격을 두고 해협에 복귀하면서 유가와 확전 위험이 함께 낮아졌습니다.",
+          "titleEn": "Verified Lanes Have Reopened in Stages",
+          "summaryEn": "Merchant ships returned to the strait at safe intervals, bringing down both oil prices and escalation risk."
+        },
+        "nameEn": "Phased Opening, Phased Relief",
+        "descEn": "Each verification step releases both a lane and a sanction."
+      },
+      {
+        "id": "open_first",
+        "name": "해협 선개방 요구",
+        "desc": "시장 안정은 빠르지만 이란이 거부할 가능성이 큽니다.",
+        "mod": {
+          "transit": 5,
+          "oil": -3,
+          "intl": -2,
+          "approval": 3,
+          "party": 2
+        },
+        "result": {
+          "image": "assets/images/history-results/strait-reopening-result-v1.webp",
+          "title": "제한된 상선 통항이 먼저 재개됐습니다",
+          "summary": "시장은 빠르게 반응했지만 후속 휴전 조건을 둘러싼 이란의 반발이 남았습니다.",
+          "titleEn": "Limited Merchant Transit Has Resumed First",
+          "summaryEn": "Markets reacted quickly, but Iranian objections over the remaining ceasefire terms are unresolved."
+        },
+        "nameEn": "Demand the Strait Open First",
+        "descEn": "Fast market stabilization, but Iran is likely to refuse."
+      },
+      {
+        "id": "ceasefire_first",
+        "name": "휴전부터 고정",
+        "desc": "군사 위험은 줄지만 통항 정상화가 늦습니다.",
+        "mod": {
+          "transit": 2,
+          "oil": 4,
+          "intl": 5,
+          "esc": -1,
+          "ammo": 4
+        },
+        "result": {
+          "image": "assets/images/briefings/oman-backchannel-v1.webp",
+          "title": "군사 충돌 중지선이 먼저 확정됐습니다",
+          "summary": "교전 위험과 탄약 소모는 줄었지만 상선 운항 정상화에는 시간이 더 필요합니다.",
+          "titleEn": "The Line Halting Military Contact Was Fixed First",
+          "summaryEn": "Combat risk and ammunition use fell, but normalizing merchant traffic will take longer."
+        },
+        "nameEn": "Lock the Ceasefire First",
+        "descEn": "Lowers military risk, but delays normal transit."
+      }
+    ],
+    "historical": "phased_opening",
+    "titleEn": "Interim Agreement to Reopen the Strait",
+    "questionEn": "An initial agreement is on the table. In what order do you bind the ceasefire and the reopening of the strait?"
+  },
+  {
+    "id": "shipping_crisis",
+    "date": "2026.07.06",
+    "title": "상선 공격 재개",
+    "question": "휴전이 흔들리고 민간 선박 공격이 재개됐습니다. 호송 전력을 다시 투입합니까?",
+    "image": "assets/images/briefings/us-national-security-council-v1.webp",
+    "choices": [
+      {
+        "id": "escort",
+        "name": "호송 작전 재개",
+        "desc": "통항을 지키지만 작전비와 탄약 소모가 큽니다.",
+        "mod": {
+          "transit": 7,
+          "ammo": -5,
+          "budget": -160,
+          "approval": 3,
+          "intl": -2
+        },
+        "battle": {
+          "mission": "surface_swarm"
+        },
+        "result": {
+          "image": "assets/images/history-results/convoy-operation-resumed-v1.webp",
+          "title": "호송 전력이 다시 해협으로 향합니다",
+          "summary": "투입 전력을 직접 편성하고 접근하는 이란 고속정을 막아야 합니다.",
+          "successTitle": "재개된 호송 작전이 상선을 지켜냈습니다",
+          "successSummary": "유조선이 안전하게 통과하며 통항 신뢰와 국내 지지가 회복됐습니다.",
+          "failureTitle": "재개된 호송 작전이 목표를 달성하지 못했습니다",
+          "failureSummary": "선박 피해 우려로 보험료와 유가가 오르고 추가 전력 투입 압박이 커졌습니다.",
+          "titleEn": "The Convoy Force Is Heading Back Into the Strait",
+          "summaryEn": "Assemble the committed force yourself and stop the approaching Iranian fast attack craft.",
+          "successTitleEn": "The Resumed Convoy Operation Protected the Merchant Ships",
+          "successSummaryEn": "The tankers passed safely, restoring transit confidence and domestic support.",
+          "failureTitleEn": "The Resumed Convoy Operation Missed Its Objective",
+          "failureSummaryEn": "Fear of further ship losses drove up premiums and oil prices, and pressure to commit more forces grew."
+        },
+        "nameEn": "Resume Convoy Operations",
+        "descEn": "Protects transit, but operating cost and ammunition use are high."
+      },
+      {
+        "id": "sanction",
+        "name": "제재 강화",
+        "desc": "군사 충돌은 피하지만 시장 불안이 이어집니다.",
+        "mod": {
+          "oil": 7,
+          "intl": -3,
+          "approval": 2,
+          "party": 2
+        },
+        "result": {
+          "image": "assets/images/history-results/economic-pressure-result-v1.webp",
+          "title": "추가 금융·해운 제재가 발효됐습니다",
+          "summary": "직접 충돌은 피했지만 항만 정체와 해운 시장 불안은 계속됩니다.",
+          "titleEn": "Further Financial and Shipping Sanctions Are in Force",
+          "summaryEn": "Direct confrontation was avoided, but port congestion and shipping market instability continue."
+        },
+        "nameEn": "Tighten Sanctions",
+        "descEn": "Avoids military confrontation, but market instability continues."
+      },
+      {
+        "id": "mediate",
+        "name": "중재 재가동",
+        "desc": "오만 채널에 시간을 주며 제한 호송만 유지합니다.",
+        "mod": {
+          "transit": 2,
+          "intl": 5,
+          "approval": -1,
+          "budget": -40
+        },
+        "result": {
+          "image": "assets/images/briefings/oman-backchannel-v1.webp",
+          "title": "오만 중재와 제한 호송이 동시에 시작됐습니다",
+          "summary": "충돌을 억제하면서 필수 선박만 통과시키는 임시 안전 조치가 가동됩니다.",
+          "titleEn": "Omani Mediation and Limited Convoys Have Begun Together",
+          "summaryEn": "Temporary safety measures are running that suppress confrontation and let only essential shipping through."
+        },
+        "nameEn": "Restart Mediation",
+        "descEn": "Gives the Oman channel time while keeping only limited convoys."
+      }
+    ],
+    "historical": "escort",
+    "titleEn": "Attacks on Merchant Shipping Resume",
+    "questionEn": "The ceasefire is breaking and attacks on civilian shipping have resumed. Do you commit the convoy force again?"
+  },
+  {
+    "id": "lull_bridge",
+    "date": "2026.07.27",
+    "title": "현재 시점으로",
+    "question": "굵직한 과거 분기가 시작 수치를 만들었습니다. 내일부터 매일 무엇을 최우선 목표로 삼습니까?",
+    "image": "assets/images/briefings/us-national-security-council-v1.webp",
+    "choices": [
+      {
+        "id": "open_strait",
+        "name": "해협 완전 개방",
+        "desc": "통항 회복을 최우선으로 두고 필요한 전력을 투입합니다.",
+        "mod": {
+          "transit": 5,
+          "approval": 2,
+          "budget": 80,
+          "party": 1
+        },
+        "battle": {
+          "mission": "surface_swarm"
+        },
+        "result": {
+          "image": "assets/images/history-results/convoy-operation-resumed-v1.webp",
+          "title": "완전 개방을 위한 선도 호송대가 출항했습니다",
+          "summary": "내일 본편 작전에 앞서 해협의 즉각적인 위협을 직접 제거해야 합니다.",
+          "successTitle": "완전 개방의 선도 항로를 확보했습니다",
+          "successSummary": "상선 운항 확대에 필요한 작전 기반과 국민 신뢰를 확보했습니다.",
+          "failureTitle": "완전 개방을 위한 선도 작전이 멈췄습니다",
+          "failureSummary": "해협 위협이 남아 본편 시작부터 추가 예산과 전력이 필요해졌습니다.",
+          "titleEn": "The Lead Convoy for a Full Reopening Has Sailed",
+          "summaryEn": "Before tomorrow's main campaign, you must clear the immediate threats in the strait yourself.",
+          "successTitleEn": "The Lead Route for a Full Reopening Is Secured",
+          "successSummaryEn": "You secured the operational base and public trust needed to expand merchant traffic.",
+          "failureTitleEn": "The Lead Operation for a Full Reopening Has Stalled",
+          "failureSummaryEn": "The threat in the strait remains, so the main campaign begins needing extra budget and forces."
+        },
+        "nameEn": "Fully Reopen the Strait",
+        "descEn": "Puts transit recovery first and commits whatever force it requires."
+      },
+      {
+        "id": "lasting_deal",
+        "name": "지속 가능한 합의",
+        "desc": "오만 중재와 검증 가능한 출구를 최우선으로 둡니다.",
+        "mod": {
+          "intl": 6,
+          "approval": -1,
+          "esc": -1,
+          "congress": 4
+        },
+        "result": {
+          "image": "assets/images/history-results/strait-reopening-result-v1.webp",
+          "title": "검증 가능한 장기 합의안이 준비됐습니다",
+          "summary": "해협 감시·단계적 제재 완화·충돌 방지 절차가 본편 협상의 기준이 됩니다.",
+          "titleEn": "A Verifiable Long-Term Agreement Is Ready",
+          "summaryEn": "Strait monitoring, phased sanctions relief and deconfliction procedures become the baseline for the main negotiation."
+        },
+        "nameEn": "A Durable Agreement",
+        "descEn": "Puts Omani mediation and a verifiable exit first."
+      },
+      {
+        "id": "disarm",
+        "name": "이란 무장해제",
+        "desc": "가장 강한 군사 목표로 전환합니다.",
+        "mod": {
+          "approval": 5,
+          "intl": -6,
+          "esc": 1,
+          "ammo": -4,
+          "budget": -120,
+          "party": 3
+        },
+        "battle": {
+          "mission": "strategic_strike"
+        },
+        "result": {
+          "image": "assets/images/history-results/coastal-strike-result-v1.webp",
+          "title": "이란 연안 전력 무력화 작전이 시작됐습니다",
+          "summary": "전투 편대를 직접 지휘해 이동식 미사일 발사대를 제거해야 합니다.",
+          "successTitle": "연안 미사일 전력에 큰 타격을 입혔습니다",
+          "successSummary": "군사적 압박은 높아졌지만 국제 지지와 장기 협상 공간이 좁아졌습니다.",
+          "failureTitle": "무장해제 작전이 결정적 성과를 내지 못했습니다",
+          "failureSummary": "전력과 탄약을 소모한 채 이란의 반격 가능성이 남아 확전 위험이 커졌습니다.",
+          "titleEn": "The Operation to Neutralize Iranian Coastal Forces Has Begun",
+          "summaryEn": "Command the strike flight directly and remove the mobile missile launchers.",
+          "successTitleEn": "You Struck Coastal Missile Forces Hard",
+          "successSummaryEn": "Military pressure rose, but international support and the space for a long-term negotiation narrowed.",
+          "failureTitleEn": "The Disarmament Operation Produced No Decisive Result",
+          "failureSummaryEn": "Forces and ammunition were spent while Iran retains the ability to counterattack, raising escalation risk."
+        },
+        "nameEn": "Disarm Iran",
+        "descEn": "Shifts to the hardest military objective available."
+      }
+    ],
+    "historical": "lasting_deal",
+    "titleEn": "Up to the Present Day",
+    "questionEn": "The major past branches have set your starting figures. From tomorrow, what is your highest daily priority?"
+  }
+]
